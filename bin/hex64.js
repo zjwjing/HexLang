@@ -14,6 +14,7 @@ const BLUE = s => `\x1b[34m${s}\x1b[39m`;
 const DIM = s => `\x1b[2m${s}\x1b[22m`;
 const GRAY = s => `\x1b[90m${s}\x1b[39m`;
 const RESET = '\x1b[0m';
+let _logoDisplayed = false;
 
 const LOGO = `
 ${CYAN}┌─────────────────────────────────────┐${RESET}
@@ -256,7 +257,7 @@ const opTemplates = {
   'STRONG':     { js: 'breaker.trip(\'%s\', threshold);',                           py: 'breaker.trip(\'%s\', threshold)',                           rs: 'breaker::trip("%s", threshold);',                          go: 'breaker.Trip("%s", threshold)' },
   'DECISIVE':     { js: '// %s: core system — do not modify',                           py: '# %s: core system — do not modify',                           rs: '// %s: core system — do not modify',                          go: '// %s: core system — do not modify' },
   'CORE':     { js: 'leader.elect(\'%s\');',                           py: 'leader.elect(\'%s\')',                           rs: '// %s: core system — do not modify',                          go: '// %s: core system — do not modify' },
-  'DOMINATE':     { js: 'depth.probe(\'%s\');',                           py: 'depth.probe(\'%s\')',                           rs: 'depth::probe("%s");',                          go: 'depth.Probe("%s")' },
+  'DOMINATE':     { js: 'leader.dominate(\'%s\');',                           py: 'leader.dominate(\'%s\')',                           rs: 'leader::dominate("%s");',                          go: 'leader.Dominate("%s")' },
   'ABYSS':     { js: 'acquire(\'%s\');',                           py: 'acquire(\'%s\')',                           rs: 'acquire("%s");',                          go: 'acquire("%s")' },
   'ACQUIRE':     { js: 'court.adjudicate(\'%s\');',                           py: 'court.adjudicate(\'%s\')',                           rs: 'court::adjudicate("%s");',                          go: 'court.Adjudicate("%s")' },
   'ADJUDICATE':     { js: 'stream.aggregate(\'%s\');',                           py: 'stream.aggregate(\'%s\')',                           rs: 'stream::aggregate("%s");',                          go: 'stream.Aggregate("%s")' },
@@ -417,6 +418,7 @@ const opTemplates = {
 
 
 
+
 function compileHex(hex) {
   const ops = [...new Set(hex.tags.map(t => TAG_TO_OP[t] || t.toUpperCase()))];
   const param = hex.name || 'system';
@@ -534,6 +536,12 @@ for (let i = 0; i < args.length; i++) {
 }
 
 const engine = new Hex64Engine();
+
+// Display logo on first run
+if (!_logoDisplayed) {
+  console.log(LOGO);
+  _logoDisplayed = true;
+}
 
 if (positional.length > 0) {
   if (opFlag && (opFlag === 'AND' || opFlag === 'OR' || opFlag === 'XOR')) {
