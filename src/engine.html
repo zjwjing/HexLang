@@ -63,6 +63,14 @@ footer { text-align: center; color: #aaa; font-size: 0.78rem; margin-top: 32px; 
         <div style="font-size:0.85rem;color:#666;margin-top:4px" id="hexMeta"></div>
       </div>
       <div class="result-item">
+        <div class="label">拼音 / English</div>
+        <div class="value" style="font-size:0.9rem" id="hexPinyinEn">--</div>
+      </div>
+      <div class="result-item">
+        <div class="label">分类</div>
+        <div class="value" id="hexCategory">--</div>
+      </div>
+      <div class="result-item">
         <div class="label">权重</div>
         <div class="value" id="hexWeight">--</div>
       </div>
@@ -102,70 +110,70 @@ footer { text-align: center; color: #aaa; font-size: 0.78rem; margin-top: 32px; 
 
 <script>
 const HEXAGRAMS = [
-  { bin: '000000', name: '坤为地', tags: ['承载', '包容', '柔顺'], weight: 0.25 },
-  { bin: '000001', name: '山地剥', tags: ['剥落', '衰退', '更替'], weight: 0.20 },
-  { bin: '000010', name: '水地比', tags: ['亲附', '和谐', '合作'], weight: 0.55 },
-  { bin: '000011', name: '风地观', tags: ['观察', '审视', '展示'], weight: 0.50 },
-  { bin: '000100', name: '雷地豫', tags: ['预备', '愉悦', '规划'], weight: 0.60 },
-  { bin: '000101', name: '火地晋', tags: ['晋升', '前进', '发展'], weight: 0.70 },
-  { bin: '000110', name: '泽地萃', tags: ['聚集', '荟萃', '集合'], weight: 0.65 },
-  { bin: '000111', name: '天地否', tags: ['闭塞', '阻塞', '停滞'], weight: 0.25 },
-  { bin: '001000', name: '地山谦', tags: ['谦虚', '低调', '谨慎'], weight: 0.45 },
-  { bin: '001001', name: '艮为山', tags: ['静止', '停止', '阻隔'], weight: 0.35 },
-  { bin: '001010', name: '水山蹇', tags: ['艰难', '险阻', '困难'], weight: 0.30 },
-  { bin: '001011', name: '风山渐', tags: ['渐进', '缓慢', '积累'], weight: 0.55 },
-  { bin: '001100', name: '雷山小过', tags: ['小过', '调整', '修正'], weight: 0.45 },
-  { bin: '001101', name: '火山旅', tags: ['旅行', '移动', '临时'], weight: 0.50 },
-  { bin: '001110', name: '泽山咸', tags: ['感应', '互动', '连接'], weight: 0.60 },
-  { bin: '001111', name: '天山遁', tags: ['退避', '隐退', '撤退'], weight: 0.30 },
-  { bin: '010000', name: '地水师', tags: ['军队', '领导', '统帅'], weight: 0.65 },
-  { bin: '010001', name: '山水蒙', tags: ['启蒙', '蒙昧', '教育'], weight: 0.40 },
-  { bin: '010010', name: '坎为水', tags: ['危险', '陷阱', '困难'], weight: 0.30 },
-  { bin: '010011', name: '风水涣', tags: ['涣散', '离散', '分散'], weight: 0.35 },
-  { bin: '010100', name: '雷水解', tags: ['解除', '缓解', '解放'], weight: 0.60 },
-  { bin: '010101', name: '火水未济', tags: ['未完成', '继续', '持续'], weight: 0.50 },
-  { bin: '010110', name: '泽水困', tags: ['困境', '困顿', '穷困'], weight: 0.20 },
-  { bin: '010111', name: '天水讼', tags: ['争讼', '冲突', '争议'], weight: 0.35 },
-  { bin: '011000', name: '地风升', tags: ['上升', '提升', '成长'], weight: 0.75 },
-  { bin: '011001', name: '山风蛊', tags: ['整治', '革新', '改革'], weight: 0.55 },
-  { bin: '011010', name: '水风井', tags: ['源泉', '滋养', '供给'], weight: 0.60 },
-  { bin: '011011', name: '巽为风', tags: ['顺应', '渗透', '进入'], weight: 0.55 },
-  { bin: '011100', name: '雷风恒', tags: ['恒久', '稳定', '持续'], weight: 0.70 },
-  { bin: '011101', name: '火风鼎', tags: ['鼎立', '创新', '建立'], weight: 0.75 },
-  { bin: '011110', name: '泽风大过', tags: ['过度', '超越', '极端'], weight: 0.40 },
-  { bin: '011111', name: '天风姤', tags: ['相遇', '邂逅', '遇见'], weight: 0.50 },
-  { bin: '100000', name: '地雷复', tags: ['恢复', '复兴', '回归'], weight: 0.65 },
-  { bin: '100001', name: '山雷颐', tags: ['颐养', '修养', '滋养'], weight: 0.55 },
-  { bin: '100010', name: '水雷屯', tags: ['初生', '艰难', '萌芽'], weight: 0.40 },
-  { bin: '100011', name: '风雷益', tags: ['增益', '利益', '增长'], weight: 0.70 },
-  { bin: '100100', name: '震为雷', tags: ['震动', '激发', '启动'], weight: 0.65 },
-  { bin: '100101', name: '火雷噬嗑', tags: ['咬合', '治理', '裁决'], weight: 0.55 },
-  { bin: '100110', name: '泽雷随', tags: ['跟随', '顺从', '适应'], weight: 0.50 },
-  { bin: '100111', name: '天雷无妄', tags: ['无妄', '意外', '本真'], weight: 0.45 },
-  { bin: '101000', name: '地火明夷', tags: ['韬晦', '隐忍', '等待'], weight: 0.35 },
-  { bin: '101001', name: '山火贲', tags: ['装饰', '美化', '修饰'], weight: 0.45 },
-  { bin: '101010', name: '水火既济', tags: ['已完成', '成功', '完成', '稳定'], weight: 0.80 },
-  { bin: '101011', name: '风火家人', tags: ['家庭', '内部', '归属'], weight: 0.55 },
-  { bin: '101100', name: '雷火丰', tags: ['丰盛', '丰富', '盛大'], weight: 0.75 },
-  { bin: '101101', name: '离为火', tags: ['光明', '依附', '文明', '启动'], weight: 0.70 },
-  { bin: '101110', name: '泽火革', tags: ['变革', '革命', '革新', '更新'], weight: 0.65 },
-  { bin: '101111', name: '天火同人', tags: ['大同', '团结', '协作'], weight: 0.75 },
-  { bin: '110000', name: '地泽临', tags: ['面临', '临近', '监督'], weight: 0.55 },
-  { bin: '110001', name: '山泽损', tags: ['减损', '损失', '减少'], weight: 0.30 },
-  { bin: '110010', name: '水泽节', tags: ['节制', '调节', '控制'], weight: 0.55 },
-  { bin: '110011', name: '风泽中孚', tags: ['诚信', '信任', '诚实'], weight: 0.65 },
-  { bin: '110100', name: '雷泽归妹', tags: ['回归', '归宿', '结局'], weight: 0.45 },
-  { bin: '110101', name: '火泽睽', tags: ['背离', '分歧', '差异'], weight: 0.30 },
-  { bin: '110110', name: '兑为泽', tags: ['喜悦', '交流', '沟通'], weight: 0.60 },
-  { bin: '110111', name: '天泽履', tags: ['履行', '实践', '执行'], weight: 0.65 },
-  { bin: '111000', name: '地天泰', tags: ['通泰', '顺畅', '和平'], weight: 0.80 },
-  { bin: '111001', name: '山天大畜', tags: ['积蓄', '积累', '储备', '存储'], weight: 0.70 },
-  { bin: '111010', name: '水天需', tags: ['等待', '需求', '期待'], weight: 0.50 },
-  { bin: '111011', name: '风天小畜', tags: ['小蓄', '渐进', '积累'], weight: 0.55 },
-  { bin: '111100', name: '雷天大壮', tags: ['强壮', '壮大', '力量'], weight: 0.75 },
-  { bin: '111101', name: '火天大有', tags: ['大有', '丰富', '富足'], weight: 0.80 },
-  { bin: '111110', name: '泽天夬', tags: ['决断', '果断', '决策'], weight: 0.65 },
-  { bin: '111111', name: '乾为天', tags: ['初始化', '刚健', '核心', '启动'], weight: 0.90 }
+  { bin: '000000', name: '坤为地', pinyin: 'kūn wéi dì', en: 'The Receptive', category: '稳定/承载', tags: ['承载', '包容', '柔顺', '被动', '存储', '稳定'], weight: 0.25 },
+  { bin: '000001', name: '山地剥', pinyin: 'shān dì bō', en: 'Splitting Apart', category: '变化/衰退', tags: ['剥落', '衰退', '更替', '淘汰', '清理', '结束'], weight: 0.20 },
+  { bin: '000010', name: '水地比', pinyin: 'shuǐ dì bǐ', en: 'Union', category: '关系/协作', tags: ['亲附', '和谐', '合作', '联盟', '同步', '合并'], weight: 0.55 },
+  { bin: '000011', name: '风地观', pinyin: 'fēng dì guān', en: 'Contemplation', category: '观察/分析', tags: ['观察', '审视', '展示', '监控', '分析', '审计'], weight: 0.50 },
+  { bin: '000100', name: '雷地豫', pinyin: 'léi dì yù', en: 'Enthusiasm', category: '执行/行动', tags: ['预备', '愉悦', '规划', '准备', '启动', '预加载'], weight: 0.60 },
+  { bin: '000101', name: '火地晋', pinyin: 'huǒ dì jìn', en: 'Progress', category: '成长/发展', tags: ['晋升', '前进', '发展', '升级', '迭代', '优化'], weight: 0.70 },
+  { bin: '000110', name: '泽地萃', pinyin: 'zé dì cuì', en: 'Gathering Together', category: '关系/协作', tags: ['聚集', '荟萃', '集合', '汇总', '整合', '收集'], weight: 0.65 },
+  { bin: '000111', name: '天地否', pinyin: 'tiān dì pǐ', en: 'Standstill', category: '阻塞/停滞', tags: ['闭塞', '阻塞', '停滞', '拒绝', '阻断', '暂停'], weight: 0.25 },
+  { bin: '001000', name: '地山谦', pinyin: 'dì shān qiān', en: 'Modesty', category: '稳定/低调', tags: ['谦虚', '低调', '谨慎', '节俭', '保守', '安全模式'], weight: 0.45 },
+  { bin: '001001', name: '艮为山', pinyin: 'gèn wéi shān', en: 'Keeping Still', category: '停止/等待', tags: ['静止', '停止', '阻隔', '休眠', '暂停', '等待'], weight: 0.35 },
+  { bin: '001010', name: '水山蹇', pinyin: 'shuǐ shān jiǎn', en: 'Obstruction', category: '风险/困难', tags: ['艰难', '险阻', '困难', '阻塞', '错误', '异常'], weight: 0.30 },
+  { bin: '001011', name: '风山渐', pinyin: 'fēng shān jiàn', en: 'Development', category: '成长/渐进', tags: ['渐进', '缓慢', '积累', '递增', '迭代', '持续集成'], weight: 0.55 },
+  { bin: '001100', name: '雷山小过', pinyin: 'léi shān xiǎo guò', en: 'Small Excess', category: '调整/修正', tags: ['小过', '调整', '修正', '微调', '校准', '补丁'], weight: 0.45 },
+  { bin: '001101', name: '火山旅', pinyin: 'huǒ shān lǚ', en: 'The Wanderer', category: '移动/临时', tags: ['旅行', '移动', '临时', '迁移', '漂泊', '无状态'], weight: 0.50 },
+  { bin: '001110', name: '泽山咸', pinyin: 'zé shān xián', en: 'Influence', category: '关系/互动', tags: ['感应', '互动', '连接', '触发', '通信', '回调'], weight: 0.60 },
+  { bin: '001111', name: '天山遁', pinyin: 'tiān shān dùn', en: 'Retreat', category: '撤退/退出', tags: ['退避', '隐退', '撤退', '退出', '回滚', '断开'], weight: 0.30 },
+  { bin: '010000', name: '地水师', pinyin: 'dì shuǐ shī', en: 'The Army', category: '执行/领导', tags: ['军队', '领导', '统帅', '指挥', '调度', '管理'], weight: 0.65 },
+  { bin: '010001', name: '山水蒙', pinyin: 'shān shuǐ méng', en: 'Youthful Folly', category: '学习/启蒙', tags: ['启蒙', '蒙昧', '教育', '学习', '探索', '训练'], weight: 0.40 },
+  { bin: '010010', name: '坎为水', pinyin: 'kǎn wéi shuǐ', en: 'The Abysmal', category: '风险/危险', tags: ['危险', '陷阱', '困难', '深渊', '危机', '故障'], weight: 0.30 },
+  { bin: '010011', name: '风水涣', pinyin: 'fēng shuǐ huàn', en: 'Dispersion', category: '分散/扩散', tags: ['涣散', '离散', '分散', '分发', '传播', '广播'], weight: 0.35 },
+  { bin: '010100', name: '雷水解', pinyin: 'léi shuǐ xiè', en: 'Deliverance', category: '解除/恢复', tags: ['解除', '缓解', '解放', '恢复', '释放', '重置'], weight: 0.60 },
+  { bin: '010101', name: '火水未济', pinyin: 'huǒ shuǐ wèi jì', en: 'Before Completion', category: '未完成/进行', tags: ['未完成', '继续', '持续', '待办', '进行中', '挂起'], weight: 0.50 },
+  { bin: '010110', name: '泽水困', pinyin: 'zé shuǐ kùn', en: 'Oppression', category: '风险/困境', tags: ['困境', '困顿', '穷困', '死锁', '耗尽', '崩溃'], weight: 0.20 },
+  { bin: '010111', name: '天水讼', pinyin: 'tiān shuǐ sòng', en: 'Conflict', category: '冲突/争议', tags: ['争讼', '冲突', '争议', '竞争', '分歧', '异常'], weight: 0.35 },
+  { bin: '011000', name: '地风升', pinyin: 'dì fēng shēng', en: 'Pushing Upward', category: '成长/上升', tags: ['上升', '提升', '成长', '增长', '扩容', '升级'], weight: 0.75 },
+  { bin: '011001', name: '山风蛊', pinyin: 'shān fēng gǔ', en: 'Decay', category: '整治/革新', tags: ['整治', '革新', '改革', '重构', '修复', '治理'], weight: 0.55 },
+  { bin: '011010', name: '水风井', pinyin: 'shuǐ fēng jǐng', en: 'The Well', category: '资源/供给', tags: ['源泉', '滋养', '供给', '资源', '数据源', '缓存'], weight: 0.60 },
+  { bin: '011011', name: '巽为风', pinyin: 'xùn wéi fēng', en: 'The Gentle', category: '渗透/扩散', tags: ['顺应', '渗透', '进入', '传播', '遍历', '递归'], weight: 0.55 },
+  { bin: '011100', name: '雷风恒', pinyin: 'léi fēng héng', en: 'Duration', category: '稳定/持久', tags: ['恒久', '稳定', '持续', '持久', '长连接', '保持'], weight: 0.70 },
+  { bin: '011101', name: '火风鼎', pinyin: 'huǒ fēng dǐng', en: 'The Cauldron', category: '创建/创新', tags: ['鼎立', '创新', '建立', '铸造', '构建', '部署'], weight: 0.75 },
+  { bin: '011110', name: '泽风大过', pinyin: 'zé fēng dà guò', en: 'Great Excess', category: '过度/极端', tags: ['过度', '超越', '极端', '溢出', '过载', '超标'], weight: 0.40 },
+  { bin: '011111', name: '天风姤', pinyin: 'tiān fēng gòu', en: 'Coming to Meet', category: '相遇/连接', tags: ['相遇', '邂逅', '遇见', '接入', '握手', '连接'], weight: 0.50 },
+  { bin: '100000', name: '地雷复', pinyin: 'dì léi fù', en: 'Return', category: '恢复/回归', tags: ['恢复', '复兴', '回归', '还原', '回滚', '重启'], weight: 0.65 },
+  { bin: '100001', name: '山雷颐', pinyin: 'shān léi yí', en: 'Nourishment', category: '滋养/维护', tags: ['颐养', '修养', '滋养', '维护', '保养', '自检'], weight: 0.55 },
+  { bin: '100010', name: '水雷屯', pinyin: 'shuǐ léi zhūn', en: 'Difficulty at Beginning', category: '初始/萌芽', tags: ['初生', '艰难', '萌芽', '启动', '初始化', '引导'], weight: 0.40 },
+  { bin: '100011', name: '风雷益', pinyin: 'fēng léi yì', en: 'Increase', category: '增益/增长', tags: ['增益', '利益', '增长', '加速', '增强', '附加值'], weight: 0.70 },
+  { bin: '100100', name: '震为雷', pinyin: 'zhèn wéi léi', en: 'The Arousing', category: '激发/启动', tags: ['震动', '激发', '启动', '触发', '唤醒', '事件'], weight: 0.65 },
+  { bin: '100101', name: '火雷噬嗑', pinyin: 'huǒ léi shì kē', en: 'Biting Through', category: '治理/裁决', tags: ['咬合', '治理', '裁决', '审查', '验证', '检查'], weight: 0.55 },
+  { bin: '100110', name: '泽雷随', pinyin: 'zé léi suí', en: 'Following', category: '跟随/适应', tags: ['跟随', '顺从', '适应', '订阅', '监听', '代理'], weight: 0.50 },
+  { bin: '100111', name: '天雷无妄', pinyin: 'tiān léi wú wàng', en: 'Innocence', category: '本真/意外', tags: ['无妄', '意外', '本真', '随机', '突发事件', '原始'], weight: 0.45 },
+  { bin: '101000', name: '地火明夷', pinyin: 'dì huǒ míng yí', en: 'Darkening of the Light', category: '韬晦/隐忍', tags: ['韬晦', '隐忍', '等待', '隐藏', '低调', '潜伏'], weight: 0.35 },
+  { bin: '101001', name: '山火贲', pinyin: 'shān huǒ bì', en: 'Grace', category: '装饰/美化', tags: ['装饰', '美化', '修饰', '格式化', '渲染', 'UI'], weight: 0.45 },
+  { bin: '101010', name: '水火既济', pinyin: 'shuǐ huǒ jì jì', en: 'After Completion', category: '完成/成功', tags: ['已完成', '成功', '完成', '稳定', '交付', '上线'], weight: 0.80 },
+  { bin: '101011', name: '风火家人', pinyin: 'fēng huǒ jiā rén', en: 'The Family', category: '内部/归属', tags: ['家庭', '内部', '归属', '内网', '本地', '私有'], weight: 0.55 },
+  { bin: '101100', name: '雷火丰', pinyin: 'léi huǒ fēng', en: 'Abundance', category: '丰盛/丰富', tags: ['丰盛', '丰富', '盛大', '富余', '充裕', '冗余'], weight: 0.75 },
+  { bin: '101101', name: '离为火', pinyin: 'lí wéi huǒ', en: 'The Clinging', category: '光明/文明', tags: ['光明', '依附', '文明', '显示', '输出', '展现'], weight: 0.70 },
+  { bin: '101110', name: '泽火革', pinyin: 'zé huǒ gé', en: 'Revolution', category: '变革/创新', tags: ['变革', '革命', '革新', '更新', '迁移', '重构'], weight: 0.65 },
+  { bin: '101111', name: '天火同人', pinyin: 'tiān huǒ tóng rén', en: 'Fellowship', category: '团结/协作', tags: ['大同', '团结', '协作', '开源', '社区', '共享'], weight: 0.75 },
+  { bin: '110000', name: '地泽临', pinyin: 'dì zé lín', en: 'Approach', category: '面临/监督', tags: ['面临', '临近', '监督', '管理', '监管', '接近'], weight: 0.55 },
+  { bin: '110001', name: '山泽损', pinyin: 'shān zé sǔn', en: 'Decrease', category: '减损/减少', tags: ['减损', '损失', '减少', '压缩', '精简', '回收'], weight: 0.30 },
+  { bin: '110010', name: '水泽节', pinyin: 'shuǐ zé jié', en: 'Limitation', category: '节制/控制', tags: ['节制', '调节', '控制', '限流', '节流', '调控'], weight: 0.55 },
+  { bin: '110011', name: '风泽中孚', pinyin: 'fēng zé zhōng fú', en: 'Inner Truth', category: '诚信/信任', tags: ['诚信', '信任', '诚实', '认证', '授权', '凭证'], weight: 0.65 },
+  { bin: '110100', name: '雷泽归妹', pinyin: 'léi zé guī mèi', en: 'Returning Maiden', category: '回归/归宿', tags: ['回归', '归宿', '结局', '合并', '收敛', '终态'], weight: 0.45 },
+  { bin: '110101', name: '火泽睽', pinyin: 'huǒ zé kuí', en: 'Opposition', category: '分歧/背离', tags: ['背离', '分歧', '差异', '分离', '分叉', '隔离'], weight: 0.30 },
+  { bin: '110110', name: '兑为泽', pinyin: 'duì wéi zé', en: 'The Joyous', category: '喜悦/交流', tags: ['喜悦', '交流', '沟通', '通知', '消息', '广播'], weight: 0.60 },
+  { bin: '110111', name: '天泽履', pinyin: 'tiān zé lǚ', en: 'Treading', category: '执行/实践', tags: ['履行', '实践', '执行', '实施', '运行', '遵守'], weight: 0.65 },
+  { bin: '111000', name: '地天泰', pinyin: 'dì tiān tài', en: 'Peace', category: '通泰/顺畅', tags: ['通泰', '顺畅', '和平', '成功', '通行', '开放'], weight: 0.80 },
+  { bin: '111001', name: '山天大畜', pinyin: 'shān tiān dà chù', en: 'Great Accumulation', category: '积累/储备', tags: ['积蓄', '积累', '储备', '存储', '备份', '缓存'], weight: 0.70 },
+  { bin: '111010', name: '水天需', pinyin: 'shuǐ tiān xū', en: 'Waiting', category: '等待/需求', tags: ['等待', '需求', '期待', '延迟', '异步', '轮询'], weight: 0.50 },
+  { bin: '111011', name: '风天小畜', pinyin: 'fēng tiān xiǎo chù', en: 'Small Accumulation', category: '积累/渐进', tags: ['小蓄', '渐进', '积累', '增量', '缓冲', '暂存'], weight: 0.55 },
+  { bin: '111100', name: '雷天大壮', pinyin: 'léi tiān dà zhuàng', en: 'Great Power', category: '力量/强大', tags: ['强壮', '壮大', '力量', '高性能', '强力', '峰值'], weight: 0.75 },
+  { bin: '111101', name: '火天大有', pinyin: 'huǒ tiān dà yǒu', en: 'Great Possession', category: '丰富/富足', tags: ['大有', '丰富', '富足', '富裕', '海量', '充沛'], weight: 0.80 },
+  { bin: '111110', name: '泽天夬', pinyin: 'zé tiān guài', en: 'Breakthrough', category: '决断/决策', tags: ['决断', '果断', '决策', '分支', '选择', '裁决'], weight: 0.65 },
+  { bin: '111111', name: '乾为天', pinyin: 'qián wéi tiān', en: 'The Creative', category: '创建/初始', tags: ['初始化', '刚健', '核心', '启动', '主导', '创建'], weight: 0.90 }
 ];
 
 const tagToOp = {
@@ -209,6 +217,8 @@ function render(input) {
 
   document.getElementById('hexCode').textContent = `${hex.bin} · ${hex.name}`;
   document.getElementById('hexMeta').textContent = `索引: ${hex.index} | 标签: ${hex.tags.join(', ')}`;
+  document.getElementById('hexPinyinEn').textContent = `${hex.pinyin} · ${hex.en}`;
+  document.getElementById('hexCategory').textContent = hex.category;
   document.getElementById('hexWeight').textContent = hex.weight.toFixed(2);
   document.getElementById('pseudoCode').textContent = code;
 

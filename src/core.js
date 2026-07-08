@@ -62,6 +62,10 @@ export class Hex64Engine {
         index: hex.index,
         bin: hex.bin,
         name: hex.name,
+        pinyin: hex.pinyin,
+        en: hex.en,
+        category: hex.category,
+        tags: hex.tags,
         weight: hex.weight,
       },
       featureVec: vec,
@@ -94,7 +98,10 @@ if (typeof process !== 'undefined' && process.argv[1] && import.meta.url.replace
     console.log(`\n输入: "${r.input}"`);
     console.log(`  卦索引: ${r.hexCode.index}`);
     console.log(`  二进制: ${r.hexCode.bin}`);
-    console.log(`  卦名: ${r.hexCode.name}`);
+    console.log(`  卦名: ${r.hexCode.name}（${r.hexCode.en}）`);
+    console.log(`  拼音: ${r.hexCode.pinyin}`);
+    console.log(`  分类: ${r.hexCode.category}`);
+    console.log(`  标签: ${r.hexCode.tags.join(', ')}`);
     console.log(`  权重: ${r.hexCode.weight}`);
     console.log(`  特征向量: [${r.featureVec.join(', ')}]`);
     console.log(`  伪代码: ${r.pseudoCode}`);
