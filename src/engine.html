@@ -234,17 +234,24 @@ function controlSignal(input) {
 
 function render(input) {
   const hex = lookup(input);
-  const vec = featureVector(input);
-  const code = pseudoCode(input);
-  const gpio = controlSignal(input);
+  renderHex(hex);
+  document.getElementById('opCard').style.display = 'block';
+  document.getElementById('opInput').value = input;
+}
 
+function renderHex(hex) {
+  const vec = hex.bin.split('').map(Number);
+  const code = (() => {
+    const ops = [...new Set(hex.tags.map(t => tagToOp[t] || t.toUpperCase()))];
+    return `HEX(${hex.name}) { ${ops.join('; ')}; }`;
+  })();
+  const idx = hex.index != null ? hex.index : HEXAGRAMS.findIndex(h => h.bin === hex.bin);
   document.getElementById('hexCode').textContent = `${hex.bin} · ${hex.name}`;
-  document.getElementById('hexMeta').textContent = `索引: ${hex.index} | 标签: ${hex.tags.join(', ')}`;
+  document.getElementById('hexMeta').textContent = `索引: ${idx} | 标签: ${hex.tags.join(', ')}`;
   document.getElementById('hexPinyinEn').textContent = `${hex.pinyin} · ${hex.en}`;
   document.getElementById('hexCategory').textContent = hex.category;
   document.getElementById('hexWeight').textContent = hex.weight.toFixed(2);
   document.getElementById('pseudoCode').textContent = code;
-
   const barsEl = document.getElementById('vecBars');
   barsEl.innerHTML = '';
   vec.forEach((v, i) => {
@@ -256,20 +263,18 @@ function render(input) {
     bar.innerHTML = `<div class="bar-val">${v}</div><div class="bar-label">爻${i+1}</div>`;
     barsEl.appendChild(bar);
   });
-
   const gpioEl = document.getElementById('gpioRow');
   gpioEl.innerHTML = '';
-  gpio.forEach((s, i) => {
+  vec.forEach((v, i) => {
     const pin = document.createElement('div');
-    pin.className = `gpio-pin gpio-${s.toLowerCase()}`;
-    pin.textContent = `GPIO${i+1}=${s}`;
+    pin.className = `gpio-pin gpio-${v ? 'on' : 'off'}`;
+    pin.textContent = `GPIO${i+1}=${v ? 'ON' : 'OFF'}`;
     gpioEl.appendChild(pin);
   });
-
   document.getElementById('resultCard').style.display = 'block';
-  document.getElementById('opCard').style.display = 'block';
-  document.getElementById('opInput').value = input;
 }
+
+const opLabels = { cuo: '错卦 (NOT)', zong: '综卦 (REV)', bian: '变爻 (XOR)', AND: 'AND', OR: 'OR', XOR: 'XOR' };
 
 function operateUI() {
   const input = document.getElementById('opInput').value.trim() || 'default';
@@ -277,30 +282,37 @@ function operateUI() {
   const second = document.getElementById('opSecond').value.trim() || undefined;
   const hex = lookup(input);
   const bits = hex.bin.split('').map(Number);
-  let resultBits;
+  let resultBits, detail = '';
 
   switch (op) {
     case 'cuo':
       resultBits = bits.map(b => b ^ 1);
+      detail = `每位取反`;
       break;
     case 'zong':
       resultBits = [...bits].reverse();
+      detail = `爻序反转`;
       break;
     case 'bian':
       if (second) {
         resultBits = bits.map((b, i) => b ^ parseInt(lookup(second).bin[i]));
+        detail = `与「${lookup(second).name}」按位异或`;
       } else {
         resultBits = bits.map(b => b ^ 1);
+        detail = `每位取反（无第二输入）`;
       }
       break;
     case 'AND':
       resultBits = second ? bits.map((b, i) => b & parseInt(lookup(second).bin[i])) : bits;
+      detail = second ? `与「${lookup(second).name}」按位与` : `无第二输入，保持原值`;
       break;
     case 'OR':
       resultBits = second ? bits.map((b, i) => b | parseInt(lookup(second).bin[i])) : bits;
+      detail = second ? `与「${lookup(second).name}」按位或` : `无第二输入，保持原值`;
       break;
     case 'XOR':
       resultBits = second ? bits.map((b, i) => b ^ parseInt(lookup(second).bin[i])) : bits.map(b => b ^ 1);
+      detail = second ? `与「${lookup(second).name}」按位异或` : `每位取反（无第二输入）`;
       break;
   }
 
@@ -308,9 +320,12 @@ function operateUI() {
   const resultHex = HEXAGRAMS.find(h => h.bin === resultBin);
   const el = document.getElementById('opResult');
   el.innerHTML = `<span style="color:#888">输入</span> ${hex.bin} ${hex.name}
-<span style="color:#888">运算</span> ${op}
+<span style="color:#888">运算</span> ${opLabels[op] || op}
+<span style="color:#888">说明</span> ${detail}
 <span style="color:#888">结果</span> ${resultBin} ${resultHex ? resultHex.name + ' · ' + resultHex.en : '自定义卦'}
 <span style="color:#888">信号</span> ${resultBits.map(b => b ? 'ON' : 'OFF').join(' | ')}`;
+
+  if (resultHex) renderHex(resultHex);
 }
 
 function addHistory(input) {
