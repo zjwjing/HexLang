@@ -1,0 +1,30 @@
+# CODEOWNERS — HexLang 模块负责人
+
+# 格式: 路径模式 @责任人 角色 备注
+# 详细说明: https://docs.github.com/zh/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+## 核心引擎
+src/core.js @zjwjing CoreEngine 首席架构师
+src/database.js @zjwjing DataFoundation 首席架构师
+
+## 浏览器前端
+src/engine.html @zjwjing Frontend 首席架构师
+
+## 数据层
+data/hex64_full.json @zjwjing DataOwner 首席架构师
+data/hexagrams.json @zjwjing DataOwner 首席架构师
+
+## 工程化
+package.json @zjwjing PackageOwner
+.github/ @zjwjing CICD
+
+## 文档
+*.md @zjwjing DocOwner
+docs/ @DocOwner 文档负责人（待定）
+
+## 示例与扩展
+examples/ @ExtensionOwner 扩展负责人（待定）
+bin/ @ExtensionOwner CLI 扩展负责人（待定）
+
+## 全项目
+* @zjwjing 最终审批权

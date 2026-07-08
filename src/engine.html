@@ -423,6 +423,55 @@ const opTemplates = {
   'RANDOM':     { js: 'Math.random() > 0.5 ? \'%s\' : fallback',        py: 'random.choice([\'%s\', fallback])' },
   'TRUST':      { js: 'cert.verify(\'%s\');',                           py: 'cert.verify(\'%s\')' },
   'HONEST':     { js: '// invariant: %s must be truthful',              py: '# invariant: %s must be truthful' },
+  'CONTAIN':    { js: 'container.add(\'%s\', item);',                     py: 'container.add(\'%s\', item)' },
+  'GENTLE':     { js: 'smooth.defer(\'%s\');',                            py: 'smooth.defer(\'%s\')' },
+  'PASSIVE':    { js: 'listener.passive(\'%s\', handler);',               py: 'listener.passive(\'%s\', handler)' },
+  'STABILIZE':  { js: 'circuitBreaker.stabilize(\'%s\');',                py: 'circuit_breaker.stabilize(\'%s\')' },
+  'DECAY':      { js: 'ttl.decay(\'%s\', factor);',                       py: 'ttl.decay(\'%s\', factor)' },
+  'ELIMINATE':  { js: 'cache.evict(\'%s\');',                             py: 'cache.evict(\'%s\')' },
+  'ALLY':       { js: 'cluster.ally(\'%s\');',                            py: 'cluster.ally(\'%s\')' },
+  'COOPERATE':  { js: 'semaphore.cooperate(\'%s\', tasks);',              py: 'semaphore.cooperate(\'%s\', tasks)' },
+  'ALLIANCE':   { js: 'federation.join(\'%s\');',                         py: 'federation.join(\'%s\')' },
+  'INSPECT':    { js: 'inspector.check(\'%s\');',                         py: 'inspector.check(\'%s\')' },
+  'PREPARE':    { js: 'env.prepare(\'%s\');',                             py: 'env.prepare(\'%s\')' },
+  'PLAN':       { js: 'scheduler.plan(\'%s\', cron);',                    py: 'scheduler.plan(\'%s\', cron)' },
+  'READY':      { js: 'health.ready(\'%s\');',                            py: 'health.ready(\'%s\')' },
+  'ENLIGHTEN':  { js: 'tutorial.show(\'%s\');',                           py: 'tutorial.show(\'%s\')' },
+  'EDUCATE':    { js: 'trainer.educate(\'%s\', data);',                   py: 'trainer.educate(\'%s\', data)' },
+  'DANGER':     { js: 'alert.danger(\'%s\');',                            py: 'alert.danger(\'%s\')' },
+  'CRISIS':     { js: 'emergency.handler(\'%s\');',                       py: 'emergency.handler(\'%s\')' },
+  'FAULT':      { js: 'fault.detector(\'%s\');',                          py: 'fault.detector(\'%s\')' },
+  'CONTINUE':   { js: 'loop.continue(\'%s\');',                           py: 'loop.continue(\'%s\')' },
+  'UNFINISHED': { js: '// %s: pending completion',                        py: '# %s: pending completion' },
+  'RECTIFY':    { js: 'linter.fix(\'%s\');',                              py: 'linter.fix(\'%s\')' },
+  'REFORM':     { js: 'migration.reform(\'%s\', schema);',                py: 'migration.reform(\'%s\', schema)' },
+  'SUPPLY':     { js: 'supply.chain(\'%s\', inventory);',                 py: 'supply.chain(\'%s\', inventory)' },
+  'SOURCE':     { js: 'datasource.register(\'%s\');',                     py: 'datasource.register(\'%s\')' },
+  'COMPLY':     { js: 'policy.enforce(\'%s\');',                          py: 'policy.enforce(\'%s\')' },
+  'KEEP':       { js: 'heartbeat.keep(\'%s\');',                          py: 'heartbeat.keep(\'%s\')' },
+  'PERMANENT':  { js: 'storage.makePermanent(\'%s\');',                   py: 'storage.make_permanent(\'%s\')' },
+  'ESTABLISH':  { js: 'foundation.establish(\'%s\');',                    py: 'foundation.establish(\'%s\')' },
+  'BIRTH':      { js: 'lifecycle.birth(\'%s\');',                         py: 'lifecycle.birth(\'%s\')' },
+  'SPROUT':     { js: 'sprout(\'%s\', seed);',                            py: 'sprout(\'%s\', seed)' },
+  'BOOT':       { js: 'system.boot(\'%s\');',                             py: 'system.boot(\'%s\')' },
+  'STIMULATE':  { js: 'event.emit(\'stimulus.%s\');',                     py: 'event.emit(\'stimulus.%s\')' },
+  'WAKE':       { js: 'scheduler.wake(\'%s\');',                          py: 'scheduler.wake(\'%s\')' },
+  'INNOCENT':   { js: '// %s: clean slate — no assumptions',             py: '# %s: clean slate — no assumptions' },
+  'UNEXPECTED': { js: 'catch((err) => { logger.warn(\'%s\', err); });',   py: 'except: logger.warn(\'%s\', err)' },
+  'CONCEAL':    { js: 'config.conceal(\'%s\');',                          py: 'config.conceal(\'%s\')' },
+  'ENDURE':     { js: 'retry.withBackoff(\'%s\');',                       py: 'retry.with_backoff(\'%s\')' },
+  'DECORATE':   { js: 'decorator.apply(\'%s\', target);',                 py: 'decorator.apply(\'%s\', target)' },
+  'BEAUTIFY':   { js: 'code.formatter(\'%s\');',                          py: 'code.formatter(\'%s\')' },
+  'COMPLETE':   { js: 'promise.resolve(\'%s\');',                         py: 'promise.resolve(\'%s\')' },
+  'HOME':       { js: 'cwd = \'%s\';',                                   py: 'os.chdir(\'%s\')' },
+  'ABUNDANT':   { js: 'pool.expand(\'%s\', limit);',                      py: 'pool.expand(\'%s\', limit)' },
+  'BRIGHT':     { js: 'theme.set(\'light\', \'%s\');',                    py: 'theme.set(\'light\', \'%s\')' },
+  'FINAL':      { js: 'finalize(\'%s\');',                                py: 'finalize(\'%s\')' },
+  'PERFORM':    { js: 'benchmark.run(\'%s\');',                           py: 'benchmark.run(\'%s\')' },
+  'STRONG':     { js: 'consistency.strong(\'%s\');',                      py: 'consistency.strong(\'%s\')' },
+  'DECISIVE':   { js: 'breaker.trip(\'%s\', threshold);',                 py: 'breaker.trip(\'%s\', threshold)' },
+  'CORE':       { js: '// %s: core system — do not modify',              py: '# %s: core system — do not modify' },
+  'DOMINATE':   { js: 'leader.elect(\'%s\');',                            py: 'leader.elect(\'%s\')' },
 };
 
 fetch('../data/hex64_full.json').then(r => r.json()).then(data => {
@@ -464,13 +513,13 @@ function compileHex(hex) {
   const param = hex.name || 'system';
   const linesJS = ops.map(op => {
     const tpl = opTemplates[op];
-    if (!tpl) return `// ${op}: no template yet`;
+    if (!tpl) return `${op.toLowerCase()}('${param}');`;
     let code = tpl.js.replace(/%s/g, param).replace(/%d/g, '60').replace(/%f/g, '1.5');
     return code;
   });
   const linesPY = ops.map(op => {
     const tpl = opTemplates[op];
-    if (!tpl) return `# ${op}: no template yet`;
+    if (!tpl) return `${op.toLowerCase()}('${param}')`;
     let code = tpl.py.replace(/%s/g, param).replace(/%d/g, '60').replace(/%f/g, '1.5');
     return code;
   });

@@ -13,15 +13,20 @@
 ```
 HexLang/
 ├── README.md               # 本文件
+├── CONTRIBUTING.md         # 协作规范
+├── CODEOWNERS              # 模块负责人
+├── TASKS.md                # 任务看板
 ├── LICENSE                 # MIT 开源协议
 ├── package.json            # Node.js 包定义
 ├── data/
-│   └── hex64_full.json     # 全量64卦结构化数据
+│   ├── hex64_full.json     # 全量64卦结构化数据
+│   └── README.md           # 数据层说明
 ├── src/
 │   ├── core.js             # Node.js 核心引擎
-│   ├── database.js         # 64卦数据库（ESM模块）
-│   └── engine.html         # 浏览器演示（双击运行）
-└── examples/               # 使用示例（开发中）
+│   ├── database.js         # 64卦数据库加载器
+│   ├── engine.html         # 浏览器演示 + HexLang编译器
+│   └── README.md           # 源代码模块说明
+└── examples/               # 使用示例（规划中）
 ```
 
 ## 核心架构
