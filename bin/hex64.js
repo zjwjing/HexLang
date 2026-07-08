@@ -14,14 +14,13 @@ const BLUE = s => `\x1b[34m${s}\x1b[39m`;
 const DIM = s => `\x1b[2m${s}\x1b[22m`;
 const GRAY = s => `\x1b[90m${s}\x1b[39m`;
 const RESET = '\x1b[0m';
-let _logoDisplayed = false;
 
 const LOGO = `
 ${CYAN}┌─────────────────────────────────────┐${RESET}
 ${CYAN}│${RESET}  ${GREEN}乾☰${RESET}  ${GREEN}兑☱${RESET}  ${GREEN}离☲${RESET}  ${GREEN}震☳${RESET}  ${GREEN}巽☴${RESET}  ${GREEN}坎☵${RESET}  ${GREEN}艮☶${RESET}  ${GRAY}坤☷${RESET}  ${CYAN}│${RESET}
-${CYAN}│${RESET}  ${GREEN}███${RESET} ${GREEN}██░${RESET} ${GREEN}█░█${RESET} ${GRAY}█░░${RESET} ${GRAY}░█░${RESET} ${GRAY}░░█${RESET} ${GRAY}░░█${RESET} ${GRAY}░░░${RESET}  ${CYAN}│${RESET}
-${CYAN}│${RESET}  ${GREEN}███${RESET} ${GREEN}██░${RESET} ${GREEN}█░█${RESET} ${GRAY}█░░${RESET} ${GRAY}░█░${RESET} ${GRAY}░░█${RESET} ${GRAY}░░█${RESET} ${GRAY}░░░${RESET}  ${CYAN}│${RESET}
-${CYAN}│${RESET}  ${GREEN}███${RESET} ${GRAY}░░█${RESET} ${GREEN}█░█${RESET} ${GRAY}█░░${RESET} ${GRAY}░█░${RESET} ${GRAY}░░█${RESET} ${GREEN}███${RESET} ${GRAY}░░░${RESET}  ${CYAN}│${RESET}
+${CYAN}│${RESET}  ${GREEN}███${RESET} ${GREEN}██░${RESET} ${GREEN}█░█${RESET} ${GREEN}█░░${RESET} ${GRAY}░█░${RESET} ${GRAY}░░█${RESET} ${GRAY}░░█${RESET} ${GRAY}░░░${RESET}  ${CYAN}│${RESET}
+${CYAN}│${RESET}  ${GREEN}███${RESET} ${GREEN}██░${RESET} ${GRAY}░░█${RESET} ${GREEN}███${RESET} ${GRAY}░░█${RESET} ${GREEN}███${RESET} ${GRAY}░░█${RESET} ${GRAY}░░░${RESET}  ${CYAN}│${RESET}
+${CYAN}│${RESET}  ${GREEN}███${RESET} ${GRAY}░░█${RESET} ${GREEN}█░█${RESET} ${GREEN}███${RESET} ${GRAY}░█░${RESET} ${GRAY}░░█${RESET} ${GREEN}███${RESET} ${GRAY}░░░${RESET}  ${CYAN}│${RESET}
 ${CYAN}│${RESET}  ${YELLOW}111${RESET} ${YELLOW}110${RESET} ${YELLOW}101${RESET} ${YELLOW}100${RESET} ${YELLOW}011${RESET} ${YELLOW}010${RESET} ${YELLOW}001${RESET} ${YELLOW}000${RESET}  ${CYAN}│${RESET}
 ${CYAN}└─────────────────────────────────────┘${RESET}
 ${YELLOW}        Hex64 Engine v1.0${RESET}
@@ -59,7 +58,7 @@ const opTemplates = {
   'RELEASE':     { js: 'builder.build(\'%s\');',                           py: 'builder.build(\'%s\')',                           rs: 'builder::build("%s");',                          go: 'builder.Build("%s")' },
   'BUILD':     { js: 'client.connect(\'%s\');',                           py: 'client.connect(\'%s\')',                           rs: 'client::connect("%s");',                          go: 'client.Connect("%s")' },
   'CONNECT':     { js: 'client.disconnect();',                           py: 'client.disconnect()',                           rs: 'client::disconnect();',                          go: 'client.Disconnect()' },
-  'DISCONNECT':     { js: 'ws.handshake(\'%s\');',                           py: 'ws.handshake(\'%s\')',                           rs: 'client::disconnect();',                          go: 'client.Disconnect()' },
+  'DISCONNECT':     { js: 'client.disconnect()',                           py: 'client.disconnect()',                           rs: 'client::disconnect();',                          go: 'client.Disconnect()' },
   'HANDSHAKE':     { js: 'channel.send(\'%s\', payload);',                           py: 'channel.send(\'%s\', payload)',                           rs: 'channel::send("%s", payload);',                          go: 'channel.Send("%s", payload)' },
   'COMMUNICATE':     { js: 'emitter.on(\'%s\', callback);',                           py: 'emitter.on(\'%s\', callback)',                           rs: 'emitter::on("%s", callback);',                          go: 'emitter.On("%s", callback)' },
   'CALLBACK':     { js: 'event.trigger(\'%s\', data);',                           py: 'event.trigger(\'%s\', data)',                           rs: 'emitter::on("%s", callback);',                          go: 'emitter.On("%s", callback)' },
@@ -74,8 +73,8 @@ const opTemplates = {
   'AUDIT':     { js: 'assert(condition, \'%s\');',                           py: 'assert condition, \'%s\'',                           rs: 'audit::log(action: "%s");',                          go: 'audit.Log(action: "%s")' },
   'CHECK':     { js: 'code.review(\'%s\');',                           py: 'code.review(\'%s\')',                           rs: 'assert!(condition, "%s");',                          go: 'assert(condition, "%s")' },
   'REVIEW':     { js: 'validator.verify(\'%s\', input);',                           py: 'validator.verify(\'%s\', input)',                           rs: 'validator::verify("%s", input);',                          go: 'validator.Verify("%s", input)' },
-  'VERIFY':     { js: 'auth.authenticate(token);',                           py: 'auth.authenticate(token)',                           rs: 'validator::verify("%s", input);',                          go: 'validator.Verify("%s", input)' },
-  'AUTH':     { js: 'rbac.grant(role, \'%s\');',                           py: 'rbac.grant(role, \'%s\')',                           rs: 'auth::authenticate(token);',                          go: 'auth.Authenticate(token)' },
+  'VERIFY':     { js: 'validator.verify(\'%s\', input)',                           py: 'validator.verify(\'%s\', input)',                           rs: 'validator::verify("%s", input);',                          go: 'validator.Verify("%s", input)' },
+  'AUTH':     { js: 'auth.authenticate(token)',                           py: 'auth.authenticate(token)',                           rs: 'auth::authenticate(token);',                          go: 'auth.Authenticate(token)' },
   'GRANT':     { js: 'jwt.sign({ sub: \'%s\' });',                           py: 'jwt.sign({\'sub\': \'%s\'})',                           rs: 'rbac::grant(role, "%s");',                          go: 'rbac.Grant(role, "%s")' },
   'TOKEN':     { js: 'analyzer.run(\'%s\', data);',                           py: 'analyzer.run(\'%s\', data)',                           rs: 'jwt::sign(sub: "%s");',                          go: 'jwt.Sign(map[string]any{"sub": "%s"})' },
   'ANALYZE':     { js: 'diff(a, b); // compare \'%s\'',                           py: 'diff(a, b)  # compare \'%s\'',                           rs: 'diff(a, b); // compare "%s"',                          go: 'diff(a, b); // compare "%s"' },
@@ -85,7 +84,7 @@ const opTemplates = {
   'EXPLORE':     { js: 'tree.traverse(node, visitor);',                           py: 'tree.traverse(node, visitor)',                           rs: 'tree::traverse(node, visitor);',                          go: 'tree.Traverse(node, visitor)' },
   'TRAVERSE':     { js: 'function recurse(n) { return n<=1 ? 1 : n*recurse(n-1); }',                           py: 'def recurse(n): return 1 if n<=1 else n*recurse(n-1)',                           rs: 'function recurse(n) { return n<=1 ? 1 : n*recurse(n-1); }',                          go: 'function recurse(n) { return n<=1 ? 1 : n*recurse(n-1); }' },
   'RECURSE':     { js: 'for (const item of collection) { process(item); }',                           py: 'for item in collection: process(item)',                           rs: 'fn recurse(n: u32) -> u32 { if n <= 1 { 1 } else { n * recurse(n-1) } }',                          go: 'func recurse(n int) int { if n <= 1 { return 1 }; return n * recurse(n-1) }' },
-  'ITERATE':     { js: 'counter += %d;',                           py: 'counter += %d',                           rs: 'for item in collection { process(item); }',                          go: 'for _, item := range collection { process(item) }' },
+  'ITERATE':     { js: 'for (const item of collection) process(item)',                           py: 'for item in collection: process(item)',                           rs: 'for item in collection { process(item); }',                          go: 'for _, item := range collection { process(item) }' },
   'INCREMENT':     { js: 'population.grow(rate=%f);',                           py: 'population.grow(rate=%f)',                           rs: 'population::grow(rate=%f);',                          go: 'population.Grow(rate=%f)' },
   'GROW':     { js: 'stack.push(\'%s\');',                           py: 'stack.append(\'%s\')',                           rs: 'stack::push("%s");',                          go: 'stack.Push("%s")' },
   'ASCEND':     { js: 'user.role = \'%s\';',                           py: 'user.role = \'%s\'',                           rs: 'user.role = "%s";',                          go: 'user.role = "%s"' },
@@ -96,7 +95,7 @@ const opTemplates = {
   'SCALE':     { js: 'gpu.accelerate(\'%s\');',                           py: 'gpu.accelerate(\'%s\')',                           rs: 'gpu::accelerate("%s");',                          go: 'gpu.Accelerate("%s")' },
   'ACCELERATE':     { js: 'switch(decision) { case \'%s\': break; }',                           py: 'match decision: case \'%s\': pass',                           rs: 'switch(decision) { case "%s": break; }',                          go: 'switch(decision) { case "%s": break; }' },
   'DECIDE':     { js: 'const chosen = select(\'%s\', options);',                           py: 'chosen = select(\'%s\', options)',                           rs: 'match decision { "%s" => { break; } }',                          go: 'switch decision { case "%s": break }' },
-  'SELECT':     { js: 'const child = fork(\'%s\');',                           py: 'child = os.fork()',                           rs: 'const child = fork("%s");',                          go: 'const child = fork("%s")' },
+  'SELECT':     { js: 'db.select(\'%s\')',                           py: 'db.select(\'%s\')',                           rs: 'db::select("%s");',                          go: 'db.Select("%s")' },
   'FORK':     { js: 'controller.set(\'%s\', value);',                           py: 'controller.set(\'%s\', value)',                           rs: 'std::process::Command::new("%s").spawn()?;',                          go: 'exec.Command("%s").Start()' },
   'CTRL':     { js: 'pid.adjust(\'%s\', delta);',                           py: 'pid.adjust(\'%s\', delta)',                           rs: 'pid::adjust("%s", delta);',                          go: 'pid.Adjust("%s", delta)' },
   'ADJUST':     { js: 'regulator.throttle(\'%s\', limit);',                           py: 'regulator.throttle(\'%s\', limit)',                           rs: 'regulator::throttle("%s", limit);',                          go: 'regulator.Throttle("%s", limit)' },
@@ -122,7 +121,7 @@ const opTemplates = {
   'MERGE':     { js: 'await sync(\'%s\');',                           py: 'sync(\'%s\')',                           rs: 'await sync("%s");',                          go: 'go sync("%s")' },
   'SYNC':     { js: 'gc.collect();',                           py: 'gc.collect()',                           rs: 'gc::collect();',                          go: 'gc.Collect()' },
   'COLLECT':     { js: 'const results = await Promise.all(tasks);',                           py: 'results = await asyncio.gather(*tasks)',                           rs: 'gc::collect();',                          go: 'gc.Collect()' },
-  'GATHER':     { js: 'integration.test(\'%s\');',                           py: 'integration.test(\'%s\')',                           rs: 'futures::future::join_all(tasks).await',                          go: 'JoinTasks(tasks)' },
+  'GATHER':     { js: 'Promise.all(tasks)',                           py: 'await asyncio.gather(*tasks)',                           rs: 'futures::future::join_all(tasks).await',                          go: 'JoinTasks(tasks)' },
   'INTEGRATE':     { js: 'new %s(config).init();',                           py: '%s(config).init()',                           rs: 'new %s(config).init();',                          go: 'new %s(config).Init()' },
   'CREATE':     { js: '// TODO: implement innovation for %s',                           py: '# TODO: implement innovation for %s',                           rs: '// TODO: implement innovation for %s',                          go: '// TODO: implement innovation for %s' },
   'INNOVATE':     { js: 'encoder.encode(\'%s\', data);',                           py: 'encoder.encode(\'%s\', data)',                           rs: 'encoder::encode("%s", data);',                          go: 'encoder.Encode("%s", data)' },
@@ -140,16 +139,16 @@ const opTemplates = {
   'LOGOUT':     { js: 'fs.open(\'%s\', \'r\');',                           py: 'open(\'%s\', \'r\')',                           rs: 'fs::open("%s", "r");',                          go: 'fs.Open("%s", "r")' },
   'OPEN':     { js: 'connection.close();',                           py: 'connection.close()',                           rs: 'connection::close();',                          go: 'connection.Close()' },
   'CLOSE':     { js: 'blocker.block(\'%s\', reason);',                           py: 'blocker.block(\'%s\', reason)',                           rs: 'blocker::block("%s", reason);',                          go: 'blocker.Block("%s", reason)' },
-  'BLOCK':     { js: 'return res.status(403).send(\'%s\');',                           py: 'return Response(status=403, body=\'%s\')',                           rs: 'return res::status(403).send("%s");',                          go: 'return res.Status(403).send("%s")' },
+  'BLOCK':     { js: 'return res.status(403).send(\'%s\');',                           py: 'return Response(status=403, body=\'%s\')',                           rs: 'return res::status(403).send("%s");',                          go: 'return res.Status(403).Send("%s")' },
   'REJECT':     { js: 'sandbox.run(\'%s\', code);',                           py: 'sandbox.run(\'%s\', code)',                           rs: 'return Err(Forbidden("%s"));',                          go: 'return http.StatusForbidden(Response("%s"))' },
   'ISOLATE':     { js: 'db.persist(\'%s\');',                           py: 'db.persist(\'%s\')',                           rs: 'db::persist("%s");',                          go: 'db.Persist("%s")' },
   'PERSIST':     { js: 'system.maintenance(\'%s\');',                           py: 'system.maintenance(\'%s\')',                           rs: 'system::maintenance("%s");',                          go: 'system.Maintenance("%s")' },
   'MAINTAIN':     { js: 'server.host(\'%s\', port);',                           py: 'server.host(\'%s\', port)',                           rs: 'server::host("%s", port);',                          go: 'server.Host("%s", port)' },
   'HOST':     { js: 'element.style.display = \'none\';',                           py: 'element.hide()',                           rs: 'element.style.display = "none";',                          go: 'element.style.display = "none"' },
-  'HIDE':     { js: 'helmet(\'%s\');',                           py: 'protect(\'%s\')',                           rs: 'element::hide();',                          go: 'element.Hide()' },
+  'HIDE':     { js: 'element.hide()',                           py: 'element.hide()',                           rs: 'element::hide();',                          go: 'element.Hide()' },
   'PROTECT':     { js: 'cost.reduce(\'%s\', amount);',                           py: 'cost.reduce(\'%s\', amount)',                           rs: 'cost::reduce("%s", amount);',                          go: 'cost.Reduce("%s", amount)' },
   'REDUCE':     { js: 'process.exit(0);',                           py: 'sys.exit(0)',                           rs: 'process::exit(0);',                          go: 'process.Exit(0)' },
-  'END':     { js: 'archive.create(\'%s\');',                           py: 'archive.create(\'%s\')',                           rs: 'process::exit(0);',                          go: 'os.Exit(0)' },
+  'END':     { js: 'process.exit(0)',                           py: 'os._exit(0)',                           rs: 'process::exit(0);',                          go: 'os.Exit(0)' },
   'ARCHIVE':     { js: 'observer.observe(target, config);',                           py: 'observer.observe(target, config)',                           rs: 'observer::observe(target, config);',                          go: 'observer.Observe(target, config)' },
   'OBSERVE':     { js: 'supervisor.watch(\'%s\');',                           py: 'supervisor.watch(\'%s\')',                           rs: 'supervisor::watch("%s");',                          go: 'supervisor.Watch("%s")' },
   'SUPERVISE':     { js: 'manager.allocate(\'%s\', resources);',                           py: 'manager.allocate(\'%s\', resources)',                           rs: 'manager::allocate("%s", resources);',                          go: 'manager.Allocate("%s", resources)' },
@@ -168,7 +167,7 @@ const opTemplates = {
   'DISTRIBUTE':     { js: 'gossip.spread(\'%s\', message);',                           py: 'gossip.spread(\'%s\', message)',                           rs: 'gossip::spread("%s", message);',                          go: 'gossip.Spread("%s", message)' },
   'SPREAD':     { js: 'agent.infect(\'%s\');',                           py: 'agent.infect(\'%s\')',                           rs: 'agent::infect("%s");',                          go: 'agent.Infect("%s")' },
   'PERMEATE':     { js: 'results.reduce((a,b) => a.concat(b), []);',                           py: 'sum(results, [])',                           rs: 'results::reduce((a,b) => a::concat(b), []);',                          go: 'results.Reduce((a,b) => a.Concat(b), [])' },
-  'CONVERGE':     { js: 'client.connect(\'%s\');',                           py: 'client.connect(\'%s\')',                           rs: 'results::reduce(...);',                          go: 'collapse(results)' },
+  'CONVERGE':     { js: 'results.reduce((a, b) => a.concat(b), [])',                           py: 'functools.reduce(lambda a, b: a + b, results, [])',                           rs: 'results::reduce(...);',                          go: 'collapse(results)' },
   'APPROACH':     { js: 'vm.enter(\'%s\', context);',                           py: 'vm.enter(\'%s\', context)',                           rs: 'vm::enter("%s", context);',                          go: 'vm.Enter("%s", context)' },
   'ENTER':     { js: 'middleware.pass(\'%s\');',                           py: 'middleware.pass(\'%s\')',                           rs: 'middleware::pass("%s");',                          go: 'middleware.Pass("%s")' },
   'PASS':     { js: 'discovery.find(\'%s\');',                           py: 'discovery.find(\'%s\')',                           rs: 'discovery::find("%s");',                          go: 'discovery.Find("%s")' },
@@ -177,7 +176,7 @@ const opTemplates = {
   'LEAVE':     { js: 'deployment.rollback(\'%s\');',                           py: 'deployment.rollback(\'%s\')',                           rs: 'deployment::rollback("%s");',                          go: 'deployment.Rollback("%s")' },
   'RETREAT':     { js: 'risk.assess(\'%s\');',                           py: 'risk.assess(\'%s\')',                           rs: 'risk::assess("%s");',                          go: 'risk.Assess("%s")' },
   'RISK':     { js: 'throw new Error(\'%s\');',                           py: 'raise Exception(\'%s\')',                           rs: 'panic!("%s");',                          go: 'errors.New("%s")' },
-  'ERROR':     { js: 'try { ... } catch(e) { logger.error(e); }',                           py: 'try: ... except Exception as e: logger.error(e)',                           rs: 'panic!("%s");',                          go: 'errors.New("%s")' },
+  'ERROR':     { js: 'throw new Error(\'%s\');',                           py: 'raise Exception(\'%s\')',                           rs: 'panic!("%s");',                          go: 'errors.New("%s")' },
   'EXCEPTION':     { js: 'git.conflict(\'%s\'); // resolve manually',                           py: 'git.conflict(\'%s\')  # resolve manually',                           rs: 'match err { _ => warn!("%s", err) }',                          go: 'if err != nil { log.Printf("%s", err) }' },
   'CONFLICT':     { js: 'state.transition(\'%s\');',                           py: 'state.transition(\'%s\')',                           rs: 'state::transition("%s");',                          go: 'state.Transition("%s")' },
   'CHANGE':     { js: 'transformer.transform(\'%s\', data);',                           py: 'transformer.transform(\'%s\', data)',                           rs: 'transformer::transform("%s", data);',                          go: 'transformer.Transform("%s", data)' },
@@ -194,12 +193,12 @@ const opTemplates = {
   'ACCUMULATE':     { js: 'localStorage.setItem(\'%s\', value);',                           py: 'os.environ[\'%s\'] = value',                           rs: 'localStorage::set_item("%s", value);',                          go: 'localStorage.SetItem("%s", value)' },
   'STORE':     { js: 'data.enrich(\'%s\', source);',                           py: 'data.enrich(\'%s\', source)',                           rs: 'std::env::set_var("%s", value);',                          go: 'os.Setenv("%s", value)' },
   'ENRICH':     { js: 'if (value > limit) { alert(\'%s exceeded\'); }',                           py: 'if value > limit: alert(\'%s exceeded\')',                           rs: 'if (value > limit) { alert("%s exceeded"); }',                          go: 'if (value > limit) { alert("%s exceeded"); }' },
-  'EXCEED':     { js: 'buffer.write(data); // check bounds!',                           py: 'buffer.write(data)  # check bounds!',                           rs: 'if value > limit { warn!("%s exceeded"); }',                          go: 'if value > limit { log.Warnf("%s exceeded") }' },
+  'EXCEED':     { js: 'if (value > limit) alert(\'%s exceeded\')',                           py: 'if value > limit: alert(\'%s exceeded\')',                           rs: 'if value > limit { warn!("%s exceeded"); }',                          go: 'if value > limit { log.Warnf("%s exceeded") }' },
   'OVERFLOW':     { js: 'autoScaling.setMax(%d);',                           py: 'auto_scaling.set_max(%d)',                           rs: 'autoScaling::set_max(%d);',                          go: 'autoScaling.SetMax(%d)' },
   'PEAK':     { js: '// TODO: %s is pending implementation',                           py: '# TODO: %s is pending implementation',                           rs: '// TODO: %s is pending implementation',                          go: '// TODO: %s is pending implementation' },
   'PENDING':     { js: '// FIXME: %s not yet implemented',                           py: '# FIXME: %s not yet implemented',                           rs: '// TODO: %s is pending implementation',                          go: '// TODO: %s is pending implementation' },
-  'TODO':     { js: '// internal API — do not expose',                           py: '# internal API — do not expose',                           rs: '// FIXME: %s not yet implemented',                          go: '// FIXME: %s not yet implemented' },
-  'INTERNAL':     { js: 'const %s = require(\'./local\');',                           py: 'from . import %s as local',                           rs: '// internal API — do not expose',                          go: '// internal API — do not expose' },
+  'TODO':     { js: '// FIXME: %s not yet implemented',                           py: '# FIXME: %s not yet implemented',                           rs: '// FIXME: %s not yet implemented',                          go: '// FIXME: %s not yet implemented' },
+  'INTERNAL':     { js: '// internal API — do not expose',                           py: '# internal API — do not expose',                           rs: '// internal API — do not expose',                          go: '// internal API — do not expose' },
   'LOCAL':     { js: 'class %s { #privateField; }',                           py: 'class %s: __private_field',                           rs: 'mod %s;',                          go: 'import "./%s"' },
   'PRIVATE':     { js: 'console.log(\'🎉 %s\');',                           py: 'print(\'🎉 %s\')',                           rs: '// %s: private — unexported field',                          go: '// %s: private — lower-case unexported' },
   'JOY':     { js: 'animation.ease(\'%s\', duration);',                           py: 'animation.ease(\'%s\', duration)',                           rs: 'println!("🎉 %s");',                          go: 'fmt.Println("🎉 %s")' },
@@ -300,8 +299,8 @@ const opTemplates = {
   'DECLINE':     { js: 'analysis.deepen(\'%s\');',                           py: 'analysis.deepen(\'%s\')',                           rs: 'analysis::deepen("%s");',                          go: 'analysis.Deepen("%s")' },
   'DEEPEN':     { js: 'db.delete(\'%s\');',                           py: 'db.delete(\'%s\')',                           rs: 'db::delete("%s");',                          go: 'db.Delete("%s")' },
   'DELETE':     { js: 'resource.deplete(\'%s\');',                           py: 'resource.deplete(\'%s\')',                           rs: 'resource::deplete("%s");',                          go: 'resource.Deplete("%s")' },
-  'DEPLETE':     { js: 'stack.pop(\'%s\');',                           py: 'stack.pop()',                           rs: 'stack::pop("%s");',                          go: 'stack.Pop("%s")' },
-  'DESCEND':     { js: 'route.destination(\'%s\');',                           py: 'route.destination(\'%s\')',                           rs: 'stack::pop("%s");',                          go: 'stack.Pop()' },
+  'DEPLETE':     { js: 'stack.pop(\'%s\');',                           py: 'stack.pop(\'%s\')',                           rs: 'stack::pop("%s");',                          go: 'stack.Pop("%s")' },
+  'DESCEND':     { js: 'stack.pop(\'%s\')',                           py: 'stack.pop(\'%s\')',                           rs: 'stack::pop("%s");',                          go: 'stack.Pop("%s")' },
   'DESTINATION':     { js: 'path.deviate(\'%s\');',                           py: 'path.deviate(\'%s\')',                           rs: 'path::deviate("%s");',                          go: 'path.Deviate("%s")' },
   'DEVIATE':     { js: 'diff.compare(\'%s\');',                           py: 'diff.compare(\'%s\')',                           rs: 'diff::compare("%s");',                          go: 'diff.Compare("%s")' },
   'DIFFER':     { js: 'difficulty.set(\'%s\');',                           py: 'difficulty.set(\'%s\')',                           rs: 'difficulty::set("%s");',                          go: 'difficulty.Set("%s")' },
@@ -388,8 +387,8 @@ const opTemplates = {
   'SEPARATE':     { js: 'JSON.stringify(%s);',                           py: 'json.dumps(%s)',                           rs: 'serde_json::to_string(%s);',                          go: 'json.Marshal(%s)' },
   'SERIALIZE':     { js: 'console.show(\'%s\');',                           py: 'print(\'%s\')',                           rs: 'serde_json::to_string(%s);',                          go: 'json.Marshal(%s)' },
   'SHOW':     { js: 'throttle.slow(\'%s\');',                           py: 'throttle.slow(\'%s\')',                           rs: 'throttle::slow("%s");',                          go: 'throttle.Slow("%s")' },
-  'SLOW':     { js: 'data.sort((a,b) => a.%s - b.%s);',                           py: 'sorted(data, key=lambda x: x.%s)',                           rs: 'data::sort((a,b) => a.%s - b.%s);',                          go: 'data.Sort((a,b) => a.%s - b.%s)' },
-  'SORT':     { js: 'watchdog.stall(\'%s\');',                           py: 'watchdog.stall(\'%s\')',                           rs: 'data::sort_by(|a, b| a.%s.cmp(&b.%s));',                          go: 'sort.Slice(data, func(i, j int) bool { return data[i].%s < data[j].%s })' },
+  'SLOW':     { js: 'data.sort((a,b) => a.%s - b.%s);',                           py: 'sorted(data, key=lambda x, y: x.%s - y.%s)',                           rs: 'data::sort((a,b) => a.%s - b.%s);',                          go: 'data.Sort((a,b) => a.%s - b.%s)' },
+  'SORT':     { js: 'data.sort(item => item.%s)',                           py: 'data.sort(key=lambda x: x.%s)',                           rs: 'data::sort_by(|a, b| a.%s.cmp(&b.%s));',                          go: 'sort.Slice(data, func(i, j int) bool { return data[i].%s < data[j].%s })' },
   'STALL':     { js: '// %s is stateless — no side effects',                           py: '# %s is stateless — no side effects',                           rs: '// %s is stateless — no side effects',                          go: '// %s is stateless — no side effects' },
   'STATELESS':     { js: 'pipeline.step(\'%s\');',                           py: 'pipeline.step(\'%s\')',                           rs: '// %s is stateless — no side effects',                          go: '// %s is stateless — no side effects' },
   'STEP':     { js: 'daemon.still(\'%s\');',                           py: 'daemon.still(\'%s\')',                           rs: 'daemon::still("%s");',                          go: 'daemon.Still("%s")' },
@@ -414,6 +413,8 @@ const opTemplates = {
   'WRAP':     { js: 'fs.write(\'%s\', data);',                           py: 'open(\'%s\', \'w\').write(data)',                           rs: 'fs::write("%s", data);',                          go: 'fs.Write("%s", data)' },
   'WRITE':     { js: 'fs.write(\'%s\', data);',                           py: 'open(\'%s\', \'w\').write(data)',                           rs: 'fs::write("%s", data);',                          go: 'fs.Write("%s", data)' },
 };
+
+
 
 
 
@@ -537,11 +538,7 @@ for (let i = 0; i < args.length; i++) {
 
 const engine = new Hex64Engine();
 
-// Display logo on first run
-if (!_logoDisplayed) {
-  console.log(LOGO);
-  _logoDisplayed = true;
-}
+console.log(LOGO);
 
 if (positional.length > 0) {
   if (opFlag && (opFlag === 'AND' || opFlag === 'OR' || opFlag === 'XOR')) {

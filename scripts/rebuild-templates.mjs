@@ -21,7 +21,7 @@ const SPECIAL = {
   SLEEP: { rs: 'tokio::time::sleep(Duration::from_millis(%d)).await;', go: 'time.Sleep(%d * time.Millisecond)' },
   WAIT: { rs: 'delay(%d).await;', go: 'delay(%d)' },
   COPY: { rs: 'fs::copy("%s", dest);', go: 'fs.Copy("%s", dest)' },
-  DESCEND: { rs: 'stack::pop("%s");', go: 'stack.Pop()' },
+   DESCEND: { rs: 'stack::pop("%s");', go: 'stack.Pop("%s")' },
   INPUT: { rs: 'io::stdin().read_line(&mut "%s");', go: 'fmt.Scan("%s")' },
   STORE: { rs: 'std::env::set_var("%s", value);', go: 'os.Setenv("%s", value)' },
   LOCAL: { rs: 'mod %s;', go: 'import "./%s"' },
@@ -62,8 +62,9 @@ const SPECIAL = {
    ACCUMULATE: { rs: 'localStorage::set_item("%s", value);', go: 'localStorage.SetItem("%s", value)' },
    OVERFLOW: { rs: 'autoScaling::set_max(%d);', go: 'autoScaling.SetMax(%d)' },
    KEEP: { rs: 'storage::make_permanent("%s");', go: 'storage.MakePermanent("%s")' },
-   CONCEAL: { rs: 'retry::with_backoff("%s");', go: 'retry.WithBackoff("%s")' },
-   REFACTOR: { rs: 'refactor::apply("%s").await;', go: 'refactor.Apply("%s")' },
+    CONCEAL: { rs: 'retry::with_backoff("%s");', go: 'retry.WithBackoff("%s")' },
+    BLOCK: { rs: 'return res::status(403).send("%s");', go: 'return res.Status(403).Send("%s")' },
+    REFACTOR: { rs: 'refactor::apply("%s").await;', go: 'refactor.Apply("%s")' },
  };
 
 function toRust(js) {
