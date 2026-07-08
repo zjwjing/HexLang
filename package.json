@@ -1,0 +1,18 @@
+{
+  "name": "@hex64/core",
+  "version": "1.0.0",
+  "description": "Hex64 Universal Symbol Engine — a deterministic hexagram-based encoding infrastructure for AI feature encoding, DSL development, IoT control, and rule engine construction",
+  "main": "src/core.js",
+  "type": "module",
+  "scripts": {
+    "test": "node src/core.js",
+    "demo": "node src/core.js"
+  },
+  "keywords": ["hex64", "iching", "binary-encoding", "symbol-engine", "hexlang"],
+  "license": "MIT",
+  "author": "zjwjing",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zjwjing/HexLang.git"
+  }
+}
