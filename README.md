@@ -1,10 +1,28 @@
 # Hex64 通用符号引擎 v1.0
 
+> ⚠️ **项目声明**：本项目为计算机科学与符号学研究项目，探讨《易经》符号系统与二进制逻辑的工程化映射。项目不涉及任何形式的彩票预测、命理算命或金融投资建议，所有输出均为确定性算法生成的模拟数据，请勿用于非法用途。
+
 **定位：** 基于邵雍先天六十四卦与莱布尼茨二进制映射关系的通用符号编码基础设施  
 **场景：** AI 特征编码 · 领域特定语言 (HexLang) · IoT 硬件控制 · 数字资产标识 · 规则引擎  
 **协议：** MIT
 
 ---
+
+## 项目结构
+
+```
+HexLang/
+├── README.md               # 本文件
+├── LICENSE                 # MIT 开源协议
+├── package.json            # Node.js 包定义
+├── data/
+│   └── hex64_full.json     # 全量64卦结构化数据
+├── src/
+│   ├── core.js             # Node.js 核心引擎
+│   ├── database.js         # 64卦数据库（ESM模块）
+│   └── engine.html         # 浏览器演示（双击运行）
+└── examples/               # 使用示例（开发中）
+```
 
 ## 核心架构
 
@@ -28,7 +46,10 @@
 
 ### 浏览器
 
-打开 `src/engine.html` 即可在浏览器中体验完整转码流程。
+```bash
+# 直接双击打开
+src/engine.html
+```
 
 ### Node.js
 
@@ -57,15 +78,13 @@ import { Hex64Engine } from './src/core.js';
 const engine = new Hex64Engine();
 const result = engine.tranceive("AI_training_data");
 
-console.log(result.hexCode);     // { index, bin, name, weight }
-console.log(result.featureVec);  // [0, 1, 0, 1, 1, 0]
-console.log(result.pseudoCode);  // HEX(泽火革) { UPDATE; }
-console.log(result.controlSignal); // ["OFF","ON","OFF","ON","ON","OFF"]
+console.log(result.hexCode);      // { index, bin, name, weight }
+console.log(result.featureVec);   // [0, 1, 0, 1, 1, 0]
+console.log(result.pseudoCode);   // HEX(泽火革) { UPDATE; }
+console.log(result.controlSignal);// ["OFF","ON","OFF","ON","ON","OFF"]
 ```
 
 ## 数据结构
-
-每卦包含以下字段：
 
 | 字段 | 类型 | 说明 |
 |------|------|------|
