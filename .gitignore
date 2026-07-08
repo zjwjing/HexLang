@@ -1,7 +1,30 @@
+# deps
 node_modules/
+package-lock.json
+
+# OS
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# logs
 *.log
+
+# agent workspace
 .bitfun/
-package-lock.json
 claude-code-haha/
+claude-code-data/
+
+# build
+dist/
+*.tsbuildinfo
