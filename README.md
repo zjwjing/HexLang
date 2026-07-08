@@ -66,13 +66,16 @@ node src/core.js
 
 ```
 输入: "Hello OpenCode"
-  卦索引: 22
-  二进制: 010110
-  卦名: 泽水困
-  权重: 0.2
-  特征向量: [0, 1, 0, 1, 1, 0]
-  伪代码: HEX(泽水困) { 困境; 困顿; 穷困; }
-  GPIO: OFF | ON | OFF | ON | ON | OFF
+  卦索引: 38
+  二进制: 100110
+  卦名: 泽雷随（Following）
+  拼音: zé léi suí
+  分类: 跟随/适应
+  标签: 跟随, 顺从, 适应, 订阅, 监听, 代理
+  权重: 0.5
+  特征向量: [1, 0, 0, 1, 1, 0]
+  伪代码: HEX(泽雷随) { FOLLOW; COMPLY; ADAPT; SUBSCRIBE; LISTEN; PROXY; }
+  GPIO: ON | OFF | OFF | ON | ON | OFF
 ```
 
 ### 程序调用
@@ -83,20 +86,23 @@ import { Hex64Engine } from './src/core.js';
 const engine = new Hex64Engine();
 const result = engine.tranceive("AI_training_data");
 
-console.log(result.hexCode);      // { index, bin, name, weight }
+console.log(result.hexCode);      // { index, bin, name, pinyin, en, category, tags, weight }
 console.log(result.featureVec);   // [0, 1, 0, 1, 1, 0]
-console.log(result.pseudoCode);   // HEX(泽火革) { UPDATE; }
+console.log(result.pseudoCode);   // HEX(天水需) { WAIT; REQUIRE; EXPECT; DELAY; ASYNC; POLL; }
 console.log(result.controlSignal);// ["OFF","ON","OFF","ON","ON","OFF"]
 ```
 
 ## 数据结构
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `bin` | string | 6位二进制编码（阴=0，阳=1） |
-| `name` | string | 卦名（如"乾为天"） |
-| `tags` | string[] | 语义标签（可扩展） |
-| `weight` | number | 数值权重 0.0-1.0 |
+| 字段 | 类型 | 说明 | 示例 |
+|------|------|------|------|
+| `bin` | string | 6位二进制编码（阴=0，阳=1） | `"100110"` |
+| `name` | string | 中文卦名 | `"泽雷随"` |
+| `pinyin` | string | 拼音 | `"zé léi suí"` |
+| `en` | string | 英文翻译 | `"Following"` |
+| `category` | string | 功能分类 | `"跟随/适应"` |
+| `tags` | string[] | 语义标签（可扩展） | `["跟随", "顺从", "适应", "订阅", "监听", "代理"]` |
+| `weight` | number | 数值权重 0.0-1.0 | `0.5` |
 
 ## 运算规则
 
@@ -105,7 +111,7 @@ console.log(result.controlSignal);// ["OFF","ON","OFF","ON","ON","OFF"]
 | 变爻 | XOR | 权重翻转、规则条件变更 |
 | 错卦 | NOT | 逻辑非、状态反转 |
 | 综卦 | BIT_REVERSE | 数据归一化、视角切换 |
-| 卦叠加 | AND/OR | 规则引擎多条件判断 |
+| 卦叠加 | AND/OR/XOR | 规则引擎多条件判断 |
 
 ## Roadmap
 

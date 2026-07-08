@@ -19,7 +19,18 @@ export class Hex64Engine {
   lookup(input) {
     const h = hash(input);
     const idx = h % 64;
-    return { ...this.db[idx], index: idx, hash: h };
+    const entry = this.db[idx];
+    return {
+      index: idx,
+      hash: h,
+      bin: entry?.bin ?? '000000',
+      name: entry?.name ?? '未知',
+      pinyin: entry?.pinyin ?? '',
+      en: entry?.en ?? 'Unknown',
+      category: entry?.category ?? '',
+      tags: entry?.tags ?? [],
+      weight: entry?.weight ?? 0,
+    };
   }
 
   featureVector(input) {
@@ -107,8 +118,20 @@ export class Hex64Engine {
   }
 }
 
-const thisFile = fileURLToPath(import.meta.url).replace(/\\/g, '/');
-if (argv[1] && thisFile.endsWith(argv[1].replace(/\\/g, '/'))) {
+// CLI 自执行检测（跨平台兼容）
+const isCLI = (() => {
+  try {
+    const current = fileURLToPath(import.meta.url);
+    const script = argv[1];
+    if (!script) return false;
+    // 规范化路径分隔符后比较
+    return current.replace(/\\/g, '/') === script.replace(/\\/g, '/');
+  } catch {
+    return false;
+  }
+})();
+
+if (isCLI) {
   const engine = new Hex64Engine();
   const tests = ['Hello OpenCode', 'test', 'AI', '', 'hex64'];
   for (const t of tests) {
