@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Hex64 Universal Symbol Engine — a deterministic hexagram-based encoding infrastructure for AI feature encoding, DSL development, IoT control, and rule engine construction",
   "main": "src/core.js",
+  "bin": {
+    "hex64": "./bin/hex64.js"
+  },
   "type": "module",
   "scripts": {
     "test": "node src/core.js",
