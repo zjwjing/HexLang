@@ -14,6 +14,8 @@ function hash(input) {
 export class Hex64Engine {
   constructor(database = HEXAGRAMS) {
     this.db = database;
+    // O(1) bin -> entry index, built once
+    this.binIndex = new Map(database.map((e, i) => [e.bin, i]));
   }
 
   lookup(input) {
@@ -51,9 +53,9 @@ export class Hex64Engine {
 
   tranceive(input) {
     const hex = this.lookup(input);
-    const vec = this.featureVector(input);
+    const vec = hex.bin.split('').map(Number);
     const code = this.pseudoCode(input);
-    const gpio = this.controlSignal(input);
+    const gpio = vec.map(b => b ? 'ON' : 'OFF');
     return {
       input,
       hexCode: {
@@ -77,6 +79,11 @@ export class Hex64Engine {
     const bits = hex.bin.split('').map(Number);
     let resultBits;
 
+    // lookup second input once, outside the per-bit map
+    const secondBits = secondInput
+      ? this.lookup(secondInput).bin.split('').map(Number)
+      : null;
+
     switch (op) {
       case 'cuo':
         resultBits = bits.map(b => b ^ 1);
@@ -85,30 +92,32 @@ export class Hex64Engine {
         resultBits = [...bits].reverse();
         break;
       case 'bian':
-        if (secondInput) {
-          resultBits = bits.map((b, i) => b ^ parseInt(this.lookup(secondInput).bin[i]));
+        if (secondBits) {
+          resultBits = bits.map((b, i) => b ^ secondBits[i]);
         } else {
           resultBits = bits.map(b => b ^ 1);
         }
         break;
       case 'AND':
-        if (!secondInput) throw new Error('AND needs secondInput');
-        resultBits = bits.map((b, i) => b & parseInt(this.lookup(secondInput).bin[i]));
+        if (!secondBits) throw new Error('AND needs secondInput');
+        resultBits = bits.map((b, i) => b & secondBits[i]);
         break;
       case 'OR':
-        if (!secondInput) throw new Error('OR needs secondInput');
-        resultBits = bits.map((b, i) => b | parseInt(this.lookup(secondInput).bin[i]));
+        if (!secondBits) throw new Error('OR needs secondInput');
+        resultBits = bits.map((b, i) => b | secondBits[i]);
         break;
       case 'XOR':
-        if (!secondInput) throw new Error('XOR needs secondInput');
-        resultBits = bits.map((b, i) => b ^ parseInt(this.lookup(secondInput).bin[i]));
+        if (!secondBits) throw new Error('XOR needs secondInput');
+        resultBits = bits.map((b, i) => b ^ secondBits[i]);
         break;
       default:
         throw new Error(`Unknown op: ${op}`);
     }
 
     const resultBin = resultBits.join('');
-    const resultHex = this.db.find(h => h.bin === resultBin);
+    // O(1) lookup via prebuilt index instead of linear scan
+    const resultIdx = this.binIndex.get(resultBin);
+    const resultHex = resultIdx !== undefined ? this.db[resultIdx] : null;
     return {
       op,
       input: hex,

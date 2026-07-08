@@ -62,9 +62,15 @@ const SPECIAL = {
    ACCUMULATE: { rs: 'localStorage::set_item("%s", value);', go: 'localStorage.SetItem("%s", value)' },
    OVERFLOW: { rs: 'autoScaling::set_max(%d);', go: 'autoScaling.SetMax(%d)' },
    KEEP: { rs: 'storage::make_permanent("%s");', go: 'storage.MakePermanent("%s")' },
-    CONCEAL: { rs: 'retry::with_backoff("%s");', go: 'retry.WithBackoff("%s")' },
-    BLOCK: { rs: 'return res::status(403).send("%s");', go: 'return res.Status(403).Send("%s")' },
-    REFACTOR: { rs: 'refactor::apply("%s").await;', go: 'refactor.Apply("%s")' },
+   CONCEAL: { rs: 'retry::with_backoff("%s");', go: 'retry.WithBackoff("%s")' },
+   BLOCK: { rs: 'return res::status(403).send("%s");', go: 'return res.Status(403).Send("%s")' },
+   COPY: { rs: 'fs::copy("%s", dest);', go: 'fs.Copy("%s", dest)' },
+   FREE: { rs: 'memory::free("%s");', go: 'memory.Free("%s")' },
+   PUBLISH: { rs: 'crates::io::publish("%s");', go: 'go_releases.Publish("%s")' },
+   FORK: { rs: 'std::process::Command::new("%s").spawn()?;', go: 'exec.Command("%s").Start()' },
+   STORE: { rs: 'std::env::set_var("%s", value);', go: 'os.Setenv("%s", value)' },
+   INPUT: { rs: 'io::stdin().read_line(&mut "%s");', go: 'fmt.Scan("%s")' },
+   REFACTOR: { rs: 'refactor::apply("%s").await;', go: 'refactor.Apply("%s")' },
  };
 
 function toRust(js) {

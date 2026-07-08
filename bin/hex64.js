@@ -96,7 +96,7 @@ const opTemplates = {
   'ACCELERATE':     { js: 'switch(decision) { case \'%s\': break; }',                           py: 'match decision: case \'%s\': pass',                           rs: 'switch(decision) { case "%s": break; }',                          go: 'switch(decision) { case "%s": break; }' },
   'DECIDE':     { js: 'const chosen = select(\'%s\', options);',                           py: 'chosen = select(\'%s\', options)',                           rs: 'match decision { "%s" => { break; } }',                          go: 'switch decision { case "%s": break }' },
   'SELECT':     { js: 'db.select(\'%s\')',                           py: 'db.select(\'%s\')',                           rs: 'db::select("%s");',                          go: 'db.Select("%s")' },
-  'FORK':     { js: 'controller.set(\'%s\', value);',                           py: 'controller.set(\'%s\', value)',                           rs: 'std::process::Command::new("%s").spawn()?;',                          go: 'exec.Command("%s").Start()' },
+  'FORK':     { js: 'child_process.fork(\'%s\')',                           py: 'os.fork()',                           rs: 'std::process::Command::new("%s").spawn()?;',                          go: 'exec.Command("%s").Start()' },
   'CTRL':     { js: 'pid.adjust(\'%s\', delta);',                           py: 'pid.adjust(\'%s\', delta)',                           rs: 'pid::adjust("%s", delta);',                          go: 'pid.Adjust("%s", delta)' },
   'ADJUST':     { js: 'regulator.throttle(\'%s\', limit);',                           py: 'regulator.throttle(\'%s\', limit)',                           rs: 'regulator::throttle("%s", limit);',                          go: 'regulator.Throttle("%s", limit)' },
   'REGULATE':     { js: 'rateLimiter.limit(\'%s\', %d);',                           py: 'rate_limiter.limit(\'%s\', %d)',                           rs: 'rateLimiter::limit("%s", %d);',                          go: 'rateLimiter.Limit("%s", %d)' },
@@ -191,7 +191,7 @@ const opTemplates = {
   'NOURISH':     { js: 'profit.calculate(\'%s\');',                           py: 'profit.calculate(\'%s\')',                           rs: 'profit::calculate("%s");',                          go: 'profit.Calculate("%s")' },
   'GAIN':     { js: 'buffer.accumulate(\'%s\', chunk);',                           py: 'buffer.accumulate(\'%s\', chunk)',                           rs: 'buffer::accumulate("%s", chunk);',                          go: 'buffer.Accumulate("%s", chunk)' },
   'ACCUMULATE':     { js: 'localStorage.setItem(\'%s\', value);',                           py: 'os.environ[\'%s\'] = value',                           rs: 'localStorage::set_item("%s", value);',                          go: 'localStorage.SetItem("%s", value)' },
-  'STORE':     { js: 'data.enrich(\'%s\', source);',                           py: 'data.enrich(\'%s\', source)',                           rs: 'std::env::set_var("%s", value);',                          go: 'os.Setenv("%s", value)' },
+  'STORE':     { js: 'localStorage.setItem(\'%s\', value)',                           py: 'os.environ[\'%s\'] = value',                           rs: 'std::env::set_var("%s", value);',                          go: 'os.Setenv("%s", value)' },
   'ENRICH':     { js: 'if (value > limit) { alert(\'%s exceeded\'); }',                           py: 'if value > limit: alert(\'%s exceeded\')',                           rs: 'if (value > limit) { alert("%s exceeded"); }',                          go: 'if (value > limit) { alert("%s exceeded"); }' },
   'EXCEED':     { js: 'if (value > limit) alert(\'%s exceeded\')',                           py: 'if value > limit: alert(\'%s exceeded\')',                           rs: 'if value > limit { warn!("%s exceeded"); }',                          go: 'if value > limit { log.Warnf("%s exceeded") }' },
   'OVERFLOW':     { js: 'autoScaling.setMax(%d);',                           py: 'auto_scaling.set_max(%d)',                           rs: 'autoScaling::set_max(%d);',                          go: 'autoScaling.SetMax(%d)' },
@@ -291,7 +291,7 @@ const opTemplates = {
   'CONSERVATIVE':     { js: 'convert(\'%s\', target);',                           py: 'convert(\'%s\', target)',                           rs: 'convert("%s", target);',                          go: 'convert("%s", target)' },
   'CONVERT':     { js: 'orchestrator.coordinate(\'%s\');',                           py: 'orchestrator.coordinate(\'%s\')',                           rs: 'orchestrator::coordinate("%s");',                          go: 'orchestrator.Coordinate("%s")' },
   'COORDINATE':     { js: 'fs.copy(\'%s\');',                           py: 'shutil.copy(\'%s\')',                           rs: 'fs::copy("%s");',                          go: 'fs.Copy("%s")' },
-  'COPY':     { js: 'error.crash(\'%s\');',                           py: 'error.crash(\'%s\')',                           rs: 'fs::copy("%s", dest);',                          go: 'fs.Copy("%s", dest)' },
+  'COPY':     { js: 'fs.copy(\'%s\', dest)',                           py: 'shutil.copy(\'%s\', dest)',                           rs: 'fs::copy("%s", dest);',                          go: 'fs.Copy("%s", dest)' },
   'CRASH':     { js: 'skill.cultivate(\'%s\');',                           py: 'skill.cultivate(\'%s\')',                           rs: 'skill::cultivate("%s");',                          go: 'skill.Cultivate("%s")' },
   'CULTIVATE':     { js: 'datasource.register(\'%s\');',                           py: 'datasource.register(\'%s\')',                           rs: 'datasource::register("%s");',                          go: 'datasource.Register("%s")' },
   'DATASOURCE':     { js: 'lock.detect(\'%s\');',                           py: 'lock.detect(\'%s\')',                           rs: 'lock::detect("%s");',                          go: 'lock.Detect("%s")' },
@@ -330,7 +330,7 @@ const opTemplates = {
   'FORCE':     { js: 'token.forge(\'%s\');',                           py: 'token.forge(\'%s\')',                           rs: 'token::forge("%s");',                          go: 'token.Forge("%s")' },
   'FORGE':     { js: 'stream.forward(\'%s\');',                           py: 'stream.forward(\'%s\')',                           rs: 'stream::forward("%s");',                          go: 'stream.Forward("%s")' },
   'FORWARD':     { js: 'memory.free(\'%s\');',                           py: 'memory.free(\'%s\')',                           rs: 'memory::free("%s");',                          go: 'memory.Free("%s")' },
-  'FREE':     { js: 'generator.generate(\'%s\');',                           py: 'generator.generate(\'%s\')',                           rs: 'memory::free("%s");',                          go: 'memory.Free("%s")' },
+  'FREE':     { js: 'memory.free(\'%s\')',                           py: 'memory.free(\'%s\')',                           rs: 'memory::free("%s");',                          go: 'memory.Free("%s")' },
   'GENERATE':     { js: 'rollout.gradual(\'%s\');',                           py: 'rollout.gradual(\'%s\')',                           rs: 'rollout::gradual("%s");',                          go: 'rollout.Gradual("%s")' },
   'GRADUAL':     { js: '// grand plan: %s',                           py: '# grand plan: %s',                           rs: '// grand plan: %s',                          go: '// grand plan: %s' },
   'GRAND':     { js: 'abundance.great(\'%s\');',                           py: 'abundance.great(\'%s\')',                           rs: '// grand plan: %s',                          go: '// grand plan: %s' },
@@ -341,7 +341,7 @@ const opTemplates = {
   'IGNORANT':     { js: 'deadline.imminent(\'%s\');',                           py: 'deadline.imminent(\'%s\')',                           rs: '// ignorant of %s — add logging',                          go: '// ignorant of %s — add logging' },
   'IMMINENT':     { js: 'counter += 1; // %s',                           py: 'counter += 1  # %s',                           rs: 'counter += 1; // %s',                          go: 'counter += 1; // %s' },
   'INCR':     { js: 'stdin.read(\'%s\');',                           py: 'input(\'%s\')',                           rs: 'stdin::read("%s");',                          go: 'stdin.Read("%s")' },
-  'INPUT':     { js: 'vpn.connect(\'%s\');',                           py: 'vpn.connect(\'%s\')',                           rs: 'io::stdin().read_line(&mut "%s");',                          go: 'fmt.Scan("%s")' },
+  'INPUT':     { js: 'readline.read(\'%s\')',                           py: 'input(\'%s\')',                           rs: 'io::stdin().read_line(&mut "%s");',                          go: 'fmt.Scan("%s")' },
   'INTRANET':     { js: 'heartbeat.start(\'%s\');',                           py: 'heartbeat.start(\'%s\')',                           rs: 'heartbeat::start("%s");',                          go: 'heartbeat.Start("%s")' },
   'KEEPALIVE':     { js: 'vm.liberate(\'%s\');',                           py: 'vm.liberate(\'%s\')',                           rs: 'vm::liberate("%s");',                          go: 'vm.Liberate("%s")' },
   'LIBERATE':     { js: 'license.litigate(\'%s\');',                           py: 'license.litigate(\'%s\')',                           rs: 'license::litigate("%s");',                          go: 'license.Litigate("%s")' },
@@ -367,7 +367,7 @@ const opTemplates = {
   'PRACTICE':     { js: 'processor.process(\'%s\');',                           py: 'processor.process(\'%s\')',                           rs: 'processor::process("%s");',                          go: 'processor.Process("%s")' },
   'PROCESS':     { js: 'economy.prosperous(\'%s\');',                           py: 'economy.prosperous(\'%s\')',                           rs: 'economy::prosperous("%s");',                          go: 'economy.Prosperous("%s")' },
   'PROSPEROUS':     { js: 'npm.publish(\'%s\');',                           py: 'twine.publish(\'%s\')',                           rs: 'npm::publish("%s");',                          go: 'npm.Publish("%s")' },
-  'PUBLISH':     { js: 'buffer.raw(\'%s\');',                           py: 'buffer.raw(\'%s\')',                           rs: 'crates::io::publish("%s");',                          go: 'go_releases.Publish("%s")' },
+  'PUBLISH':     { js: 'repo.publish(\'%s\')',                           py: 'repo.publish(\'%s\')',                           rs: 'crates::io::publish("%s");',                          go: 'go_releases.Publish("%s")' },
   'RAW':     { js: 'observer.react(\'%s\');',                           py: 'observer.react(\'%s\')',                           rs: 'observer::react("%s");',                          go: 'observer.React("%s")' },
   'REACT':     { js: 'fs.read(\'%s\');',                           py: 'open(\'%s\').read()',                           rs: 'fs::read("%s");',                          go: 'fs.Read("%s")' },
   'READ':     { js: 'channel.receive(\'%s\');',                           py: 'channel.receive(\'%s\')',                           rs: 'channel::receive("%s");',                          go: 'channel.Receive("%s")' },
@@ -413,6 +413,7 @@ const opTemplates = {
   'WRAP':     { js: 'fs.write(\'%s\', data);',                           py: 'open(\'%s\', \'w\').write(data)',                           rs: 'fs::write("%s", data);',                          go: 'fs.Write("%s", data)' },
   'WRITE':     { js: 'fs.write(\'%s\', data);',                           py: 'open(\'%s\', \'w\').write(data)',                           rs: 'fs::write("%s", data);',                          go: 'fs.Write("%s", data)' },
 };
+
 
 
 
