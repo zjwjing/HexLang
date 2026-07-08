@@ -1,3 +1,15 @@
+export const TAG_TO_OP = {
+  '初始化': 'LOAD', '启动': 'RUN', '停止': 'STOP', '存储': 'SAVE',
+  '等待': 'WAIT', '更新': 'UPDATE', '对比': 'CMP', '翻转': 'FLIP',
+  '成长': 'GROW', '决策': 'DECIDE', '控制': 'CTRL', '执行': 'EXEC',
+  '完成': 'DONE', '恢复': 'RESTORE', '前进': 'FORWARD',
+  '加载': 'LOAD', '部署': 'DEPLOY', '构建': 'BUILD', '检查': 'CHECK',
+  '重置': 'RESET', '唤醒': 'WAKE', '同步': 'SYNC', '合并': 'MERGE',
+  '分析': 'ANALYZE', '监控': 'MONITOR', '通知': 'NOTIFY', '验证': 'VERIFY',
+  '递归': 'RECURSE', '遍历': 'TRAVERSE', '广播': 'BROADCAST',
+  '锁定': 'LOCK', '解锁': 'UNLOCK', '挂起': 'SUSPEND', '调度': 'SCHEDULE',
+};
+
 export const HEXAGRAMS = [
   { bin: '000000', name: '坤为地', pinyin: 'kūn wéi dì', en: 'The Receptive', category: '稳定/承载', tags: ['承载', '包容', '柔顺', '被动', '存储', '稳定'], weight: 0.25 },
   { bin: '000001', name: '山地剥', pinyin: 'shān dì bō', en: 'Splitting Apart', category: '变化/衰退', tags: ['剥落', '衰退', '更替', '淘汰', '清理', '结束'], weight: 0.20 },

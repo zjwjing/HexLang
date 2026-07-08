@@ -43,8 +43,8 @@ footer { text-align: center; color: #aaa; font-size: 0.78rem; margin-top: 32px; 
 </head>
 <body>
 <div class="container">
-  <h1>⚙ Hex64 通用符号引擎</h1>
-  <p class="subtitle">基于邵雍先天六十四卦与莱布尼茨二进制映射的确定性编码基础设施</p>
+    <h1>⚙ Hex64 通用符号引擎</h1>
+    <p class="subtitle">基于邵雍先天六十四卦与莱布尼茨二进制映射的确定性编码基础设施 <span style="color:#999">v1.2</span></p>
 
   <div class="card">
     <div class="input-group">
@@ -89,6 +89,24 @@ footer { text-align: center; color: #aaa; font-size: 0.78rem; margin-top: 32px; 
     </div>
   </div>
 
+  <div class="card" id="opCard" style="display:none">
+    <h3>易经运算</h3>
+    <div class="input-group" style="margin-bottom:12px">
+      <input type="text" id="opInput" placeholder="输入参数" style="flex:0.5;min-width:100px" value="AI_training_data">
+      <select id="opSelect" style="padding:10px 14px;border:1px solid #d0d5dd;border-radius:8px;font-size:1rem;background:#fff">
+        <option value="cuo">错卦 (NOT · 卦位取反)</option>
+        <option value="zong">综卦 (REV · 爻序反转)</option>
+        <option value="bian">变爻 (XOR · 异或运算)</option>
+        <option value="AND">卦叠加 AND</option>
+        <option value="OR">卦叠加 OR</option>
+        <option value="XOR">异或叠加 XOR</option>
+      </select>
+      <input type="text" id="opSecond" placeholder="第二输入（AND/OR/XOR 需要）" style="flex:0.5;min-width:120px" value="system_init">
+      <button class="btn btn-secondary" id="opBtn">运算</button>
+    </div>
+    <div id="opResult" style="font-family:'SF Mono','Fira Code',monospace;font-size:0.9rem;background:#f8f9fa;border-radius:8px;padding:14px;white-space:pre-wrap"></div>
+  </div>
+
   <div class="card">
     <h3>运算规则</h3>
     <table style="width:100%;border-collapse:collapse;font-size:0.88rem">
@@ -105,7 +123,7 @@ footer { text-align: center; color: #aaa; font-size: 0.78rem; margin-top: 32px; 
     <div class="history-list" id="historyList"><div style="color:#aaa;padding:8px;font-size:0.9rem">暂无记录</div></div>
   </div>
 
-  <footer>Hex64 v1.0 &middot; MIT License &middot; 非玄学工具，所有运算完全确定性</footer>
+  <footer>Hex64 v1.2 &middot; MIT License &middot; 非玄学工具，所有运算完全确定性</footer>
 </div>
 
 <script>
@@ -180,7 +198,12 @@ const tagToOp = {
   '初始化': 'LOAD', '启动': 'RUN', '停止': 'STOP', '存储': 'SAVE',
   '等待': 'WAIT', '更新': 'UPDATE', '对比': 'CMP', '翻转': 'FLIP',
   '成长': 'GROW', '决策': 'DECIDE', '控制': 'CTRL', '执行': 'EXEC',
-  '完成': 'DONE', '恢复': 'RESTORE', '前进': 'FORWARD'
+  '完成': 'DONE', '恢复': 'RESTORE', '前进': 'FORWARD',
+  '加载': 'LOAD', '部署': 'DEPLOY', '构建': 'BUILD', '检查': 'CHECK',
+  '重置': 'RESET', '唤醒': 'WAKE', '同步': 'SYNC', '合并': 'MERGE',
+  '分析': 'ANALYZE', '监控': 'MONITOR', '通知': 'NOTIFY', '验证': 'VERIFY',
+  '递归': 'RECURSE', '遍历': 'TRAVERSE', '广播': 'BROADCAST',
+  '锁定': 'LOCK', '解锁': 'UNLOCK', '挂起': 'SUSPEND', '调度': 'SCHEDULE',
 };
 
 function hash(input) {
@@ -244,6 +267,50 @@ function render(input) {
   });
 
   document.getElementById('resultCard').style.display = 'block';
+  document.getElementById('opCard').style.display = 'block';
+  document.getElementById('opInput').value = input;
+}
+
+function operateUI() {
+  const input = document.getElementById('opInput').value.trim() || 'default';
+  const op = document.getElementById('opSelect').value;
+  const second = document.getElementById('opSecond').value.trim() || undefined;
+  const hex = lookup(input);
+  const bits = hex.bin.split('').map(Number);
+  let resultBits;
+
+  switch (op) {
+    case 'cuo':
+      resultBits = bits.map(b => b ^ 1);
+      break;
+    case 'zong':
+      resultBits = [...bits].reverse();
+      break;
+    case 'bian':
+      if (second) {
+        resultBits = bits.map((b, i) => b ^ parseInt(lookup(second).bin[i]));
+      } else {
+        resultBits = bits.map(b => b ^ 1);
+      }
+      break;
+    case 'AND':
+      resultBits = second ? bits.map((b, i) => b & parseInt(lookup(second).bin[i])) : bits;
+      break;
+    case 'OR':
+      resultBits = second ? bits.map((b, i) => b | parseInt(lookup(second).bin[i])) : bits;
+      break;
+    case 'XOR':
+      resultBits = second ? bits.map((b, i) => b ^ parseInt(lookup(second).bin[i])) : bits.map(b => b ^ 1);
+      break;
+  }
+
+  const resultBin = resultBits.join('');
+  const resultHex = HEXAGRAMS.find(h => h.bin === resultBin);
+  const el = document.getElementById('opResult');
+  el.innerHTML = `<span style="color:#888">输入</span> ${hex.bin} ${hex.name}
+<span style="color:#888">运算</span> ${op}
+<span style="color:#888">结果</span> ${resultBin} ${resultHex ? resultHex.name + ' · ' + resultHex.en : '自定义卦'}
+<span style="color:#888">信号</span> ${resultBits.map(b => b ? 'ON' : 'OFF').join(' | ')}`;
 }
 
 function addHistory(input) {
@@ -259,7 +326,7 @@ function addHistory(input) {
   if (list.children.length > 50) list.removeChild(list.lastChild);
 }
 
-const samples = ['Hello OpenCode', 'init', 'emergency_stop', 'sensor_temp_85', 'AI_training_data', 'blockchain_tx', '0xFFA3', 'zhihu://hex64'];
+const samples = ['Hello OpenCode', 'init', 'system_init', 'AI_training_data', 'db_connection', 'error_timeout', 'sensor_temp_85', 'hex64'];
 
 document.getElementById('runBtn').onclick = () => {
   const val = document.getElementById('inputField').value.trim();
@@ -271,6 +338,10 @@ document.getElementById('runBtn').onclick = () => {
 document.getElementById('inputField').onkeydown = (e) => {
   if (e.key === 'Enter') document.getElementById('runBtn').click();
 };
+
+document.getElementById('opBtn').onclick = operateUI;
+document.getElementById('opInput').onkeydown = (e) => { if (e.key === 'Enter') operateUI(); };
+document.getElementById('opSecond').onkeydown = (e) => { if (e.key === 'Enter') operateUI(); };
 
 document.getElementById('randomBtn').onclick = () => {
   const s = samples[Math.floor(Math.random() * samples.length)];

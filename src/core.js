@@ -1,4 +1,6 @@
-import { HEXAGRAMS } from './database.js';
+import { HEXAGRAMS, TAG_TO_OP } from './database.js';
+import { fileURLToPath } from 'node:url';
+import { argv } from 'node:process';
 
 function hash(input) {
   if (typeof input !== 'string') input = String(input);
@@ -7,10 +9,6 @@ function hash(input) {
     h = (h << 5) + h + input.charCodeAt(i);
   }
   return h >>> 0;
-}
-
-function xor(a, b) {
-  return a ^ b;
 }
 
 export class Hex64Engine {
@@ -26,24 +24,13 @@ export class Hex64Engine {
 
   featureVector(input) {
     const hex = this.lookup(input);
-    return hex.bin.split('').map(c => parseFloat(c));
+    return hex.bin.split('').map(Number);
   }
 
   pseudoCode(input) {
     const hex = this.lookup(input);
-    const mapping = {
-      '初始化': 'LOAD',
-      '启动': 'RUN',
-      '停止': 'STOP',
-      '存储': 'SAVE',
-      '等待': 'WAIT',
-      '更新': 'UPDATE',
-      '对比': 'CMP',
-      '翻转': 'FLIP',
-    };
-    const ops = hex.tags.map(t => mapping[t] || t.toUpperCase());
-    const unique = [...new Set(ops)];
-    const body = unique.length ? ` { ${unique.join('; ')}; }` : ' { NOP; }';
+    const ops = [...new Set(hex.tags.map(t => TAG_TO_OP[t] || t.toUpperCase()))];
+    const body = ops.length ? ` { ${ops.join('; ')}; }` : ' { NOP; }';
     return `HEX(${hex.name})${body}`;
   }
 
@@ -74,19 +61,69 @@ export class Hex64Engine {
     };
   }
 
-  operate(op, input) {
+  operate(op, input, secondInput) {
     const hex = this.lookup(input);
     const bits = hex.bin.split('').map(Number);
+    let resultBits;
+
     switch (op) {
-      case 'bian':     return bits.map(b => b ^ 1);
-      case 'cuo':      return bits.map(b => b ^ 1);
-      case 'zong':     return bits.reverse();
-      case 'AND':      return bits.map(b => b & 1);
-      case 'OR':       return bits.map(b => b | 1);
-      case 'XOR':      return bits.map(b => b ^ 1);
-      case 'NOT':      return bits.map(b => b ^ 1);
-      default:         return bits;
+      case 'cuo':
+        resultBits = bits.map(b => b ^ 1);
+        break;
+      case 'zong':
+        resultBits = [...bits].reverse();
+        break;
+      case 'bian':
+        if (secondInput) {
+          resultBits = bits.map((b, i) => b ^ parseInt(this.lookup(secondInput).bin[i]));
+        } else {
+          resultBits = bits.map(b => b ^ 1);
+        }
+        break;
+      case 'AND':
+        if (!secondInput) throw new Error('AND needs secondInput');
+        resultBits = bits.map((b, i) => b & parseInt(this.lookup(secondInput).bin[i]));
+        break;
+      case 'OR':
+        if (!secondInput) throw new Error('OR needs secondInput');
+        resultBits = bits.map((b, i) => b | parseInt(this.lookup(secondInput).bin[i]));
+        break;
+      case 'XOR':
+        if (!secondInput) throw new Error('XOR needs secondInput');
+        resultBits = bits.map((b, i) => b ^ parseInt(this.lookup(secondInput).bin[i]));
+        break;
+      default:
+        throw new Error(`Unknown op: ${op}`);
     }
+
+    const resultBin = resultBits.join('');
+    const resultHex = this.db.find(h => h.bin === resultBin);
+    return {
+      op,
+      input: hex,
+      result: resultHex || { bin: resultBin, name: '自定义卦', tags: [], weight: 0 },
+      resultBin,
+    };
+  }
+}
+
+const thisFile = fileURLToPath(import.meta.url).replace(/\\/g, '/');
+if (argv[1] && thisFile.endsWith(argv[1].replace(/\\/g, '/'))) {
+  const engine = new Hex64Engine();
+  const tests = ['Hello OpenCode', 'test', 'AI', '', 'hex64'];
+  for (const t of tests) {
+    const r = engine.tranceive(t);
+    console.log(`\n输入: "${r.input}"`);
+    console.log(`  卦索引: ${r.hexCode.index}`);
+    console.log(`  二进制: ${r.hexCode.bin}`);
+    console.log(`  卦名: ${r.hexCode.name}（${r.hexCode.en}）`);
+    console.log(`  拼音: ${r.hexCode.pinyin}`);
+    console.log(`  分类: ${r.hexCode.category}`);
+    console.log(`  标签: ${r.hexCode.tags.join(', ')}`);
+    console.log(`  权重: ${r.hexCode.weight}`);
+    console.log(`  特征向量: [${r.featureVec.join(', ')}]`);
+    console.log(`  伪代码: ${r.pseudoCode}`);
+    console.log(`  GPIO: ${r.controlSignal.join(' | ')}`);
   }
 }
 
