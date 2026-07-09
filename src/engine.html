@@ -221,6 +221,7 @@ footer { text-align: center; color: var(--footer); font-size: 0.78rem; margin-to
         <option value="AND">卦叠加 AND</option>
         <option value="OR">卦叠加 OR</option>
         <option value="XOR">异或叠加 XOR</option>
+        <option value="hu">互卦 (互 · 中爻取卦)</option>
       </select>
       <input type="text" id="opSecond" placeholder="第二输入（AND/OR/XOR 需要）" style="flex:0.5;min-width:120px" value="system_init">
     </div>
@@ -257,6 +258,7 @@ footer { text-align: center; color: var(--footer); font-size: 0.78rem; margin-to
       <tr><td style="padding:6px 8px">错卦</td><td style="padding:6px 8px;font-family:monospace">NOT</td><td style="padding:6px 8px">逻辑非、状态反转</td></tr>
       <tr><td style="padding:6px 8px">综卦</td><td style="padding:6px 8px;font-family:monospace">BIT_REVERSE</td><td style="padding:6px 8px">数据归一化、视角切换</td></tr>
       <tr><td style="padding:6px 8px">卦叠加</td><td style="padding:6px 8px;font-family:monospace">AND/OR</td><td style="padding:6px 8px">规则引擎多条件判断</td></tr>
+      <tr><td style="padding:6px 8px">互卦</td><td style="padding:6px 8px;font-family:monospace">互 · 中爻滑窗</td><td style="padding:6px 8px">取二三四五爻，二三四为下卦、三四五为上卦</td></tr>
     </table>
   </div>
 
@@ -366,7 +368,7 @@ function renderHex(hex) {
   document.getElementById('compileCard').style.display = 'block';
 }
 
-const opLabels = { cuo: '错卦 (NOT)', zong: '综卦 (REV)', bian: '变爻 (XOR)', AND: 'AND', OR: 'OR', XOR: 'XOR' };
+const opLabels = { cuo: '错卦 (NOT)', zong: '综卦 (REV)', bian: '变爻 (XOR)', AND: 'AND', OR: 'OR', XOR: 'XOR', hu: '互卦 (互)' };
 
 function operateUI() {
   const input = document.getElementById('opInput').value.trim() || 'default';
@@ -405,6 +407,10 @@ function operateUI() {
     case 'XOR':
       resultBits = second ? bits.map((b, i) => b ^ parseInt(lookup(second).bin[i])) : bits.map(b => b ^ 1);
       detail = second ? `与「${lookup(second).name}」按位异或` : `每位取反（无第二输入）`;
+      break;
+    case 'hu':
+      resultBits = [bits[1], bits[2], bits[3], bits[2], bits[3], bits[4]];
+      detail = `取二三四五爻，二三四为下卦、三四五为上卦`;
       break;
   }
 

@@ -276,6 +276,7 @@ python src/cli.py --adapter adapters/hex64-v1
 | 变爻 | XOR | 权重翻转、规则条件变更 |
 | 错卦 | NOT | 逻辑非、状态反转 |
 | 综卦 | BIT_REVERSE | 数据归一化、视角切换 |
+| 互卦 | 互 · 中爻滑窗 | 取二三四五爻，二三四为下卦、三四五为上卦 |
 | 卦叠加 | AND/OR/XOR | 规则引擎多条件判断 |
 
 ## Roadmap

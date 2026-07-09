@@ -112,6 +112,10 @@ export class Hex64Engine {
         if (!secondBits) throw new Error('XOR needs secondInput');
         resultBits = bits.map((b, i) => b ^ secondBits[i]);
         break;
+      case 'hu':
+        // 互卦：取二三四五爻，二三四为下卦、三四五为上卦
+        resultBits = [bits[1], bits[2], bits[3], bits[2], bits[3], bits[4]];
+        break;
       default:
         throw new Error(`Unknown op: ${op}`);
     }
