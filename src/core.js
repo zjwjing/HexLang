@@ -61,9 +61,11 @@ export class Hex64Engine {
       hexCode: {
         index: hex.index,
         bin: hex.bin,
+        hexFont: hex.hex_font || '',
         name: hex.name,
         pinyin: hex.pinyin,
         en: hex.en,
+        english: hex.english || '',
         category: hex.category,
         tags: hex.tags,
         weight: hex.weight,

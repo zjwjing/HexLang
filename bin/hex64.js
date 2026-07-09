@@ -50,8 +50,8 @@ function formatOutput(input, r, compiled, jsonMode) {
   let out = '';
   out += `\n${B(' \u250C\u2500\u2500 Hex64 Engine')} ${D('\u2500'.repeat(35))}\n`;
   out += ` ${B('\u2502')} ${CYAN('Input:')} ${B(hc.name)} ${D(`(${input})`)}\n`;
-  out += ` ${B('\u2502')} ${CYAN('Hexagram:')} ${YELLOW(hc.bin)} ${B(`\u2022 ${hc.name}`)} ${D(`(${hc.pinyin})`)}\n`;
-  out += ` ${B('\u2502')} ${D(hc.en)}\n`;
+  out += ` ${B('\u2502')} ${CYAN('Hexagram:')} ${YELLOW(hc.bin)} ${B(hc.hexFont)} ${B(hc.name)} ${D(`(${hc.pinyin})`)}\n`;
+  out += ` ${B('\u2502')} ${D(hc.en)}${hc.english && hc.english !== hc.en ? D(' · ') + D(hc.english) : ''}\n`;
   out += ` ${B('\u2502')} ${CYAN('Index:')} ${hc.index}  ${CYAN('Weight:')} ${hc.weight}  ${CYAN('Category:')} ${hc.category}\n`;
   out += ` ${B('\u2514')}${D('\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500')}\n`;
   out += ` ${CYAN('Feature:')} [${r.featureVec.map(v => v ? GREEN(v) : D(v)).join(', ')}]\n`;
