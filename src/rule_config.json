@@ -1,0 +1,49 @@
+{
+  "description": "Hex64 规则引擎示例配置 — 运维告警场景",
+  "version": "1.0.0",
+  "note": "每条规则自动生成确定性卦象编码，用于规则溯源和可视化",
+  "rules": [
+    {
+      "id": "R001",
+      "name": "CPU + 内存双高告警",
+      "conditions": ["cpu_usage > 80%", "mem_usage > 75%"],
+      "action": "触发告警，通知运维团队",
+      "priority": "high"
+    },
+    {
+      "id": "R002",
+      "name": "错误率升高排查",
+      "conditions": ["error_rate > 1%", "uptime_days > 30"],
+      "action": "启动故障排查流程",
+      "priority": "high"
+    },
+    {
+      "id": "R003",
+      "name": "网络延迟切换",
+      "conditions": ["network_latency > 100ms"],
+      "action": "切换备用链路",
+      "priority": "medium"
+    },
+    {
+      "id": "R004",
+      "name": "磁盘 IO 告警",
+      "conditions": ["disk_io > 90%", "disk_free < 10%"],
+      "action": "清理临时文件，扩容存储",
+      "priority": "high"
+    },
+    {
+      "id": "R005",
+      "name": "服务降级",
+      "conditions": ["cpu_usage > 95%", "error_rate > 5%", "network_latency > 200ms"],
+      "action": "触发服务降级，返回缓存数据",
+      "priority": "critical"
+    },
+    {
+      "id": "R006",
+      "name": "自动恢复",
+      "conditions": ["cpu_usage < 50%", "error_rate < 0.1%"],
+      "action": "恢复正常模式，关闭降级",
+      "priority": "low"
+    }
+  ]
+}
