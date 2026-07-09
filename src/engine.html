@@ -168,9 +168,9 @@ footer { text-align: center; color: var(--footer); font-size: 0.78rem; margin-to
 
   <div class="card">
     <div class="input-group">
-      <input type="text" id="inputField" placeholder="输入任意内容（文本、数字、特征值...）" autofocus>
-      <button class="btn" id="runBtn">启动转码引擎</button>
-      <button class="btn btn-secondary" id="randomBtn">随机示例</button>
+      <input type="text" id="inputField" placeholder="输入任意内容（文本、数字、特征值...）" autofocus aria-label="输入内容进行转码">
+      <button class="btn" id="runBtn" aria-label="启动转码引擎">启动转码引擎</button>
+      <button class="btn btn-secondary" id="randomBtn" aria-label="生成随机示例">随机示例</button>
     </div>
   </div>
 
@@ -213,8 +213,8 @@ footer { text-align: center; color: var(--footer); font-size: 0.78rem; margin-to
   <div class="card" id="opCard" style="display:none">
     <h3>易经运算</h3>
     <div class="input-group" style="margin-bottom:12px">
-      <input type="text" id="opInput" placeholder="输入参数" style="flex:0.5;min-width:100px" value="AI_training_data">
-      <select id="opSelect" style="padding:10px 14px;border:1px solid #d0d5dd;border-radius:8px;font-size:1rem;background:#fff">
+      <input type="text" id="opInput" placeholder="输入参数" style="flex:0.5;min-width:100px" value="AI_training_data" aria-label="运算输入参数">
+      <select id="opSelect" style="padding:10px 14px;border:1px solid #d0d5dd;border-radius:8px;font-size:1rem;background:#fff" aria-label="选择运算类型">
         <option value="cuo">错卦 (NOT · 卦位取反)</option>
         <option value="zong">综卦 (REV · 爻序反转)</option>
         <option value="bian">变爻 (XOR · 异或运算)</option>
@@ -223,7 +223,7 @@ footer { text-align: center; color: var(--footer); font-size: 0.78rem; margin-to
         <option value="XOR">异或叠加 XOR</option>
         <option value="hu">互卦 (互 · 中爻取卦)</option>
       </select>
-      <input type="text" id="opSecond" placeholder="第二输入（AND/OR/XOR 需要）" style="flex:0.5;min-width:120px" value="system_init">
+      <input type="text" id="opSecond" placeholder="第二输入（AND/OR/XOR 需要）" style="flex:0.5;min-width:120px" value="system_init" aria-label="第二输入参数">
     </div>
     <div id="opResult" style="font-family:'SF Mono','Fira Code',monospace;font-size:0.9rem;background:#f8f9fa;border-radius:8px;padding:14px;white-space:pre-wrap"></div>
   </div>
@@ -433,7 +433,14 @@ function addHistory(input) {
   if (empty && list.children.length === 1 && empty.textContent === '暂无记录') list.innerHTML = '';
   const item = document.createElement('div');
   item.className = 'history-item';
-  item.innerHTML = `<span class="history-input">${input}</span><span class="history-result">${hex.bin} ${hex.name}</span>`;
+  const inputSpan = document.createElement('span');
+  inputSpan.className = 'history-input';
+  inputSpan.textContent = input;
+  const resultSpan = document.createElement('span');
+  resultSpan.className = 'history-result';
+  resultSpan.textContent = `${hex.bin} ${hex.name}`;
+  item.appendChild(inputSpan);
+  item.appendChild(resultSpan);
   item.onclick = () => { document.getElementById('inputField').value = input; render(input); };
   list.insertBefore(item, list.firstChild);
   if (list.children.length > 50) list.removeChild(list.lastChild);
