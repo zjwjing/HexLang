@@ -257,6 +257,82 @@ python src/cli.py --adapter adapters/hex64-v1
 
 ---
 
+## 多语言编译
+
+HexLang 编译器支持将卦象标签编译为 4 种目标语言，统一循环体保证各语言输出一致。
+
+```javascript
+// 输入：泽雷随（tags: 跟随, 顺从, 适应, 订阅, 监听, 代理）
+compileHex(hexagram)
+// → 输出 4 种语言代码
+```
+
+| 语言 | 标识 | 命名规范 | 示例输出 |
+|------|------|---------|---------|
+| JavaScript | `js` | camelCase | `follow('泽雷随');` |
+| Python | `py` | snake_case | `follow('泽雷随')` |
+| Rust | `rs` | snake_case + `::` | `system::follow("泽雷随");` |
+| Go | `go` | PascalCase + `.` | `system.Follow("泽雷随")` |
+
+### 各语言转换示例
+
+```javascript
+// JavaScript
+// HexLang → JS  ·  泽雷随  (100110)
+  follow('泽雷随');
+  comply('泽雷随');
+  adapt('泽雷随');
+  subscribe('泽雷随');
+  listen('泽雷随');
+  proxy('泽雷随');
+```
+
+```python
+# Python
+# HexLang → PY  ·  泽雷随  (100110)
+  follow('泽雷随')
+  comply('泽雷随')
+  adapt('泽雷随')
+  subscribe('泽雷随')
+  listen('泽雷随')
+  proxy('泽雷随')
+```
+
+```rust
+// Rust
+// HexLang → RS  ·  泽雷随  (100110)
+  watcher::watch("泽雷随", callback);
+  proxy::forward(req, "泽雷随");
+  transport::send("泽雷随", packet);
+  loadBalancer::distribute("泽雷随", tasks);
+  gossip::spread("泽雷随", message);
+  agent::infect("泽雷随");
+```
+
+```go
+// Go
+// HexLang → GO  ·  泽雷随  (100110)
+  watcher.Watch("泽雷随", callback);
+  proxy.Forward(req, "泽雷随");
+  transport.Send("泽雷随", packet);
+  loadBalancer.Distribute("泽雷随", tasks);
+  gossip.Spread("泽雷随", message);
+  agent.Infect("泽雷随");
+```
+
+### 语言特性对比
+
+| 特性 | JavaScript | Python | Rust | Go |
+|------|-----------|--------|------|----|
+| 方法调用 | `.method()` | `.method()` | `::method()` | `.Method()` |
+| 命名规范 | camelCase | snake_case | snake_case | PascalCase |
+| 语句结束 | `;` | 无 | `;` | 无 |
+| 注释 | `//` | `#` | `//` | `//` |
+| 空值 | `null` | `None` | `None` | `nil` |
+| 标准库风格 | 对象方法 | 函数调用 | 模块::函数 | 包.函数 |
+
+---
+
 ## 数据结构
 
 | 字段 | 类型 | 说明 | 示例 |
