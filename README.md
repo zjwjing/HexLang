@@ -349,8 +349,9 @@ Hex64 的设计并非孤立创新，而是延续了前现代离散数学的探�
 ## Roadmap
 - **v1.2** ✅ HexLang 基础编译器 · CLI 工具完善 · 八经卦 ASCII 艺术
 - **v1.3** ✅ Python SDK · Qwen3.5-9B 集成 · HTTP API 服务
-- **v1.4** 🔄 Arduino/Raspberry Pi 硬件适配
-- **v2.0** 📋 自定义符号系统映射 · 更多 LLM 集成
+- **v1.4** 🔄 核心闭环落地（2026.7-9）：QLoRA 训练 → feedback 闭环 → 合规防护 → 5000 条训练数据 → 文档体系
+- **v1.5** 📋 生态工具铺量（2026.10-2027.3）：VSCode 插件 → Rule Studio Alpha → 语义缓存 API → 企业版仪表盘
+- **v2.0** 📋 商业化 + 长期壁垒（2027.4-12）：企业版 License → Adapter 商店 → 商标注册 → 学术白皮书
 
 ---
 
