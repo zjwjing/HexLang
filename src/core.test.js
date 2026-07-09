@@ -160,4 +160,47 @@ describe('Hex64Engine', () => {
       assert.ok(empty <= 5, `${empty} hexagrams have zero hits — distribution may be skewed`);
     });
   });
+
+  describe('featureVector()', () => {
+    it('returns array of 6 numbers (0 or 1)', () => {
+      const vec = engine.featureVector('hello');
+      assert.equal(vec.length, 6);
+      vec.forEach(v => assert.ok(v === 0 || v === 1));
+    });
+
+    it('matches the binary representation of the hexagram', () => {
+      const hex = engine.lookup('test');
+      const vec = engine.featureVector('test');
+      const expected = hex.bin.split('').map(Number);
+      assert.deepEqual(vec, expected);
+    });
+  });
+
+  describe('encodeSeeded()', () => {
+    it('returns deterministic results for same key', () => {
+      const a = engine.encodeSeeded('session-abc');
+      const b = engine.encodeSeeded('session-abc');
+      assert.equal(a.name, b.name);
+      assert.equal(a.bin, b.bin);
+      assert.equal(a.index, b.index);
+    });
+
+    it('returns different results for different keys', () => {
+      const a = engine.encodeSeeded('key-1');
+      const b = engine.encodeSeeded('key-2');
+      assert.notEqual(a.bin, b.bin);
+    });
+
+    it('returns all expected fields', () => {
+      const r = engine.encodeSeeded('test-key');
+      assert.ok(r.index >= 0 && r.index < 64);
+      assert.equal(r.bin.length, 6);
+      assert.ok(typeof r.name === 'string');
+      assert.ok(typeof r.hexFont === 'string');
+      assert.ok(typeof r.english === 'string');
+      assert.ok(Array.isArray(r.tags));
+      assert.ok(Array.isArray(r.yaoWeights));
+      assert.equal(r.yaoWeights.length, 6);
+    });
+  });
 });
