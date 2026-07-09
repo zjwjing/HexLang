@@ -1,0 +1,26 @@
+[
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "分析输入: timeout_error"
+      },
+      {
+        "role": "assistant",
+        "content": "[Hex64溯源] 泽雷随\n根据历史反馈，'timeout_error'通常对应泽雷随。"
+      }
+    ]
+  },
+  {
+    "messages": [
+      {
+        "role": "user",
+        "content": "分析输入: error"
+      },
+      {
+        "role": "assistant",
+        "content": "[Hex64溯源] 泽雷随\n根据历史反馈，'error'通常对应泽雷随。"
+      }
+    ]
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-07-09T08:37:39.821583",
+  "total_rules": 2,
+  "rules": [
+    {
+      "keyword": "timeout_error",
+      "target_hex": "泽雷随",
+      "support": 3,
+      "confidence": 1.0,
+      "all_targets": {
+        "泽雷随": 3
+      }
+    },
+    {
+      "keyword": "error",
+      "target_hex": "泽雷随",
+      "support": 3,
+      "confidence": 1.0,
+      "all_targets": {
+        "泽雷随": 3
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "timestamp": "2026-07-09T08:02:01.342232",
+    "user_input": "timeout_error",
+    "original_hex": "天水讼",
+    "target_hex": "泽雷随",
+    "scene": "ops",
+    "confidence": 1.0,
+    "parsed": true
+  },
+  {
+    "timestamp": "2026-07-09T08:03:51.088026",
+    "user_input": "timeout_error",
+    "original_hex": "天水讼",
+    "target_hex": "泽雷随",
+    "scene": "ops",
+    "confidence": 1.0,
+    "parsed": true
+  },
+  {
+    "timestamp": "2026-07-09T08:03:51.093965",
+    "user_input": "deploy_production",
+    "original_hex": "地天泰",
+    "target_hex": "火天大有",
+    "scene": "devops",
+    "confidence": 1.0,
+    "parsed": true
+  },
+  {
+    "timestamp": "2026-07-09T08:03:51.102157",
+    "user_input": "timeout_error",
+    "original_hex": "天水讼",
+    "target_hex": "泽雷随",
+    "scene": "ops",
+    "confidence": 1.0,
+    "parsed": true
+  },
+  {
+    "timestamp": "2026-07-09T08:03:51.108044",
+    "user_input": "system_init",
+    "original_hex": "火风鼎",
+    "target_hex": "坤为地",
+    "scene": "system",
+    "confidence": 1.0,
+    "parsed": true
+  }
+]

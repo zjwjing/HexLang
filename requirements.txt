@@ -1,0 +1,23 @@
+# Hex64 + Qwen3.5-9B 依赖文件
+
+## 核心依赖
+torch>=2.0.0
+transformers>=4.44.0
+accelerate
+sentencepiece
+
+## 模型加载
+modelscope>=1.16.0  # 国内用户推荐使用 ModelScope 下载模型
+
+## 规则归纳（可选）
+pandas>=1.5.0
+mlxtend>=0.21.0     # 频繁项集挖掘
+
+## LoRA 微调（可选，需要较大显存）
+unsloth             # 快速 LoRA 微调，显省一半显存
+trl>=0.7.0          # Transformers Reinforcement Learning
+datasets>=2.14.0    # HuggingFace Datasets
+
+## 开发工具
+black>=23.0.0       # 代码格式化
+flake8>=6.0.0       # 代码检查

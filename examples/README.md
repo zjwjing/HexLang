@@ -10,6 +10,7 @@
 |------|------|---------|
 | `basic-usage.js` | 基础 API 用法（转码/特征向量/伪代码/GPIO/运算） | `node basic-usage.js` |
 | `engine-api.js` | 高级用法（自定义数据库/链式调用/哈希分布/可视化） | `node engine-api.js` |
+| `logo-demo.js` | 八经卦 ASCII 艺术展示（5个版本） | `node logo-demo.js` |
 
 ---
 
@@ -21,6 +22,9 @@ node examples/basic-usage.js
 
 # 高级示例
 node examples/engine-api.js
+
+# 启动画面示例（5个版本的八经卦 ASCII 艺术）
+node examples/logo-demo.js
 ```
 
 ---
