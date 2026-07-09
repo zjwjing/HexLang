@@ -11,8 +11,8 @@
 
 | 编号 | 任务 | 状态 | 优先级 | 负责人 | 来源 | 关联任务卡 |
 |------|------|------|--------|--------|------|-----------|
+| 024 | LoRA 微调训练（Qwen3.5-9B + 2002 条训练数据）| 📋 待硬件 | P1 | 朵朵 | 训练计划 | TASKS.md#训练计划 |
 | 016 | QLoRA 训练目标加"文本→64维卦分布"辅助损失 | 📋 待做 | P2 | 朵朵 | bagau-llm 思路吸收 | — |
-| 023 | 修复 GitHub SSL 证书问题并重试推送 | 🔧 进行中 | P1 | — | — | — |
 
 ## 已完成任务
 
@@ -118,3 +118,57 @@ data/hex64_full.json ← 64卦数据（含 yao_weights、hex_font、english）
 | adamblvck/iching-wilhelm-dataset | Unicode 符号 + 英文名 + 威廉注释 | ✅ 已整合 |
 | qntm/hexagram-encode | Base64 ↔ 卦符映射 | ✅ 已整合 |
 | chengjun/iching | 中文原文/白话文解释 | ✅ 已整合 (63/64) |
+
+## 训练计划
+
+### 前提条件
+
+- 硬件：NVIDIA RTX 4080 SUPER（16GB VRAM，当前可用）
+- 模型：Qwen3.5-9B（Ollama 已安装 `qwen3.5:9b`，但 LoRA 训练需要 HuggingFace 格式）
+- 依赖：transformers 4.57.3 + peft 0.19.1 + trl 0.24.0 + datasets 4.3.0（均已安装）
+- 训练数据：`data/train_hex64.jsonl` — **2002 条 ✅**
+
+### 训练步骤
+
+```bash
+# 第一步：下载 HuggingFace 格式模型（约 18GB）
+python -c "from transformers import AutoModel; AutoModel.from_pretrained('Qwen/Qwen3.5-9B', cache_dir='models/')"
+
+# 第二步：运行 LoRA 微调
+python src/training/train_lora.py
+
+# 第三步：验证训练结果
+# 输出：adapters/hex64-v1/（约 50MB，LoRA 适配器权重）
+```
+
+### 参数建议
+
+| 参数 | 建议值 | 说明 |
+|------|--------|------|
+| lora_rank | 16 | LoRA 秩，越小越快 |
+| learning_rate | 2e-4 | 学习率 |
+| batch_size | 2 | 16GB VRAM 建议值 |
+| max_steps | 100 | 2002 条数据约 100 步 |
+| use_4bit | true | INT4 量化节省显存 |
+
+### 训练数据覆盖
+
+| 维度 | 数值 |
+|------|------|
+| 样本数 | 2002 条 |
+| 覆盖卦象 | 64/64（100%）|
+| 每卦平均 | 30 条 |
+| 问法类型 | 7 大类（单卦详解 + 卦象对比 + 技术问答 + 故障排查 + 架构设计 + 安全 + 性能 + 测试 + 监控 + DevOps）|
+
+### 硬件要求对比
+
+| 量化方式 | 显存要求 | RTX 4080 SUPER (16GB) |
+|---------|---------|----------------------|
+| INT4 | ~8GB | ✅ 可用 |
+| FP16 | ~20GB | ❌ 不够，需切换至双卡或 INT4 |
+
+### 输出产物
+
+- `adapters/hex64-v1/` — LoRA 适配器权重（~50MB）
+- `data/semantic_cache.json` — 推理缓存（运行后自动生成）
+- 效果：模型学会 Hex64 编码格式 + 工程化回答风格 + 卦象逻辑对齐
