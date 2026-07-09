@@ -12,6 +12,7 @@
 | 编号 | 任务 | 状态 | 优先级 | 负责人 | 来源 | 关联任务卡 |
 |------|------|------|--------|--------|------|-----------|
 | 016 | QLoRA 训练目标加"文本→64维卦分布"辅助损失 | 📋 待做 | P2 | 朵朵 | bagau-llm 思路吸收 | — |
+| 023 | 修复 GitHub SSL 证书问题并重试推送 | 🔧 进行中 | P1 | — | — | — |
 
 ## 已完成任务
 
@@ -33,25 +34,32 @@
 | 020 | 爻辰 mod384 计数器（京房纳甲）| 2026-07-09 | 朵朵 | OpenCode |
 | 021 | 禹步 PRNG（洛书 3×3 网格）| 2026-07-09 | 朵朵 | OpenCode |
 | 022 | 太玄三进制编码 + 元会运世嵌套计数器 | 2026-07-09 | 朵朵 | OpenCode |
+| 023 | **Python Encoder 架构升级：爻权重 + 互卦 + CoT Prompt** | **2026-07-xx** | **朵朵** | **用户建议** | **Encoder 从"标签系统"升级为"特征生成器"** |
+| 024 | **Rule Mapper：业务规则 → 卦象映射器** | **2026-07-xx** | **朵朵** | **用户建议** | **实现 if-else → 卦象确定性编码** |
+| 025 | **QwenLoader System Prompt：强制思维链推理** | **2026-07-xx** | **朵朵** | **用户建议** | **CoT 爻位分析 + 互卦推演** |
+| 026 | **Semantic Cache：基于爻权重的推理缓存** | **2026-07-xx** | **朵朵** | **qwen_loader.py** | **避免重复推理相同卦象** |
 
 ## 模块健康度
 
 | 模块 | 状态 | 备注 |
 |------|------|------|
-| `src/core.js` | 🟢 正常 | 引擎核心：O(1) binIndex、encodeSeeded、7种运算 + 方图/爻辰/禹步 |
+| `src/core.js` | 🟢 正常 | 引擎核心：O(1) binIndex、encodeSeeded、7种运算（含互卦）|
 | `src/compiler.js` | 🟢 正常 | 共享编译逻辑（compileHex），4语言输出 |
 | `src/templates.js` | 🟢 正常 | 384条模板（单一数据源，build script 生成）|
 | `src/database.js` | 🟢 正常 | 数据层（HEXAGRAMS + TAG_TO_OP）|
 | `src/taixuan.js` | 🟢 正常 | 太玄三进制编码（81首+729赞）|
 | `src/yuanhui.js` | 🟢 正常 | 元会运世四层嵌套计数器 |
 | `src/compile.test.js` | 🟢 正常 | 8个编译测试（4语言覆盖）|
-| `src/core.test.js` | 🟢 正常 | 48个引擎测试（含方图/爻辰/禹步/encodeSeeded）|
+| `src/core.test.js` | 🟢 正常 | 56/56 通过（含方图/爻辰/禹步/encodeSeeded）|
 | `src/engine.html` | 🟢 正常 | 浏览器 Demo：2×2编译器网格、7种运算、暗色模式 |
 | `data/hex64_full.json` | 🟢 正常 | v1.2.0，64卦 + 443 tagToOp + yao_weights + hex_font + english |
 | `bin/hex64.js` | 🟢 正常 | CLI：先天八卦 LOGO、4语言彩色输出、JSON 模式 |
 | `scripts/rebuild-templates.mjs` | 🟢 正常 | 构建脚本：从 templates.js 读取，生成 rs/go |
 | `.github/workflows/ci.yml` | 🟢 正常 | CI (Node 18/20/22) |
 | `README.md` | 🟢 正常 | 含 Related Work 生态定位、运算规则表（含互卦）|
+| **`src/core/encoder.py`** | **🟢 升级** | **爻级加权特征 + 互卦计算 + 12维组合向量** |
+| **`src/models/qwen_loader.py`** | **🟢 升级** | **CoT System Prompt + 语义缓存 + 防幻觉约束** |
+| **`src/core/rule_mapper.py`** | **🟢 新增** | **业务规则→卦象确定性映射器** |
 
 ## 审计摘要 (2026-07-09 最终)
 
