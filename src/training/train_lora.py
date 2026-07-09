@@ -82,16 +82,18 @@ def train_lora(
         base_dir = Path(__file__).parent.parent.parent
         models_dir = base_dir / 'models'
         
-        # 查找第一个 Qwen3.5 模型
+        # 查找第一个 Qwen3.5 模型（支持 GPTQ-INT4 社区版）
         for item in models_dir.iterdir():
-            if item.is_dir() and 'qwen3.5' in item.name.lower():
+            name = item.name.lower()
+            if item.is_dir() and ('qwen3.5' in name or 'qwen3_5' in name):
                 model_path = str(item)
                 break
     
     if model_path is None:
         raise FileNotFoundError(
             "未找到模型\n"
-            "请指定 model_path 参数，或确保 models/ 目录下有 Qwen3.5 模型"
+            "请先下载：python -c \"from transformers import AutoModel; AutoModel.from_pretrained('mssfj/Qwen3.5-9B-GPTQ-INT4', cache_dir='models/')\"\n"
+            "或者指定 model_path 参数"
         )
     
     # 自动检测训练数据路径

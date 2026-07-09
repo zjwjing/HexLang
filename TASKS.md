@@ -124,15 +124,15 @@ data/hex64_full.json ← 64卦数据（含 yao_weights、hex_font、english）
 ### 前提条件
 
 - 硬件：NVIDIA RTX 4080 SUPER（16GB VRAM，当前可用）
-- 模型：Qwen3.5-9B（HuggingFace 格式待下载，约 18GB）
+- 模型：`mssfj/Qwen3.5-9B-GPTQ-INT4`（HuggingFace 社区量化版，GPTQ 4-bit，~7.7GB，未下载）
 - 依赖：transformers 4.57.3 + peft 0.19.1 + trl 0.24.0 + datasets 4.3.0（均已安装）
 - 训练数据：`data/train_hex64.jsonl` — **2002 条 ✅**
 
 ### 快速开始
 
 ```bash
-# 第一步：下载 HuggingFace 格式模型（约 18GB，一次）
-python -c "from transformers import AutoModel; AutoModel.from_pretrained('Qwen/Qwen3.5-9B', cache_dir='models/')"
+# 第一步：下载 GPTQ-INT4 量化模型（~7.7GB，一次性）
+python -c "from transformers import AutoModel; AutoModel.from_pretrained('mssfj/Qwen3.5-9B-GPTQ-INT4', cache_dir='models/')"
 
 # 第二步：运行 LoRA 微调
 python src/training/train_lora.py
