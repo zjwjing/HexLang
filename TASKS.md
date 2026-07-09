@@ -141,15 +141,19 @@ python src/training/train_lora.py
 # 输出：adapters/hex64-v1/（约 50MB，LoRA 适配器权重）
 ```
 
-### 参数建议
+### 参数建议（RTX 4080 SUPER 优化版）
 
-| 参数 | 建议值 | 说明 |
-|------|--------|------|
-| lora_rank | 16 | LoRA 秩，越小越快 |
-| learning_rate | 2e-4 | 学习率 |
-| batch_size | 2 | 16GB VRAM 建议值 |
-| max_steps | 100 | 2002 条数据约 100 步 |
-| use_4bit | true | INT4 量化节省显存 |
+| 参数 | 原值 | 优化值 | 说明 |
+|------|------|--------|------|
+| lora_rank | 16 | 16 | LoRA 秩 |
+| learning_rate | 2e-4 | **3e-4** | 稍微提高，加快收敛 |
+| batch_size | 2 | **4** | 4080S INT4 下 16GB 显存稳跑 |
+| gradient_accumulation_steps | 4 | **2** | 有效 Batch Size = 4×2=8 |
+| max_steps | 100 | **300** | 2002 条数据充分收敛 |
+| warmup_steps | 5 | **30** | 前 30 步预热，稳定训练 |
+| save_steps | max_steps//2 | **50** | 每 50 步存一次，防中断 |
+| save_total_limit | 2 | **3** | 保留 3 个检查点 |
+| logging_steps | 10 | 10 | 每 10 步打印 Loss |
 
 ### 训练数据覆盖
 

@@ -58,23 +58,23 @@ def train_lora(
     model_path: str = None,
     training_data_file: str = None,
     adapter_path: str = "adapters/hex64-v1",
-    max_steps: int = 100,
+    max_steps: int = 300,
     lora_rank: int = 16,
-    learning_rate: float = 2e-4,
-    batch_size: int = 2,
+    learning_rate: float = 3e-4,
+    batch_size: int = 4,
     use_4bit: bool = True
 ):
     """
-    执行 LoRA 微调
+    执行 LoRA 微调（RTX 4080 SUPER 优化版）
     
     Args:
         model_path: 基础模型路径
         training_data_file: 训练数据文件路径
         adapter_path: 适配器保存路径
-        max_steps: 最大训练步数
+        max_steps: 最大训练步数（4080S建议300步）
         lora_rank: LoRA 秩
-        learning_rate: 学习率
-        batch_size: 批次大小
+        learning_rate: 学习率（4080S建议3e-4）
+        batch_size: 批次大小（4080S INT4下可到4）
         use_4bit: 是否使用 4 位量化
     """
     # 自动检测模型路径
@@ -195,20 +195,20 @@ def train_lora(
         packing=True,
         args={
             "per_device_train_batch_size": batch_size,
-            "gradient_accumulation_steps": 4,
-            "warmup_steps": 5,
+            "gradient_accumulation_steps": 2,
+            "warmup_steps": 30,
             "max_steps": max_steps,
             "learning_rate": learning_rate,
             "fp16": not use_4bit,
             "bf16": use_4bit,
             "logging_steps": 10,
+            "save_steps": 50,
+            "save_total_limit": 3,
             "optim": "adamw_8bit",
             "weight_decay": 0.01,
             "lr_scheduler_type": "linear",
             "seed": 3407,
             "output_dir": adapter_path,
-            "save_steps": max_steps // 2,
-            "save_total_limit": 2,
         }
     )
     
