@@ -65,7 +65,7 @@ HexLang/
 
 ### 前置条件
 
-- **Node.js** >= 22.0.0
+- **Node.js** >= 18.0.0 （推荐 20+）
 - **浏览器** 任意现代浏览器（Chrome/Firefox/Edge）
 - **Git** 版本控制
 
@@ -216,6 +216,19 @@ C:/Users/zjwji/.bitfun/personal_assistant/workspace/.tasks/
 ```
 
 type 枚举：`feat` / `fix` / `docs` / `refactor` / `test` / `chore`
+
+### 视觉前缀（可选）
+
+可以使用八卦 Unicode 符号作为 commit 前缀，增加可读性：
+
+```
+[☰] feat: 添加乾卦相关功能
+[☷] fix: 修复坤卦映射错误
+[☲] docs: 更新离卦可视化文档
+[☳] chore: 触发构建流程
+```
+
+符号说明：☰乾 ☱兑 ☲离 ☳震 ☴巽 ☵坎 ☶艮 ☷坤
 
 ### 正文要求
 

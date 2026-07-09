@@ -3,6 +3,8 @@
     "bin": "000000",
     "name": "坤为地",
     "pinyin": "kūn wéi dì",
+    "en": "The Receptive",
+    "category": "稳定/承载",
     "tags": [
       "承载",
       "包容",
@@ -11,13 +13,14 @@
       "存储",
       "稳定"
     ],
-    "weight": 0.25,
-    "category": "稳定/承载"
+    "weight": 0.25
   },
   {
     "bin": "000001",
     "name": "山地剥",
     "pinyin": "shān dì bō",
+    "en": "Splitting Apart",
+    "category": "变化/衰退",
     "tags": [
       "剥落",
       "衰退",
@@ -26,13 +29,14 @@
       "清理",
       "结束"
     ],
-    "weight": 0.2,
-    "category": "变化/衰退"
+    "weight": 0.2
   },
   {
     "bin": "000010",
     "name": "水地比",
     "pinyin": "shuǐ dì bǐ",
+    "en": "Union",
+    "category": "关系/协作",
     "tags": [
       "亲附",
       "和谐",
@@ -41,13 +45,14 @@
       "同步",
       "合并"
     ],
-    "weight": 0.55,
-    "category": "关系/协作"
+    "weight": 0.55
   },
   {
     "bin": "000011",
     "name": "风地观",
     "pinyin": "fēng dì guān",
+    "en": "Contemplation",
+    "category": "观察/分析",
     "tags": [
       "观察",
       "审视",
@@ -56,13 +61,14 @@
       "分析",
       "审计"
     ],
-    "weight": 0.5,
-    "category": "观察/分析"
+    "weight": 0.5
   },
   {
     "bin": "000100",
     "name": "雷地豫",
     "pinyin": "léi dì yù",
+    "en": "Enthusiasm",
+    "category": "执行/行动",
     "tags": [
       "预备",
       "愉悦",
@@ -71,13 +77,14 @@
       "启动",
       "预加载"
     ],
-    "weight": 0.6,
-    "category": "执行/行动"
+    "weight": 0.6
   },
   {
     "bin": "000101",
     "name": "火地晋",
     "pinyin": "huǒ dì jìn",
+    "en": "Progress",
+    "category": "成长/发展",
     "tags": [
       "晋升",
       "前进",
@@ -86,13 +93,14 @@
       "迭代",
       "优化"
     ],
-    "weight": 0.7,
-    "category": "成长/发展"
+    "weight": 0.7
   },
   {
     "bin": "000110",
     "name": "泽地萃",
     "pinyin": "zé dì cuì",
+    "en": "Gathering Together",
+    "category": "关系/协作",
     "tags": [
       "聚集",
       "荟萃",
@@ -101,13 +109,14 @@
       "整合",
       "收集"
     ],
-    "weight": 0.65,
-    "category": "关系/协作"
+    "weight": 0.65
   },
   {
     "bin": "000111",
     "name": "天地否",
     "pinyin": "tiān dì pǐ",
+    "en": "Standstill",
+    "category": "阻塞/停滞",
     "tags": [
       "闭塞",
       "阻塞",
@@ -116,13 +125,14 @@
       "阻断",
       "暂停"
     ],
-    "weight": 0.25,
-    "category": "阻塞/停滞"
+    "weight": 0.25
   },
   {
     "bin": "001000",
     "name": "地山谦",
     "pinyin": "dì shān qiān",
+    "en": "Modesty",
+    "category": "稳定/低调",
     "tags": [
       "谦虚",
       "低调",
@@ -131,13 +141,14 @@
       "保守",
       "安全模式"
     ],
-    "weight": 0.45,
-    "category": "稳定/低调"
+    "weight": 0.45
   },
   {
     "bin": "001001",
     "name": "艮为山",
     "pinyin": "gèn wéi shān",
+    "en": "Keeping Still",
+    "category": "停止/等待",
     "tags": [
       "静止",
       "停止",
@@ -146,13 +157,14 @@
       "暂停",
       "等待"
     ],
-    "weight": 0.35,
-    "category": "停止/等待"
+    "weight": 0.35
   },
   {
     "bin": "001010",
     "name": "水山蹇",
     "pinyin": "shuǐ shān jiǎn",
+    "en": "Obstruction",
+    "category": "风险/困难",
     "tags": [
       "艰难",
       "险阻",
@@ -161,13 +173,14 @@
       "错误",
       "异常"
     ],
-    "weight": 0.3,
-    "category": "风险/困难"
+    "weight": 0.3
   },
   {
     "bin": "001011",
     "name": "风山渐",
     "pinyin": "fēng shān jiàn",
+    "en": "Development",
+    "category": "成长/渐进",
     "tags": [
       "渐进",
       "缓慢",
@@ -176,13 +189,14 @@
       "迭代",
       "持续集成"
     ],
-    "weight": 0.55,
-    "category": "成长/渐进"
+    "weight": 0.55
   },
   {
     "bin": "001100",
     "name": "雷山小过",
     "pinyin": "léi shān xiǎo guò",
+    "en": "Small Excess",
+    "category": "调整/修正",
     "tags": [
       "小过",
       "调整",
@@ -191,13 +205,14 @@
       "校准",
       "补丁"
     ],
-    "weight": 0.45,
-    "category": "调整/修正"
+    "weight": 0.45
   },
   {
     "bin": "001101",
     "name": "火山旅",
     "pinyin": "huǒ shān lǚ",
+    "en": "The Wanderer",
+    "category": "移动/临时",
     "tags": [
       "旅行",
       "移动",
@@ -206,13 +221,14 @@
       "漂泊",
       "无状态"
     ],
-    "weight": 0.5,
-    "category": "移动/临时"
+    "weight": 0.5
   },
   {
     "bin": "001110",
     "name": "泽山咸",
     "pinyin": "zé shān xián",
+    "en": "Influence",
+    "category": "关系/互动",
     "tags": [
       "感应",
       "互动",
@@ -221,13 +237,14 @@
       "通信",
       "回调"
     ],
-    "weight": 0.6,
-    "category": "关系/互动"
+    "weight": 0.6
   },
   {
     "bin": "001111",
     "name": "天山遁",
     "pinyin": "tiān shān dùn",
+    "en": "Retreat",
+    "category": "撤退/退出",
     "tags": [
       "退避",
       "隐退",
@@ -236,13 +253,14 @@
       "回滚",
       "断开"
     ],
-    "weight": 0.3,
-    "category": "撤退/退出"
+    "weight": 0.3
   },
   {
     "bin": "010000",
     "name": "地水师",
     "pinyin": "dì shuǐ shī",
+    "en": "The Army",
+    "category": "执行/领导",
     "tags": [
       "军队",
       "领导",
@@ -251,13 +269,14 @@
       "调度",
       "管理"
     ],
-    "weight": 0.65,
-    "category": "执行/领导"
+    "weight": 0.65
   },
   {
     "bin": "010001",
     "name": "山水蒙",
     "pinyin": "shān shuǐ méng",
+    "en": "Youthful Folly",
+    "category": "学习/启蒙",
     "tags": [
       "启蒙",
       "蒙昧",
@@ -266,13 +285,14 @@
       "探索",
       "训练"
     ],
-    "weight": 0.4,
-    "category": "学习/启蒙"
+    "weight": 0.4
   },
   {
     "bin": "010010",
     "name": "坎为水",
     "pinyin": "kǎn wéi shuǐ",
+    "en": "The Abysmal",
+    "category": "风险/危险",
     "tags": [
       "危险",
       "陷阱",
@@ -281,13 +301,14 @@
       "危机",
       "故障"
     ],
-    "weight": 0.3,
-    "category": "风险/危险"
+    "weight": 0.3
   },
   {
     "bin": "010011",
     "name": "风水涣",
     "pinyin": "fēng shuǐ huàn",
+    "en": "Dispersion",
+    "category": "分散/扩散",
     "tags": [
       "涣散",
       "离散",
@@ -296,13 +317,14 @@
       "传播",
       "广播"
     ],
-    "weight": 0.35,
-    "category": "分散/扩散"
+    "weight": 0.35
   },
   {
     "bin": "010100",
     "name": "雷水解",
     "pinyin": "léi shuǐ xiè",
+    "en": "Deliverance",
+    "category": "解除/恢复",
     "tags": [
       "解除",
       "缓解",
@@ -311,13 +333,14 @@
       "释放",
       "重置"
     ],
-    "weight": 0.6,
-    "category": "解除/恢复"
+    "weight": 0.6
   },
   {
     "bin": "010101",
     "name": "火水未济",
     "pinyin": "huǒ shuǐ wèi jì",
+    "en": "Before Completion",
+    "category": "未完成/进行",
     "tags": [
       "未完成",
       "继续",
@@ -326,13 +349,14 @@
       "进行中",
       "挂起"
     ],
-    "weight": 0.5,
-    "category": "未完成/进行"
+    "weight": 0.5
   },
   {
     "bin": "010110",
     "name": "泽水困",
     "pinyin": "zé shuǐ kùn",
+    "en": "Oppression",
+    "category": "风险/困境",
     "tags": [
       "困境",
       "困顿",
@@ -341,13 +365,14 @@
       "耗尽",
       "崩溃"
     ],
-    "weight": 0.2,
-    "category": "风险/困境"
+    "weight": 0.2
   },
   {
     "bin": "010111",
     "name": "天水讼",
     "pinyin": "tiān shuǐ sòng",
+    "en": "Conflict",
+    "category": "冲突/争议",
     "tags": [
       "争讼",
       "冲突",
@@ -356,13 +381,14 @@
       "分歧",
       "异常"
     ],
-    "weight": 0.35,
-    "category": "冲突/争议"
+    "weight": 0.35
   },
   {
     "bin": "011000",
     "name": "地风升",
     "pinyin": "dì fēng shēng",
+    "en": "Pushing Upward",
+    "category": "成长/上升",
     "tags": [
       "上升",
       "提升",
@@ -371,13 +397,14 @@
       "扩容",
       "升级"
     ],
-    "weight": 0.75,
-    "category": "成长/上升"
+    "weight": 0.75
   },
   {
     "bin": "011001",
     "name": "山风蛊",
     "pinyin": "shān fēng gǔ",
+    "en": "Decay",
+    "category": "整治/革新",
     "tags": [
       "整治",
       "革新",
@@ -386,13 +413,14 @@
       "修复",
       "治理"
     ],
-    "weight": 0.55,
-    "category": "整治/革新"
+    "weight": 0.55
   },
   {
     "bin": "011010",
     "name": "水风井",
     "pinyin": "shuǐ fēng jǐng",
+    "en": "The Well",
+    "category": "资源/供给",
     "tags": [
       "源泉",
       "滋养",
@@ -401,13 +429,14 @@
       "数据源",
       "缓存"
     ],
-    "weight": 0.6,
-    "category": "资源/供给"
+    "weight": 0.6
   },
   {
     "bin": "011011",
     "name": "巽为风",
     "pinyin": "xùn wéi fēng",
+    "en": "The Gentle",
+    "category": "渗透/扩散",
     "tags": [
       "顺应",
       "渗透",
@@ -416,13 +445,14 @@
       "遍历",
       "递归"
     ],
-    "weight": 0.55,
-    "category": "渗透/扩散"
+    "weight": 0.55
   },
   {
     "bin": "011100",
     "name": "雷风恒",
     "pinyin": "léi fēng héng",
+    "en": "Duration",
+    "category": "稳定/持久",
     "tags": [
       "恒久",
       "稳定",
@@ -431,13 +461,14 @@
       "长连接",
       "保持"
     ],
-    "weight": 0.7,
-    "category": "稳定/持久"
+    "weight": 0.7
   },
   {
     "bin": "011101",
     "name": "火风鼎",
     "pinyin": "huǒ fēng dǐng",
+    "en": "The Cauldron",
+    "category": "创建/创新",
     "tags": [
       "鼎立",
       "创新",
@@ -446,13 +477,14 @@
       "构建",
       "部署"
     ],
-    "weight": 0.75,
-    "category": "创建/创新"
+    "weight": 0.75
   },
   {
     "bin": "011110",
     "name": "泽风大过",
     "pinyin": "zé fēng dà guò",
+    "en": "Great Excess",
+    "category": "过度/极端",
     "tags": [
       "过度",
       "超越",
@@ -461,13 +493,14 @@
       "过载",
       "超标"
     ],
-    "weight": 0.4,
-    "category": "过度/极端"
+    "weight": 0.4
   },
   {
     "bin": "011111",
     "name": "天风姤",
     "pinyin": "tiān fēng gòu",
+    "en": "Coming to Meet",
+    "category": "相遇/连接",
     "tags": [
       "相遇",
       "邂逅",
@@ -476,13 +509,14 @@
       "握手",
       "连接"
     ],
-    "weight": 0.5,
-    "category": "相遇/连接"
+    "weight": 0.5
   },
   {
     "bin": "100000",
     "name": "地雷复",
     "pinyin": "dì léi fù",
+    "en": "Return",
+    "category": "恢复/回归",
     "tags": [
       "恢复",
       "复兴",
@@ -491,13 +525,14 @@
       "回滚",
       "重启"
     ],
-    "weight": 0.65,
-    "category": "恢复/回归"
+    "weight": 0.65
   },
   {
     "bin": "100001",
     "name": "山雷颐",
     "pinyin": "shān léi yí",
+    "en": "Nourishment",
+    "category": "滋养/维护",
     "tags": [
       "颐养",
       "修养",
@@ -506,13 +541,14 @@
       "保养",
       "自检"
     ],
-    "weight": 0.55,
-    "category": "滋养/维护"
+    "weight": 0.55
   },
   {
     "bin": "100010",
     "name": "水雷屯",
     "pinyin": "shuǐ léi zhūn",
+    "en": "Difficulty at Beginning",
+    "category": "初始/萌芽",
     "tags": [
       "初生",
       "艰难",
@@ -521,13 +557,14 @@
       "初始化",
       "引导"
     ],
-    "weight": 0.4,
-    "category": "初始/萌芽"
+    "weight": 0.4
   },
   {
     "bin": "100011",
     "name": "风雷益",
     "pinyin": "fēng léi yì",
+    "en": "Increase",
+    "category": "增益/增长",
     "tags": [
       "增益",
       "利益",
@@ -536,13 +573,14 @@
       "增强",
       "附加值"
     ],
-    "weight": 0.7,
-    "category": "增益/增长"
+    "weight": 0.7
   },
   {
     "bin": "100100",
     "name": "震为雷",
     "pinyin": "zhèn wéi léi",
+    "en": "The Arousing",
+    "category": "激发/启动",
     "tags": [
       "震动",
       "激发",
@@ -551,13 +589,14 @@
       "唤醒",
       "事件"
     ],
-    "weight": 0.65,
-    "category": "激发/启动"
+    "weight": 0.65
   },
   {
     "bin": "100101",
     "name": "火雷噬嗑",
     "pinyin": "huǒ léi shì kē",
+    "en": "Biting Through",
+    "category": "治理/裁决",
     "tags": [
       "咬合",
       "治理",
@@ -566,13 +605,14 @@
       "验证",
       "检查"
     ],
-    "weight": 0.55,
-    "category": "治理/裁决"
+    "weight": 0.55
   },
   {
     "bin": "100110",
     "name": "泽雷随",
     "pinyin": "zé léi suí",
+    "en": "Following",
+    "category": "跟随/适应",
     "tags": [
       "跟随",
       "顺从",
@@ -581,13 +621,14 @@
       "监听",
       "代理"
     ],
-    "weight": 0.5,
-    "category": "跟随/适应"
+    "weight": 0.5
   },
   {
     "bin": "100111",
     "name": "天雷无妄",
     "pinyin": "tiān léi wú wàng",
+    "en": "Innocence",
+    "category": "本真/意外",
     "tags": [
       "无妄",
       "意外",
@@ -596,13 +637,14 @@
       "突发事件",
       "原始"
     ],
-    "weight": 0.45,
-    "category": "本真/意外"
+    "weight": 0.45
   },
   {
     "bin": "101000",
     "name": "地火明夷",
     "pinyin": "dì huǒ míng yí",
+    "en": "Darkening of the Light",
+    "category": "韬晦/隐忍",
     "tags": [
       "韬晦",
       "隐忍",
@@ -611,13 +653,14 @@
       "低调",
       "潜伏"
     ],
-    "weight": 0.35,
-    "category": "韬晦/隐忍"
+    "weight": 0.35
   },
   {
     "bin": "101001",
     "name": "山火贲",
     "pinyin": "shān huǒ bì",
+    "en": "Grace",
+    "category": "装饰/美化",
     "tags": [
       "装饰",
       "美化",
@@ -626,13 +669,14 @@
       "渲染",
       "UI"
     ],
-    "weight": 0.45,
-    "category": "装饰/美化"
+    "weight": 0.45
   },
   {
     "bin": "101010",
     "name": "水火既济",
     "pinyin": "shuǐ huǒ jì jì",
+    "en": "After Completion",
+    "category": "完成/成功",
     "tags": [
       "已完成",
       "成功",
@@ -641,13 +685,14 @@
       "交付",
       "上线"
     ],
-    "weight": 0.8,
-    "category": "完成/成功"
+    "weight": 0.8
   },
   {
     "bin": "101011",
     "name": "风火家人",
     "pinyin": "fēng huǒ jiā rén",
+    "en": "The Family",
+    "category": "内部/归属",
     "tags": [
       "家庭",
       "内部",
@@ -656,13 +701,14 @@
       "本地",
       "私有"
     ],
-    "weight": 0.55,
-    "category": "内部/归属"
+    "weight": 0.55
   },
   {
     "bin": "101100",
     "name": "雷火丰",
     "pinyin": "léi huǒ fēng",
+    "en": "Abundance",
+    "category": "丰盛/丰富",
     "tags": [
       "丰盛",
       "丰富",
@@ -671,13 +717,14 @@
       "充裕",
       "冗余"
     ],
-    "weight": 0.75,
-    "category": "丰盛/丰富"
+    "weight": 0.75
   },
   {
     "bin": "101101",
     "name": "离为火",
     "pinyin": "lí wéi huǒ",
+    "en": "The Clinging",
+    "category": "光明/文明",
     "tags": [
       "光明",
       "依附",
@@ -686,13 +733,14 @@
       "输出",
       "展现"
     ],
-    "weight": 0.7,
-    "category": "光明/文明"
+    "weight": 0.7
   },
   {
     "bin": "101110",
     "name": "泽火革",
     "pinyin": "zé huǒ gé",
+    "en": "Revolution",
+    "category": "变革/创新",
     "tags": [
       "变革",
       "革命",
@@ -701,13 +749,14 @@
       "迁移",
       "重构"
     ],
-    "weight": 0.65,
-    "category": "变革/创新"
+    "weight": 0.65
   },
   {
     "bin": "101111",
     "name": "天火同人",
     "pinyin": "tiān huǒ tóng rén",
+    "en": "Fellowship",
+    "category": "团结/协作",
     "tags": [
       "大同",
       "团结",
@@ -716,13 +765,14 @@
       "社区",
       "共享"
     ],
-    "weight": 0.75,
-    "category": "团结/协作"
+    "weight": 0.75
   },
   {
     "bin": "110000",
     "name": "地泽临",
     "pinyin": "dì zé lín",
+    "en": "Approach",
+    "category": "面临/监督",
     "tags": [
       "面临",
       "临近",
@@ -731,13 +781,14 @@
       "监管",
       "接近"
     ],
-    "weight": 0.55,
-    "category": "面临/监督"
+    "weight": 0.55
   },
   {
     "bin": "110001",
     "name": "山泽损",
     "pinyin": "shān zé sǔn",
+    "en": "Decrease",
+    "category": "减损/减少",
     "tags": [
       "减损",
       "损失",
@@ -746,13 +797,14 @@
       "精简",
       "回收"
     ],
-    "weight": 0.3,
-    "category": "减损/减少"
+    "weight": 0.3
   },
   {
     "bin": "110010",
     "name": "水泽节",
     "pinyin": "shuǐ zé jié",
+    "en": "Limitation",
+    "category": "节制/控制",
     "tags": [
       "节制",
       "调节",
@@ -761,13 +813,14 @@
       "节流",
       "调控"
     ],
-    "weight": 0.55,
-    "category": "节制/控制"
+    "weight": 0.55
   },
   {
     "bin": "110011",
     "name": "风泽中孚",
     "pinyin": "fēng zé zhōng fú",
+    "en": "Inner Truth",
+    "category": "诚信/信任",
     "tags": [
       "诚信",
       "信任",
@@ -776,13 +829,14 @@
       "授权",
       "凭证"
     ],
-    "weight": 0.65,
-    "category": "诚信/信任"
+    "weight": 0.65
   },
   {
     "bin": "110100",
     "name": "雷泽归妹",
     "pinyin": "léi zé guī mèi",
+    "en": "Returning Maiden",
+    "category": "回归/归宿",
     "tags": [
       "回归",
       "归宿",
@@ -791,13 +845,14 @@
       "收敛",
       "终态"
     ],
-    "weight": 0.45,
-    "category": "回归/归宿"
+    "weight": 0.45
   },
   {
     "bin": "110101",
     "name": "火泽睽",
     "pinyin": "huǒ zé kuí",
+    "en": "Opposition",
+    "category": "分歧/背离",
     "tags": [
       "背离",
       "分歧",
@@ -806,13 +861,14 @@
       "分叉",
       "隔离"
     ],
-    "weight": 0.3,
-    "category": "分歧/背离"
+    "weight": 0.3
   },
   {
     "bin": "110110",
     "name": "兑为泽",
     "pinyin": "duì wéi zé",
+    "en": "The Joyous",
+    "category": "喜悦/交流",
     "tags": [
       "喜悦",
       "交流",
@@ -821,13 +877,14 @@
       "消息",
       "广播"
     ],
-    "weight": 0.6,
-    "category": "喜悦/交流"
+    "weight": 0.6
   },
   {
     "bin": "110111",
     "name": "天泽履",
     "pinyin": "tiān zé lǚ",
+    "en": "Treading",
+    "category": "执行/实践",
     "tags": [
       "履行",
       "实践",
@@ -836,13 +893,14 @@
       "运行",
       "遵守"
     ],
-    "weight": 0.65,
-    "category": "执行/实践"
+    "weight": 0.65
   },
   {
     "bin": "111000",
     "name": "地天泰",
     "pinyin": "dì tiān tài",
+    "en": "Peace",
+    "category": "通泰/顺畅",
     "tags": [
       "通泰",
       "顺畅",
@@ -851,13 +909,14 @@
       "通行",
       "开放"
     ],
-    "weight": 0.8,
-    "category": "通泰/顺畅"
+    "weight": 0.8
   },
   {
     "bin": "111001",
     "name": "山天大畜",
     "pinyin": "shān tiān dà chù",
+    "en": "Great Accumulation",
+    "category": "积累/储备",
     "tags": [
       "积蓄",
       "积累",
@@ -866,13 +925,14 @@
       "备份",
       "缓存"
     ],
-    "weight": 0.7,
-    "category": "积累/储备"
+    "weight": 0.7
   },
   {
     "bin": "111010",
     "name": "水天需",
     "pinyin": "shuǐ tiān xū",
+    "en": "Waiting",
+    "category": "等待/需求",
     "tags": [
       "等待",
       "需求",
@@ -881,13 +941,14 @@
       "异步",
       "轮询"
     ],
-    "weight": 0.5,
-    "category": "等待/需求"
+    "weight": 0.5
   },
   {
     "bin": "111011",
     "name": "风天小畜",
     "pinyin": "fēng tiān xiǎo chù",
+    "en": "Small Accumulation",
+    "category": "积累/渐进",
     "tags": [
       "小蓄",
       "渐进",
@@ -896,13 +957,14 @@
       "缓冲",
       "暂存"
     ],
-    "weight": 0.55,
-    "category": "积累/渐进"
+    "weight": 0.55
   },
   {
     "bin": "111100",
     "name": "雷天大壮",
     "pinyin": "léi tiān dà zhuàng",
+    "en": "Great Power",
+    "category": "力量/强大",
     "tags": [
       "强壮",
       "壮大",
@@ -911,13 +973,14 @@
       "强力",
       "峰值"
     ],
-    "weight": 0.75,
-    "category": "力量/强大"
+    "weight": 0.75
   },
   {
     "bin": "111101",
     "name": "火天大有",
     "pinyin": "huǒ tiān dà yǒu",
+    "en": "Great Possession",
+    "category": "丰富/富足",
     "tags": [
       "大有",
       "丰富",
@@ -926,13 +989,14 @@
       "海量",
       "充沛"
     ],
-    "weight": 0.8,
-    "category": "丰富/富足"
+    "weight": 0.8
   },
   {
     "bin": "111110",
     "name": "泽天夬",
     "pinyin": "zé tiān guài",
+    "en": "Breakthrough",
+    "category": "决断/决策",
     "tags": [
       "决断",
       "果断",
@@ -941,13 +1005,14 @@
       "选择",
       "裁决"
     ],
-    "weight": 0.65,
-    "category": "决断/决策"
+    "weight": 0.65
   },
   {
     "bin": "111111",
     "name": "乾为天",
     "pinyin": "qián wéi tiān",
+    "en": "The Creative",
+    "category": "创建/初始",
     "tags": [
       "初始化",
       "刚健",
@@ -956,7 +1021,6 @@
       "主导",
       "创建"
     ],
-    "weight": 0.9,
-    "category": "创建/初始"
+    "weight": 0.9
   }
 ]

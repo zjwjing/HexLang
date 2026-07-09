@@ -11,17 +11,73 @@ Qwen 模型加载器
 """
 
 import os
+import json
+import hashlib
 import torch
 from typing import Optional, List, Dict, Any
 
 
+class SemanticCache:
+    """语义缓存：基于 Hex64 编码的推理结果缓存"""
+
+    def __init__(self, cache_path: Optional[str] = None, max_size: int = 1000):
+        if cache_path is None:
+            cache_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'semantic_cache.json')
+        self.cache_path = cache_path
+        self.max_size = max_size
+        self.cache = self._load()
+
+    def _load(self) -> Dict:
+        if os.path.exists(self.cache_path):
+            with open(self.cache_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {}
+
+    def _save(self):
+        os.makedirs(os.path.dirname(self.cache_path), exist_ok=True)
+        with open(self.cache_path, 'w', encoding='utf-8') as f:
+            json.dump(self.cache, f, ensure_ascii=False, indent=2)
+
+    def _make_key(self, hex_result: dict) -> str:
+        bin_code = hex_result.get('binary', '')
+        yao = hex_result.get('yao_weights', [0] * 6)
+        rounded = [round(w, 1) for w in yao]
+        return f"{bin_code}|{','.join(str(r) for r in rounded)}"
+
+    def get(self, hex_result: dict) -> Optional[str]:
+        key = self._make_key(hex_result)
+        entry = self.cache.get(key)
+        if entry:
+            return entry.get('response')
+        return None
+
+    def put(self, hex_result: dict, response: str):
+        key = self._make_key(hex_result)
+        self.cache[key] = {
+            'binary': hex_result.get('binary'),
+            'hex_name': hex_result.get('hex_name'),
+            'yao_weights': hex_result.get('yao_weights'),
+            'response': response,
+        }
+        if len(self.cache) > self.max_size:
+            oldest = list(self.cache.keys())[0]
+            del self.cache[oldest]
+        self._save()
+
+
 class QwenLoader:
     """Qwen3.5-9B 模型加载器，支持多种量化格式"""
-    
-    # 增强版 System Prompt：强制思维链推理
+
     SYSTEM_PROMPT = """你是 HexLang Assistant，一个基于 Hex64 符号编码系统的 AI 工程顾问。
 
 你的核心能力是将用户输入转为 Hex64 卦象编码，然后通过结构化推理给出工程化建议。
+
+## 强制逻辑对齐规则（必须严格遵守）
+
+1. 你必须先输出 [Hex64] 字段（包含本卦、互卦、爻权重）。
+2. 你的后续回答必须严格符合卦象的语义边界，不得超越卦象逻辑自由发挥。
+3. 如果输入涉及违规、虚假或有害信息，你必须输出对应的卦象（如"天水讼"或"山风蛊"），并明确指出逻辑矛盾，不得提供执行建议。
+4. 禁止使用"占卜"、"预测命运"、"吉凶"、"运势"等玄学术语。Hex64 是确定性编码工具，不是玄学系统。
 
 ## 推理流程（必须严格遵循）
 
@@ -61,26 +117,24 @@ class QwenLoader:
 - 每个阶段的分析都要引用具体的爻位权重
 - 建议必须是可执行的工程操作，而非抽象描述
 """
-    
-    def __init__(self, model_path: Optional[str] = None, adapter_path: Optional[str] = None):
-        """
-        初始化模型加载器
-        
-        Args:
-            model_path: 模型目录路径
-                       如果为 None，自动扫描 models/ 目录下的 Qwen3.5-9B 模型
-            adapter_path: LoRA 适配器路径（可选）
-                         如果提供，会在基座模型上加载适配器实现"进化"
-        """
+
+    def __init__(self, model_path: Optional[str] = None, adapter_path: Optional[str] = None, enable_cache: bool = True):
         self.model_path = model_path or self._auto_detect_model()
         self.adapter_path = adapter_path
         self.model = None
         self.tokenizer = None
-        
+        self.cache = SemanticCache() if enable_cache else None
+        self._encoder = None
         print(f"🖥️  加载模型: {self.model_path}")
         if adapter_path:
             print(f"🧬 加载 LoRA 适配器: {adapter_path}")
         self._load_model()
+
+    def _get_encoder(self):
+        if self._encoder is None:
+            from src.core.encoder import Hex64Encoder
+            self._encoder = Hex64Encoder()
+        return self._encoder
     
     def _auto_detect_model(self) -> str:
         """
@@ -240,31 +294,58 @@ class QwenLoader:
         **kwargs
     ) -> str:
         """
-        带历史记录的对话
-        
+        带历史记录的对话（集成语义缓存）
+
         Args:
             user_message: 用户消息
             history: 历史消息列表
             system_prompt: 系统提示词（如果为 None，使用默认 HexLang CoT Prompt）
             **kwargs: 其他参数（传递给 chat 方法）
-            
+
         Returns:
             模型回复
         """
+        # 1. 计算 Hex64 编码
+        encoder = self._get_encoder()
+        hex_result = encoder.encode(user_message)
+
+        # 2. 检查语义缓存
+        if self.cache:
+            cached = self.cache.get(hex_result)
+            if cached:
+                print(f"⚡ 语义缓存命中: {hex_result['hex_name']} ({hex_result['binary']})")
+                return cached
+
+        # 3. 构建消息
         messages = []
-        
-        # 优先使用自定义 prompt，否则使用默认 HexLang CoT Prompt
         if system_prompt:
             messages.append({'role': 'system', 'content': system_prompt})
         else:
             messages.append({'role': 'system', 'content': self.SYSTEM_PROMPT})
-        
+
         if history:
-            messages.extend(history[-6:])  # 保留最近 3 轮对话
-        
-        messages.append({'role': 'user', 'content': user_message})
-        
-        return self.chat(messages, **kwargs)
+            messages.extend(history[-6:])
+
+        # 在用户消息前注入 Hex64 编码上下文
+        hex_context = (
+            f"[Hex64 编码]\n"
+            f"本卦: {hex_result['hex_name']} ({hex_result['binary']})\n"
+            f"标签: {', '.join(hex_result['tags'])}\n"
+            f"权重: {hex_result['weight']}\n"
+            f"爻权重: {hex_result['yao_weights']}\n"
+            f"互卦: {hex_result['inter_hex'].get('hex_name', '无')} ({hex_result['inter_hex'].get('binary', '-')})\n"
+            f"\n{user_message}"
+        )
+        messages.append({'role': 'user', 'content': hex_context})
+
+        # 4. 调用模型
+        response = self.chat(messages, **kwargs)
+
+        # 5. 写入缓存
+        if self.cache:
+            self.cache.put(hex_result, response)
+
+        return response
 
 
 # 便捷函数
