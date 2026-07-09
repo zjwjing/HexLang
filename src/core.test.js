@@ -203,4 +203,79 @@ describe('Hex64Engine', () => {
       assert.equal(r.yaoWeights.length, 6);
     });
   });
+
+  describe('encodeFangtu()', () => {
+    it('returns deterministic results', () => {
+      const a = engine.encodeFangtu('test');
+      const b = engine.encodeFangtu('test');
+      assert.equal(a.bin, b.bin);
+      assert.equal(a.meta.outer3bit, b.meta.outer3bit);
+      assert.equal(a.meta.inner3bit, b.meta.inner3bit);
+    });
+
+    it('returns 6-bit binary with outer/inner split', () => {
+      const r = engine.encodeFangtu('hello');
+      assert.equal(r.bin.length, 6);
+      assert.equal(r.meta.outer3bit.length, 3);
+      assert.equal(r.meta.inner3bit.length, 3);
+      assert.equal(r.bin, r.meta.outer3bit + r.meta.inner3bit);
+    });
+
+    it('has mode and note fields', () => {
+      const r = engine.encodeFangtu('test');
+      assert.equal(r.mode, 'fangtu');
+      assert.ok(r.note.includes('Cartesian'));
+    });
+  });
+
+  describe('encodeYaochen()', () => {
+    it('returns deterministic results for same input and timestamp', () => {
+      const a = engine.encodeYaochen('test', 1700000000);
+      const b = engine.encodeYaochen('test', 1700000000);
+      assert.equal(a.bin, b.bin);
+      assert.equal(a.meta.yaochen, b.meta.yaochen);
+    });
+
+    it('yaochen is 0-383', () => {
+      const r = engine.encodeYaochen('test', 1700000000);
+      assert.ok(r.meta.yaochen >= 0 && r.meta.yaochen < 384);
+      assert.ok(r.meta.yaoIdx >= 0 && r.meta.yaoIdx < 6);
+      assert.ok(typeof r.meta.yaoName === 'string');
+    });
+
+    it('has mode and note fields', () => {
+      const r = engine.encodeYaochen('test');
+      assert.equal(r.mode, 'yaochen');
+      assert.ok(r.note.includes('mod384'));
+    });
+  });
+
+  describe('encodeYubu()', () => {
+    it('returns deterministic results', () => {
+      const a = engine.encodeYubu('seed');
+      const b = engine.encodeYubu('seed');
+      assert.deepEqual(a.values, b.values);
+      assert.deepEqual(a.positions, b.positions);
+    });
+
+    it('values are 1-9 permutation', () => {
+      const r = engine.encodeYubu('test');
+      const sorted = [...r.values].sort((a, b) => a - b);
+      assert.deepEqual(sorted, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    });
+
+    it('positions are valid 3x3 grid coordinates', () => {
+      const r = engine.encodeYubu('test');
+      for (const [row, col] of r.positions) {
+        assert.ok(row >= 0 && row < 3);
+        assert.ok(col >= 0 && col < 3);
+      }
+    });
+
+    it('has mode and note fields', () => {
+      const r = engine.encodeYubu('test');
+      assert.equal(r.mode, 'yubu_prng');
+      assert.ok(r.note.includes('PRNG'));
+    });
+  });
 });

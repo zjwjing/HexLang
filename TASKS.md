@@ -28,17 +28,24 @@
 | 015 | 添加 Related Work 生态定位文档 | 2026-07-09 | 朵朵 | OpenCode |
 | 016 | 互卦运算（中爻滑窗）| 2026-07-09 | 朵朵 | OpenCode |
 | 017 | 爻级权重 yao_weights + 确定性 seed 模式 | 2026-07-09 | 朵朵 | OpenCode |
+| 018 | Wilhelm 注释 + 中文原文 + Base64 映射整合 | 2026-07-09 | 朵朵 | 3 个开源数据源 |
+| 019 | 方图 Cartesian 积模式（邵雍先天方图）| 2026-07-09 | 朵朵 | OpenCode |
+| 020 | 爻辰 mod384 计数器（京房纳甲）| 2026-07-09 | 朵朵 | OpenCode |
+| 021 | 禹步 PRNG（洛书 3×3 网格）| 2026-07-09 | 朵朵 | OpenCode |
+| 022 | 太玄三进制编码 + 元会运世嵌套计数器 | 2026-07-09 | 朵朵 | OpenCode |
 
 ## 模块健康度
 
 | 模块 | 状态 | 备注 |
 |------|------|------|
-| `src/core.js` | 🟢 正常 | 引擎核心：O(1) binIndex、encodeSeeded、7种运算（含互卦）|
+| `src/core.js` | 🟢 正常 | 引擎核心：O(1) binIndex、encodeSeeded、7种运算 + 方图/爻辰/禹步 |
 | `src/compiler.js` | 🟢 正常 | 共享编译逻辑（compileHex），4语言输出 |
 | `src/templates.js` | 🟢 正常 | 384条模板（单一数据源，build script 生成）|
 | `src/database.js` | 🟢 正常 | 数据层（HEXAGRAMS + TAG_TO_OP）|
+| `src/taixuan.js` | 🟢 正常 | 太玄三进制编码（81首+729赞）|
+| `src/yuanhui.js` | 🟢 正常 | 元会运世四层嵌套计数器 |
 | `src/compile.test.js` | 🟢 正常 | 8个编译测试（4语言覆盖）|
-| `src/core.test.js` | 🟢 正常 | 33个引擎测试（lookup/tranceive/operate/hash）|
+| `src/core.test.js` | 🟢 正常 | 48个引擎测试（含方图/爻辰/禹步/encodeSeeded）|
 | `src/engine.html` | 🟢 正常 | 浏览器 Demo：2×2编译器网格、7种运算、暗色模式 |
 | `data/hex64_full.json` | 🟢 正常 | v1.2.0，64卦 + 443 tagToOp + yao_weights + hex_font + english |
 | `bin/hex64.js` | 🟢 正常 | CLI：先天八卦 LOGO、4语言彩色输出、JSON 模式 |
@@ -56,7 +63,7 @@
 | 模块架构 | ✅ bin/engine 均引用共享模块，无内联 opTemplates |
 | 核心功能 | ✅ encodeSeeded + binIndex + 互卦 |
 | 运算能力 | ✅ 7/7：错卦/综卦/变爻/AND/OR/XOR/互卦 |
-| 测试 | ✅ 41/41 通过（33引擎+8编译）|
+| 测试 | ✅ 56/56 通过（48引擎+8编译）|
 | CLI | ✅ JS/Py/Rs/Go 全部正常输出 |
 | 跨文件一致性 | ✅ 0 不匹配 |
 | Rust snake_case | ✅ 0 个 camelCase |
@@ -85,10 +92,21 @@ data/hex64_full.json ← 64卦数据（含 yao_weights、hex_font、english）
 | 卦叠加 XOR | XOR | 按位异或 |
 | **互卦** | **hu** | **取二三四五爻，二三四为下卦、三四五为上卦** |
 
+## 计算谱系模式
+
+| 模式 | 方法 | 计算原型 | 来源 |
+|------|------|---------|------|
+| 方图 | `encodeFangtu(text)` | 8×8 Cartesian 积（邵雍先天方图）| `src/core.js` |
+| 爻辰 | `encodeYaochen(text, ts)` | mod384 循环计数器（京房纳甲）| `src/core.js` |
+| 禹步 | `encodeYubu(seed)` | 3×3 网格 Hamiltonian 游走 PRNG | `src/core.js` |
+| 太玄首 | `TaiXuanEncoder.encodeShou(text)` | 3^4=81 首三进制编码 | `src/taixuan.js` |
+| 太玄赞 | `TaiXuanEncoder.encodeZan(text)` | 3^6=729 赞三进制编码 | `src/taixuan.js` |
+| 元会运世 | `YuanHuiEncoder.encode(ts)` | 四层嵌套模运算 | `src/yuanhui.js` |
+
 ## 数据来源
 
 | 来源 | 数据 | 状态 |
 |------|------|------|
-| adamblvck/iching-wilhelm-dataset | Unicode 符号 + 英文名 | ✅ 已整合 |
-| qntm/hexagram-encode | Base64 ↔ 卦符映射 | 待整合 |
-| chengjun/iching | 中文原文/爻辞/注释 | 待整合 |
+| adamblvck/iching-wilhelm-dataset | Unicode 符号 + 英文名 + 威廉注释 | ✅ 已整合 |
+| qntm/hexagram-encode | Base64 ↔ 卦符映射 | ✅ 已整合 |
+| chengjun/iching | 中文原文/白话文解释 | ✅ 已整合 (63/64) |
