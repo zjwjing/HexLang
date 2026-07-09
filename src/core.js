@@ -71,6 +71,104 @@ export class Hex64Engine {
     };
   }
 
+  encodeFangtu(input) {
+    const h = hash(input);
+    const high32 = (h >>> 0) % 8;
+    const low32 = (h >>> 0) % 8;
+    const outerBin = high32.toString(2).padStart(3, '0');
+    const innerBin = low32.toString(2).padStart(3, '0');
+    const fullBin = outerBin + innerBin;
+    const idx = this.binIndex.get(fullBin);
+    const hex = idx !== undefined ? this.db[idx] : null;
+    return {
+      input,
+      mode: 'fangtu',
+      index: idx ?? -1,
+      hash: h,
+      bin: fullBin,
+      hexFont: hex?.hex_font || '',
+      name: hex?.name ?? '未知',
+      pinyin: hex?.pinyin ?? '',
+      en: hex?.en ?? 'Unknown',
+      english: hex?.english || '',
+      category: hex?.category ?? '',
+      tags: hex?.tags ?? [],
+      weight: hex?.weight ?? 0,
+      yaoWeights: hex?.yao_weights ?? [0, 0, 0, 0, 0, 0],
+      meta: {
+        outer3bit: outerBin,
+        inner3bit: innerBin,
+      },
+      note: '8×8 Cartesian积方阵模式，源自邵雍先天方图',
+    };
+  }
+
+  encodeYaochen(input, timestamp) {
+    if (timestamp === undefined) timestamp = Math.floor(Date.now() / 1000);
+    const h = hash(input);
+    const hexIdx = h % 64;
+    const hex = this.db[hexIdx];
+    const yaochen = Math.floor(timestamp) % 384;
+    const hexInnerIdx = Math.floor(yaochen / 6);
+    const yaoIdx = yaochen % 6;
+    const yaoNames = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
+    return {
+      input,
+      mode: 'yaochen',
+      index: hexIdx,
+      hash: h,
+      bin: hex?.bin ?? '000000',
+      hexFont: hex?.hex_font || '',
+      name: hex?.name ?? '未知',
+      pinyin: hex?.pinyin ?? '',
+      en: hex?.en ?? 'Unknown',
+      english: hex?.english || '',
+      category: hex?.category ?? '',
+      tags: hex?.tags ?? [],
+      weight: hex?.weight ?? 0,
+      yaoWeights: hex?.yao_weights ?? [0, 0, 0, 0, 0, 0],
+      meta: {
+        timestamp: Math.floor(timestamp),
+        yaochen,
+        hexInnerIdx,
+        yaoIdx,
+        yaoName: yaoNames[yaoIdx],
+      },
+      note: 'mod384循环计数器原型，源自京房纳甲',
+    };
+  }
+
+  encodeYubu(seed) {
+    const luoshu = [[4, 9, 2], [3, 5, 7], [8, 1, 6]];
+    const seedHash = hash(seed);
+    const bytes = [];
+    let h = seedHash;
+    for (let i = 0; i < 9; i++) {
+      bytes.push(h & 0xff);
+      h = (h * 1103515245 + 12345) >>> 0;
+    }
+    const sortedIndices = [...Array(9).keys()].sort((a, b) => bytes[a] - bytes[b]);
+    const positions = [];
+    const values = [];
+    for (const idx of sortedIndices) {
+      const row = Math.floor(idx / 3);
+      const col = idx % 3;
+      positions.push([row, col]);
+      values.push(luoshu[row][col]);
+    }
+    const vector = values.map(v => v / 9.0);
+    return {
+      seed,
+      mode: 'yubu_prng',
+      luoshuMatrix: luoshu,
+      sortedIndices,
+      positions,
+      values,
+      vector,
+      note: '3×3网格Hamiltonian游走确定性PRNG原型，源自道门禹步',
+    };
+  }
+
   tranceive(input) {
     const hex = this.lookup(input);
     const vec = hex.bin.split('').map(Number);

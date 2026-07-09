@@ -293,6 +293,21 @@ Hex64 occupies a unique position in the open-source I-Ching ecosystem. Existing 
 
 **Hex64's differentiator**: the first project to combine (1) deterministic 6-bit hexagram encoding, (2) engineering-oriented semantic tagging (e.g. 泽雷随 → subscribe/listen/proxy), (3) Hex64 feature-vector augmentation for ML pipelines, and (4) LoRA-based self-evolution via feedback — all under a strict no-divination, MIT-licensed protocol.
 
+## Computational Genealogy（计算谱系）
+
+Hex64 的设计并非孤立创新，而是延续了前现代离散数学的探索脉络：
+
+| 年代 | 计算原型 | 工程化实现 | 模块 |
+|------|---------|-----------|------|
+| 1070年 | 邵雍先天图：6-bit LUT + 8×8 Cartesian 积 | `encodeFangtu()` | `src/core.js` |
+| 西汉 | 京房纳甲：mod384 循环计数器 | `encodeYaochen()` | `src/core.js` |
+| 东汉前 | 道门禹步：3×3 网格 Hamiltonian 游走 PRNG | `encodeYubu()` | `src/core.js` |
+| 西汉 | 扬雄太玄：3^4=81 首 + 3^6=729 赞三进制 | `TaiXuanEncoder` | `src/taixuan.js` |
+| 1070年 | 邵雍皇极经世：元会运世四层嵌套模运算 | `YuanHuiEncoder` | `src/yuanhui.js` |
+
+所有模式均为**确定性编码/计数原型**，无任何玄学效力宣称，符合 MIT 协议的非玄学要求。
+
+## Roadmap
 - **v1.2** ✅ HexLang 基础编译器 · CLI 工具完善 · 八经卦 ASCII 艺术
 - **v1.3** ✅ Python SDK · Qwen3.5-9B 集成 · HTTP API 服务
 - **v1.4** 🔄 Arduino/Raspberry Pi 硬件适配
