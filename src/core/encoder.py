@@ -46,6 +46,37 @@ class Hex64Encoder:
         for hex_item in full_data.get('hexagrams', []):
             if 'yao_weights' in hex_item and len(hex_item['yao_weights']) == 6:
                 self.yao_weights_db[hex_item['bin']] = hex_item['yao_weights']
+        
+        # === 改进三：64 维规则 Embedding 预计算 ===
+        # 利用先天八卦序和卦序距离生成 64 维稠密向量
+        # 原理：索引 i 的卦，其 embedding[i] = 1.0，其余为 0.0
+        # 但加入"相似性衰减"：相邻卦（如乾→夬→大壮→泰）有更高相似度
+        self._embedding_cache = {}
+        self._generate_all_embeddings()
+    
+    def _generate_all_embeddings(self, dim: int = 64):
+        """预计算所有 64 卦的 64 维规则 Embedding"""
+        for idx in range(64):
+            embedding = [0.0] * dim
+            embedding[idx] = 1.0
+            
+            # 相邻卦衰减（距离 1 的卦权重 0.3，距离 2 的权重 0.1）
+            for distance in [1, 2]:
+                for offset in [-distance, distance]:
+                    neighbor_idx = (idx + offset) % 64
+                    weight = 0.3 if distance == 1 else 0.1
+                    embedding[neighbor_idx] += weight
+            
+            # 归一化（L2 范数）
+            norm = sum(v * v for v in embedding) ** 0.5
+            if norm > 0:
+                embedding = [v / norm for v in embedding]
+            
+            self._embedding_cache[idx] = embedding
+    
+    def get_embedding(self, index: int) -> List[float]:
+        """获取指定卦索引的 64 维 Embedding"""
+        return self._embedding_cache.get(index, [0.0] * 64)
     
     def _djb2_hash(self, input_str: str) -> int:
         """
@@ -203,6 +234,15 @@ class Hex64Encoder:
         else:
             result['combined_feature'] = feature_vec
             result['combined_dim'] = 6
+        
+        # === 改进三：64 维规则 Embedding ===
+        embedding = self._embedding_cache.get(idx)
+        if embedding:
+            result['embedding_64d'] = embedding
+            result['embedding_dim'] = 64
+        else:
+            result['embedding_64d'] = [0.0] * 64
+            result['embedding_dim'] = 64
         
         if include_details:
             result.update({
