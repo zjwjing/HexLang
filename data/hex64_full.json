@@ -464,7 +464,15 @@
       ],
       "weight": 0.25,
       "hex_font": "䷁",
-      "english": "Responding"
+      "english": "Responding",
+      "yao_weights": [
+        0.1,
+        0.11,
+        0.09,
+        0.09,
+        0.11,
+        0.1
+      ]
     },
     {
       "bin": "000001",
@@ -482,7 +490,15 @@
       ],
       "weight": 0.2,
       "hex_font": "䷗",
-      "english": "Turning Back"
+      "english": "Turning Back",
+      "yao_weights": [
+        0.08,
+        0.09,
+        0.07,
+        0.07,
+        0.09,
+        0.16
+      ]
     },
     {
       "bin": "000010",
@@ -500,7 +516,15 @@
       ],
       "weight": 0.55,
       "hex_font": "䷆",
-      "english": "Multitude"
+      "english": "Multitude",
+      "yao_weights": [
+        0.22,
+        0.25,
+        0.19,
+        0.19,
+        0.5,
+        0.22
+      ]
     },
     {
       "bin": "000011",
@@ -518,7 +542,15 @@
       ],
       "weight": 0.5,
       "hex_font": "䷒",
-      "english": "Approaching"
+      "english": "Approaching",
+      "yao_weights": [
+        0.2,
+        0.23,
+        0.18,
+        0.18,
+        0.45,
+        0.4
+      ]
     },
     {
       "bin": "000100",
@@ -536,7 +568,15 @@
       ],
       "weight": 0.6,
       "hex_font": "䷎",
-      "english": "Humbleness"
+      "english": "Humbleness",
+      "yao_weights": [
+        0.24,
+        0.27,
+        0.21,
+        0.42,
+        0.27,
+        0.24
+      ]
     },
     {
       "bin": "000101",
@@ -554,7 +594,15 @@
       ],
       "weight": 0.7,
       "hex_font": "䷣",
-      "english": "Brilliance Injured"
+      "english": "Brilliance Injured",
+      "yao_weights": [
+        0.28,
+        0.32,
+        0.24,
+        0.49,
+        0.32,
+        0.56
+      ]
     },
     {
       "bin": "000110",
@@ -572,7 +620,15 @@
       ],
       "weight": 0.65,
       "hex_font": "䷭",
-      "english": "Growing Upward"
+      "english": "Growing Upward",
+      "yao_weights": [
+        0.26,
+        0.29,
+        0.23,
+        0.45,
+        0.59,
+        0.26
+      ]
     },
     {
       "bin": "000111",
@@ -590,7 +646,15 @@
       ],
       "weight": 0.25,
       "hex_font": "䷊",
-      "english": "Advance"
+      "english": "Advance",
+      "yao_weights": [
+        0.1,
+        0.11,
+        0.09,
+        0.18,
+        0.23,
+        0.2
+      ]
     },
     {
       "bin": "001000",
@@ -608,7 +672,15 @@
       ],
       "weight": 0.45,
       "hex_font": "䷏",
-      "english": "Delight"
+      "english": "Delight",
+      "yao_weights": [
+        0.18,
+        0.2,
+        0.32,
+        0.16,
+        0.2,
+        0.18
+      ]
     },
     {
       "bin": "001001",
@@ -626,7 +698,15 @@
       ],
       "weight": 0.35,
       "hex_font": "䷲",
-      "english": "Taking Action"
+      "english": "Taking Action",
+      "yao_weights": [
+        0.14,
+        0.16,
+        0.24,
+        0.12,
+        0.16,
+        0.28
+      ]
     },
     {
       "bin": "001010",
@@ -644,7 +724,15 @@
       ],
       "weight": 0.3,
       "hex_font": "䷧",
-      "english": "Relief"
+      "english": "Relief",
+      "yao_weights": [
+        0.12,
+        0.14,
+        0.21,
+        0.11,
+        0.27,
+        0.12
+      ]
     },
     {
       "bin": "001011",
@@ -662,7 +750,15 @@
       ],
       "weight": 0.55,
       "hex_font": "䷵",
-      "english": "Marrying Maiden"
+      "english": "Marrying Maiden",
+      "yao_weights": [
+        0.22,
+        0.25,
+        0.39,
+        0.19,
+        0.5,
+        0.44
+      ]
     },
     {
       "bin": "001100",
@@ -680,7 +776,15 @@
       ],
       "weight": 0.45,
       "hex_font": "䷽",
-      "english": "Little Exceeding"
+      "english": "Little Exceeding",
+      "yao_weights": [
+        0.18,
+        0.2,
+        0.32,
+        0.32,
+        0.2,
+        0.18
+      ]
     },
     {
       "bin": "001101",
@@ -698,7 +802,15 @@
       ],
       "weight": 0.5,
       "hex_font": "䷶",
-      "english": "Abundance"
+      "english": "Abundance",
+      "yao_weights": [
+        0.2,
+        0.23,
+        0.35,
+        0.35,
+        0.23,
+        0.4
+      ]
     },
     {
       "bin": "001110",
@@ -716,7 +828,15 @@
       ],
       "weight": 0.6,
       "hex_font": "䷟",
-      "english": "Long Lasting"
+      "english": "Long Lasting",
+      "yao_weights": [
+        0.24,
+        0.27,
+        0.42,
+        0.42,
+        0.54,
+        0.24
+      ]
     },
     {
       "bin": "001111",
@@ -734,7 +854,15 @@
       ],
       "weight": 0.3,
       "hex_font": "䷡",
-      "english": "Great Strength"
+      "english": "Great Strength",
+      "yao_weights": [
+        0.12,
+        0.14,
+        0.21,
+        0.21,
+        0.27,
+        0.24
+      ]
     },
     {
       "bin": "010000",
@@ -752,7 +880,15 @@
       ],
       "weight": 0.65,
       "hex_font": "䷇",
-      "english": "Union"
+      "english": "Union",
+      "yao_weights": [
+        0.26,
+        0.59,
+        0.23,
+        0.23,
+        0.29,
+        0.26
+      ]
     },
     {
       "bin": "010001",
@@ -770,7 +906,15 @@
       ],
       "weight": 0.4,
       "hex_font": "䷂",
-      "english": "Beginning"
+      "english": "Beginning",
+      "yao_weights": [
+        0.16,
+        0.36,
+        0.14,
+        0.14,
+        0.18,
+        0.32
+      ]
     },
     {
       "bin": "010010",
@@ -788,7 +932,15 @@
       ],
       "weight": 0.3,
       "hex_font": "䷜",
-      "english": "Darkness"
+      "english": "Darkness",
+      "yao_weights": [
+        0.12,
+        0.27,
+        0.11,
+        0.11,
+        0.27,
+        0.12
+      ]
     },
     {
       "bin": "010011",
@@ -806,7 +958,15 @@
       ],
       "weight": 0.35,
       "hex_font": "䷻",
-      "english": "Restricting"
+      "english": "Restricting",
+      "yao_weights": [
+        0.14,
+        0.32,
+        0.12,
+        0.12,
+        0.32,
+        0.28
+      ]
     },
     {
       "bin": "010100",
@@ -824,7 +984,15 @@
       ],
       "weight": 0.6,
       "hex_font": "䷦",
-      "english": "Hardship"
+      "english": "Hardship",
+      "yao_weights": [
+        0.24,
+        0.54,
+        0.21,
+        0.42,
+        0.27,
+        0.24
+      ]
     },
     {
       "bin": "010101",
@@ -842,7 +1010,15 @@
       ],
       "weight": 0.5,
       "hex_font": "䷾",
-      "english": "Already Fulfilled"
+      "english": "Already Fulfilled",
+      "yao_weights": [
+        0.2,
+        0.45,
+        0.18,
+        0.35,
+        0.23,
+        0.4
+      ]
     },
     {
       "bin": "010110",
@@ -860,7 +1036,15 @@
       ],
       "weight": 0.2,
       "hex_font": "䷯",
-      "english": "Replenishing"
+      "english": "Replenishing",
+      "yao_weights": [
+        0.08,
+        0.18,
+        0.07,
+        0.14,
+        0.18,
+        0.08
+      ]
     },
     {
       "bin": "010111",
@@ -878,7 +1062,15 @@
       ],
       "weight": 0.35,
       "hex_font": "䷄",
-      "english": "Needing"
+      "english": "Needing",
+      "yao_weights": [
+        0.14,
+        0.32,
+        0.12,
+        0.24,
+        0.32,
+        0.28
+      ]
     },
     {
       "bin": "011000",
@@ -896,7 +1088,15 @@
       ],
       "weight": 0.75,
       "hex_font": "䷬",
-      "english": "Bringing Together"
+      "english": "Bringing Together",
+      "yao_weights": [
+        0.3,
+        0.68,
+        0.52,
+        0.26,
+        0.34,
+        0.3
+      ]
     },
     {
       "bin": "011001",
@@ -914,7 +1114,15 @@
       ],
       "weight": 0.55,
       "hex_font": "䷐",
-      "english": "Following"
+      "english": "Following",
+      "yao_weights": [
+        0.22,
+        0.5,
+        0.39,
+        0.19,
+        0.25,
+        0.44
+      ]
     },
     {
       "bin": "011010",
@@ -932,7 +1140,15 @@
       ],
       "weight": 0.6,
       "hex_font": "䷮",
-      "english": "Exhausting"
+      "english": "Exhausting",
+      "yao_weights": [
+        0.24,
+        0.54,
+        0.42,
+        0.21,
+        0.54,
+        0.24
+      ]
     },
     {
       "bin": "011011",
@@ -950,7 +1166,15 @@
       ],
       "weight": 0.55,
       "hex_font": "䷹",
-      "english": "Joyful"
+      "english": "Joyful",
+      "yao_weights": [
+        0.22,
+        0.5,
+        0.39,
+        0.19,
+        0.5,
+        0.44
+      ]
     },
     {
       "bin": "011100",
@@ -968,7 +1192,15 @@
       ],
       "weight": 0.7,
       "hex_font": "䷞",
-      "english": "Mutual Influence"
+      "english": "Mutual Influence",
+      "yao_weights": [
+        0.28,
+        0.63,
+        0.49,
+        0.49,
+        0.32,
+        0.28
+      ]
     },
     {
       "bin": "011101",
@@ -986,7 +1218,15 @@
       ],
       "weight": 0.75,
       "hex_font": "䷰",
-      "english": "Abolishing The Old"
+      "english": "Abolishing The Old",
+      "yao_weights": [
+        0.3,
+        0.68,
+        0.52,
+        0.52,
+        0.34,
+        0.6
+      ]
     },
     {
       "bin": "011110",
@@ -1004,7 +1244,15 @@
       ],
       "weight": 0.4,
       "hex_font": "䷛",
-      "english": "Great Exceeding"
+      "english": "Great Exceeding",
+      "yao_weights": [
+        0.16,
+        0.36,
+        0.28,
+        0.28,
+        0.36,
+        0.16
+      ]
     },
     {
       "bin": "011111",
@@ -1022,7 +1270,15 @@
       ],
       "weight": 0.5,
       "hex_font": "䷪",
-      "english": "Eliminating"
+      "english": "Eliminating",
+      "yao_weights": [
+        0.2,
+        0.45,
+        0.35,
+        0.35,
+        0.45,
+        0.4
+      ]
     },
     {
       "bin": "100000",
@@ -1040,7 +1296,15 @@
       ],
       "weight": 0.65,
       "hex_font": "䷖",
-      "english": "Falling Away"
+      "english": "Falling Away",
+      "yao_weights": [
+        0.52,
+        0.29,
+        0.23,
+        0.23,
+        0.29,
+        0.26
+      ]
     },
     {
       "bin": "100001",
@@ -1058,7 +1322,15 @@
       ],
       "weight": 0.55,
       "hex_font": "䷚",
-      "english": "Nourishing"
+      "english": "Nourishing",
+      "yao_weights": [
+        0.44,
+        0.25,
+        0.19,
+        0.19,
+        0.25,
+        0.44
+      ]
     },
     {
       "bin": "100010",
@@ -1076,7 +1348,15 @@
       ],
       "weight": 0.4,
       "hex_font": "䷃",
-      "english": "Childhood"
+      "english": "Childhood",
+      "yao_weights": [
+        0.32,
+        0.18,
+        0.14,
+        0.14,
+        0.36,
+        0.16
+      ]
     },
     {
       "bin": "100011",
@@ -1094,7 +1374,15 @@
       ],
       "weight": 0.7,
       "hex_font": "䷨",
-      "english": "Decreasing"
+      "english": "Decreasing",
+      "yao_weights": [
+        0.56,
+        0.32,
+        0.24,
+        0.24,
+        0.63,
+        0.56
+      ]
     },
     {
       "bin": "100100",
@@ -1112,7 +1400,15 @@
       ],
       "weight": 0.65,
       "hex_font": "䷳",
-      "english": "Keeping Still"
+      "english": "Keeping Still",
+      "yao_weights": [
+        0.52,
+        0.29,
+        0.23,
+        0.45,
+        0.29,
+        0.26
+      ]
     },
     {
       "bin": "100101",
@@ -1130,7 +1426,15 @@
       ],
       "weight": 0.55,
       "hex_font": "䷕",
-      "english": "Adorning"
+      "english": "Adorning",
+      "yao_weights": [
+        0.44,
+        0.25,
+        0.19,
+        0.39,
+        0.25,
+        0.44
+      ]
     },
     {
       "bin": "100110",
@@ -1148,7 +1452,15 @@
       ],
       "weight": 0.5,
       "hex_font": "䷑",
-      "english": "Remedying"
+      "english": "Remedying",
+      "yao_weights": [
+        0.4,
+        0.23,
+        0.18,
+        0.35,
+        0.45,
+        0.2
+      ]
     },
     {
       "bin": "100111",
@@ -1166,7 +1478,15 @@
       ],
       "weight": 0.45,
       "hex_font": "䷙",
-      "english": "Great Accumulation"
+      "english": "Great Accumulation",
+      "yao_weights": [
+        0.36,
+        0.2,
+        0.16,
+        0.32,
+        0.41,
+        0.36
+      ]
     },
     {
       "bin": "101000",
@@ -1184,7 +1504,15 @@
       ],
       "weight": 0.35,
       "hex_font": "䷢",
-      "english": "Proceeding Forward"
+      "english": "Proceeding Forward",
+      "yao_weights": [
+        0.28,
+        0.16,
+        0.24,
+        0.12,
+        0.16,
+        0.14
+      ]
     },
     {
       "bin": "101001",
@@ -1202,7 +1530,15 @@
       ],
       "weight": 0.45,
       "hex_font": "䷔",
-      "english": "Eradicating"
+      "english": "Eradicating",
+      "yao_weights": [
+        0.36,
+        0.2,
+        0.32,
+        0.16,
+        0.2,
+        0.36
+      ]
     },
     {
       "bin": "101010",
@@ -1220,7 +1556,15 @@
       ],
       "weight": 0.8,
       "hex_font": "䷿",
-      "english": "Not Yet Fulfilled"
+      "english": "Not Yet Fulfilled",
+      "yao_weights": [
+        0.64,
+        0.36,
+        0.56,
+        0.28,
+        0.72,
+        0.32
+      ]
     },
     {
       "bin": "101011",
@@ -1238,7 +1582,15 @@
       ],
       "weight": 0.55,
       "hex_font": "䷥",
-      "english": "Diversity"
+      "english": "Diversity",
+      "yao_weights": [
+        0.44,
+        0.25,
+        0.39,
+        0.19,
+        0.5,
+        0.44
+      ]
     },
     {
       "bin": "101100",
@@ -1256,7 +1608,15 @@
       ],
       "weight": 0.75,
       "hex_font": "䷷",
-      "english": "Travelling"
+      "english": "Travelling",
+      "yao_weights": [
+        0.6,
+        0.34,
+        0.52,
+        0.52,
+        0.34,
+        0.3
+      ]
     },
     {
       "bin": "101101",
@@ -1274,7 +1634,15 @@
       ],
       "weight": 0.7,
       "hex_font": "䷝",
-      "english": "Brightness"
+      "english": "Brightness",
+      "yao_weights": [
+        0.56,
+        0.32,
+        0.49,
+        0.49,
+        0.32,
+        0.56
+      ]
     },
     {
       "bin": "101110",
@@ -1292,7 +1660,15 @@
       ],
       "weight": 0.65,
       "hex_font": "䷱",
-      "english": "Establishing The New"
+      "english": "Establishing The New",
+      "yao_weights": [
+        0.52,
+        0.29,
+        0.45,
+        0.45,
+        0.59,
+        0.26
+      ]
     },
     {
       "bin": "101111",
@@ -1310,7 +1686,15 @@
       ],
       "weight": 0.75,
       "hex_font": "䷍",
-      "english": "Great Harvest"
+      "english": "Great Harvest",
+      "yao_weights": [
+        0.6,
+        0.34,
+        0.52,
+        0.52,
+        0.68,
+        0.6
+      ]
     },
     {
       "bin": "110000",
@@ -1328,7 +1712,15 @@
       ],
       "weight": 0.55,
       "hex_font": "䷓",
-      "english": "Watching"
+      "english": "Watching",
+      "yao_weights": [
+        0.44,
+        0.5,
+        0.19,
+        0.19,
+        0.25,
+        0.22
+      ]
     },
     {
       "bin": "110001",
@@ -1346,7 +1738,15 @@
       ],
       "weight": 0.3,
       "hex_font": "䷩",
-      "english": "Increasing"
+      "english": "Increasing",
+      "yao_weights": [
+        0.24,
+        0.27,
+        0.11,
+        0.11,
+        0.14,
+        0.24
+      ]
     },
     {
       "bin": "110010",
@@ -1364,7 +1764,15 @@
       ],
       "weight": 0.55,
       "hex_font": "䷺",
-      "english": "Dispersing"
+      "english": "Dispersing",
+      "yao_weights": [
+        0.44,
+        0.5,
+        0.19,
+        0.19,
+        0.5,
+        0.22
+      ]
     },
     {
       "bin": "110011",
@@ -1382,7 +1790,15 @@
       ],
       "weight": 0.65,
       "hex_font": "䷼",
-      "english": "Innermost Sincerity"
+      "english": "Innermost Sincerity",
+      "yao_weights": [
+        0.52,
+        0.59,
+        0.23,
+        0.23,
+        0.59,
+        0.52
+      ]
     },
     {
       "bin": "110100",
@@ -1400,7 +1816,15 @@
       ],
       "weight": 0.45,
       "hex_font": "䷴",
-      "english": "Developing Gradually"
+      "english": "Developing Gradually",
+      "yao_weights": [
+        0.36,
+        0.41,
+        0.16,
+        0.32,
+        0.2,
+        0.18
+      ]
     },
     {
       "bin": "110101",
@@ -1418,7 +1842,15 @@
       ],
       "weight": 0.3,
       "hex_font": "䷤",
-      "english": "Household"
+      "english": "Household",
+      "yao_weights": [
+        0.24,
+        0.27,
+        0.11,
+        0.21,
+        0.14,
+        0.24
+      ]
     },
     {
       "bin": "110110",
@@ -1436,7 +1868,15 @@
       ],
       "weight": 0.6,
       "hex_font": "䷸",
-      "english": "Proceeding Humbly"
+      "english": "Proceeding Humbly",
+      "yao_weights": [
+        0.48,
+        0.54,
+        0.21,
+        0.42,
+        0.54,
+        0.24
+      ]
     },
     {
       "bin": "110111",
@@ -1454,7 +1894,15 @@
       ],
       "weight": 0.65,
       "hex_font": "䷈",
-      "english": "Little Accumulation"
+      "english": "Little Accumulation",
+      "yao_weights": [
+        0.52,
+        0.59,
+        0.23,
+        0.45,
+        0.59,
+        0.52
+      ]
     },
     {
       "bin": "111000",
@@ -1472,7 +1920,15 @@
       ],
       "weight": 0.8,
       "hex_font": "䷋",
-      "english": "Hindrance"
+      "english": "Hindrance",
+      "yao_weights": [
+        0.64,
+        0.72,
+        0.56,
+        0.28,
+        0.36,
+        0.32
+      ]
     },
     {
       "bin": "111001",
@@ -1490,7 +1946,15 @@
       ],
       "weight": 0.7,
       "hex_font": "䷘",
-      "english": "Without Falsehood"
+      "english": "Without Falsehood",
+      "yao_weights": [
+        0.56,
+        0.63,
+        0.49,
+        0.24,
+        0.32,
+        0.56
+      ]
     },
     {
       "bin": "111010",
@@ -1508,7 +1972,15 @@
       ],
       "weight": 0.5,
       "hex_font": "䷅",
-      "english": "Contention"
+      "english": "Contention",
+      "yao_weights": [
+        0.4,
+        0.45,
+        0.35,
+        0.18,
+        0.45,
+        0.2
+      ]
     },
     {
       "bin": "111011",
@@ -1526,7 +1998,15 @@
       ],
       "weight": 0.55,
       "hex_font": "䷉",
-      "english": "Fulfillment"
+      "english": "Fulfillment",
+      "yao_weights": [
+        0.44,
+        0.5,
+        0.39,
+        0.19,
+        0.5,
+        0.44
+      ]
     },
     {
       "bin": "111100",
@@ -1544,7 +2024,15 @@
       ],
       "weight": 0.75,
       "hex_font": "䷠",
-      "english": "Retreat"
+      "english": "Retreat",
+      "yao_weights": [
+        0.6,
+        0.68,
+        0.52,
+        0.52,
+        0.34,
+        0.3
+      ]
     },
     {
       "bin": "111101",
@@ -1562,7 +2050,15 @@
       ],
       "weight": 0.8,
       "hex_font": "䷌",
-      "english": "Seeking Harmony"
+      "english": "Seeking Harmony",
+      "yao_weights": [
+        0.64,
+        0.72,
+        0.56,
+        0.56,
+        0.36,
+        0.64
+      ]
     },
     {
       "bin": "111110",
@@ -1580,7 +2076,15 @@
       ],
       "weight": 0.65,
       "hex_font": "䷫",
-      "english": "Encountering"
+      "english": "Encountering",
+      "yao_weights": [
+        0.52,
+        0.59,
+        0.45,
+        0.45,
+        0.59,
+        0.26
+      ]
     },
     {
       "bin": "111111",
@@ -1598,7 +2102,15 @@
       ],
       "weight": 0.9,
       "hex_font": "䷀",
-      "english": "Initiating"
+      "english": "Initiating",
+      "yao_weights": [
+        0.72,
+        0.81,
+        0.63,
+        0.63,
+        0.81,
+        0.72
+      ]
     }
   ]
 }

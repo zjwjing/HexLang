@@ -51,6 +51,26 @@ export class Hex64Engine {
     return this.featureVector(input).map(b => b ? 'ON' : 'OFF');
   }
 
+  encodeSeeded(idempotencyKey) {
+    const h = hash(idempotencyKey);
+    const idx = h % 64;
+    const hex = this.db[idx];
+    return {
+      index: idx,
+      hash: h,
+      bin: hex?.bin ?? '000000',
+      hexFont: hex?.hex_font || '',
+      name: hex?.name ?? '未知',
+      pinyin: hex?.pinyin ?? '',
+      en: hex?.en ?? 'Unknown',
+      english: hex?.english || '',
+      category: hex?.category ?? '',
+      tags: hex?.tags ?? [],
+      weight: hex?.weight ?? 0,
+      yaoWeights: hex?.yao_weights ?? [0, 0, 0, 0, 0, 0],
+    };
+  }
+
   tranceive(input) {
     const hex = this.lookup(input);
     const vec = hex.bin.split('').map(Number);
@@ -69,6 +89,7 @@ export class Hex64Engine {
         category: hex.category,
         tags: hex.tags,
         weight: hex.weight,
+        yaoWeights: hex.yao_weights || [0, 0, 0, 0, 0, 0],
       },
       featureVec: vec,
       pseudoCode: code,
