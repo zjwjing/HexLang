@@ -18,13 +18,18 @@ const GRAY = s => `\x1b[90m${s}\x1b[39m`;
 const RESET = '\x1b[0m';
 
 const LOGO = `
-${CYAN}┌─────────────────────────────────────┐${RESET}
-${CYAN}│${RESET}  ${GREEN}乾☰${RESET}  ${GREEN}兑☱${RESET}  ${GREEN}离☲${RESET}  ${GREEN}震☳${RESET}  ${GREEN}巽☴${RESET}  ${GREEN}坎☵${RESET}  ${GREEN}艮☶${RESET}  ${GRAY}坤☷${RESET}  ${CYAN}│${RESET}
-${CYAN}│${RESET}  ${GREEN}███${RESET} ${GREEN}██░${RESET} ${GREEN}█░█${RESET} ${GREEN}█░░${RESET} ${GRAY}░█░${RESET} ${GRAY}░░█${RESET} ${GRAY}░░█${RESET} ${GRAY}░░░${RESET}  ${CYAN}│${RESET}
-${CYAN}│${RESET}  ${GREEN}███${RESET} ${GREEN}██░${RESET} ${GRAY}░░█${RESET} ${GREEN}███${RESET} ${GRAY}░░█${RESET} ${GREEN}███${RESET} ${GRAY}░░█${RESET} ${GRAY}░░░${RESET}  ${CYAN}│${RESET}
-${CYAN}│${RESET}  ${GREEN}███${RESET} ${GRAY}░░█${RESET} ${GREEN}█░█${RESET} ${GREEN}███${RESET} ${GRAY}░█░${RESET} ${GRAY}░░█${RESET} ${GREEN}███${RESET} ${GRAY}░░░${RESET}  ${CYAN}│${RESET}
-${CYAN}│${RESET}  ${YELLOW}111${RESET} ${YELLOW}110${RESET} ${YELLOW}101${RESET} ${YELLOW}100${RESET} ${YELLOW}011${RESET} ${YELLOW}010${RESET} ${YELLOW}001${RESET} ${YELLOW}000${RESET}  ${CYAN}│${RESET}
-${CYAN}└─────────────────────────────────────┘${RESET}
+${CYAN}                  乾☰${RESET} ${YELLOW}111${RESET} ${GREEN}███${RESET}
+${CYAN}                ╱              ╲${RESET}
+${CYAN}          巽☴${RESET} ${YELLOW}011${RESET}              ${CYAN}兑☱${RESET} ${YELLOW}110${RESET}
+${CYAN}          ${GRAY}░█░${RESET}                      ${GREEN}██░${RESET}
+${CYAN}              │                      │${RESET}
+${CYAN}        坎☵${RESET} ${YELLOW}010${RESET}              ${CYAN}离☲${RESET} ${YELLOW}101${RESET}
+${CYAN}        ${GRAY}░░█${RESET}                      ${GREEN}█░█${RESET}
+${CYAN}              │                      │${RESET}
+${CYAN}          艮☶${RESET} ${YELLOW}001${RESET}              ${CYAN}震☳${RESET} ${YELLOW}100${RESET}
+${CYAN}          ${GRAY}░██${RESET}                      ${GREEN}█░░${RESET}
+${CYAN}                ╲              ╱${RESET}
+${CYAN}                  坤☷${RESET} ${YELLOW}000${RESET} ${GRAY}░░░${RESET}
 ${YELLOW}        Hex64 Engine v1.0${RESET}
 ${DIM}  八经卦 · 先天卦序 · 莱布尼茨二进制${RESET}
 `;
