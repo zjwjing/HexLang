@@ -209,8 +209,8 @@ function writeTemplatesFile(entries, filePath) {
   writeFileSync(filePath, lines.join('\n'), 'utf-8');
 }
 
-// Read from bin/hex64.js as source of truth for js/py, regenerate rs/go, write to src/templates.js
-const cliEntries = rebuildFromFile('bin/hex64.js');
+// Read from src/templates.js as source of truth for js/py, regenerate rs/go, write back
+const cliEntries = rebuildFromFile('src/templates.js');
 writeTemplatesFile(cliEntries, 'src/templates.js');
 console.log(`src/templates.js: written ${cliEntries.length} entries`);
 

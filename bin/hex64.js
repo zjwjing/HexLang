@@ -36,25 +36,6 @@ ${DIM}  八经卦 · 先天卦序 · 莱布尼茨二进制${RESET}
 
 
 
-
-function compileHex(hex) {
-  const ops = [...new Set(hex.tags.map(t => TAG_TO_OP[t] || t.toUpperCase()))];
-  const param = hex.name || 'system';
-  const langs = ['js', 'py', 'rs', 'go'];
-  const comments = { js: '//', py: '#', rs: '//', go: '//' };
-  const result = { name: hex.name };
-  for (const lang of langs) {
-    const lines = ops.map(op => {
-      const tpl = opTemplates[op];
-      if (!tpl || !tpl[lang]) return lang === 'js' ? `${op.toLowerCase()}('${param}');` : `${op.toLowerCase()}('${param}')`;
-      let code = tpl[lang].replace(/%s/g, param).replace(/%d/g, '60').replace(/%f/g, '1.5');
-      return code;
-    });
-    result[lang] = `${comments[lang]} HexLang → ${lang.toUpperCase()}  ·  ${hex.name}  (${hex.bin})\n${lines.map(l => '  ' + l).join('\n')}`;
-  }
-  return result;
-}
-
 function formatOutput(input, r, compiled, jsonMode) {
   if (jsonMode) {
     return JSON.stringify({ input, ...r.hexCode, featureVec: r.featureVec, pseudoCode: r.pseudoCode, controlSignal: r.controlSignal, compiledJS: compiled.js, compiledPY: compiled.py, compiledRS: compiled.rs, compiledGO: compiled.go }, null, 2);
