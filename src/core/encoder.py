@@ -40,6 +40,12 @@ class Hex64Encoder:
         with open(full_db_path, 'r', encoding='utf-8') as f:
             full_data = json.load(f)
             self.tag_to_op = full_data.get('tagToOp', {})
+            
+        # 爻权重数据（从 hex64_full.json 加载）
+        self.yao_weights_db = {}
+        for hex_item in full_data.get('hexagrams', []):
+            if 'yao_weights' in hex_item and len(hex_item['yao_weights']) == 6:
+                self.yao_weights_db[hex_item['bin']] = hex_item['yao_weights']
     
     def _djb2_hash(self, input_str: str) -> int:
         """
@@ -82,8 +88,8 @@ class Hex64Encoder:
         inter_hex_data = self.bin_to_hex.get(inter_bin_str)
         
         if inter_hex_data:
-            # 获取互卦的爻权重（如果有）
-            inter_yao_weights = inter_hex_data.get('yao_weights', [0.5] * 6)
+            # 获取互卦的爻权重（从 yao_weights_db 加载）
+            inter_yao_weights = self.yao_weights_db.get(inter_bin_str, [0.5] * 6)
             # 计算互卦加权特征
             inter_feature = [b * w for b, w in zip(inter_bits, inter_yao_weights)]
             
@@ -135,7 +141,7 @@ class Hex64Encoder:
         bits = [int(bit) for bit in bin_code]
         
         # === 改进一：爻级加权特征向量 ===
-        yao_weights = hex_data.get('yao_weights', None)
+        yao_weights = self.yao_weights_db.get(bin_code)
         if yao_weights and len(yao_weights) == 6:
             # 使用爻权重：每个爻位有不同的重要性
             feature_vec = [b * w for b, w in zip(bits, yao_weights)]
@@ -153,12 +159,16 @@ class Hex64Encoder:
             if op not in ops:
                 ops.append(op)
         
+        # 确保 yao_weights 始终存在（用于输出）
+        if not yao_weights or len(yao_weights) != 6:
+            yao_weights = [hex_data.get('weight', 0.5)] * 6
+        
         # === 爻位分析（用于思维链） ===
         yao_analysis = []
         yao_names = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻']
         for i, (bit, name) in enumerate(zip(bits, yao_names)):
             yao_type = '阳' if bit == 1 else '阴'
-            weight = yao_weights[i] if yao_weights else hex_data.get('weight', 0.5)
+            weight = yao_weights[i]
             yao_analysis.append(f"{name}={yao_type}(w={weight:.2f})")
         
         result = {
@@ -171,7 +181,7 @@ class Hex64Encoder:
             'feature_vector': feature_vec,
             'control_signal': control_signal,
             'operations': ops,
-            'yao_weights': yao_weights if yao_weights else [hex_data.get('weight', 0.5)] * 6,
+            'yao_weights': yao_weights,
             'yao_analysis': yao_analysis,
         }
         
