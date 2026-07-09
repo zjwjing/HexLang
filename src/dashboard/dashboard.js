@@ -63,6 +63,27 @@ function renderWeights(metrics) {
   return bars;
 }
 
+// 渲染爻位热力图
+function renderHeatmap(metrics) {
+  const yaoNames = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'];
+  const heatmapEl = document.getElementById('heatmap');
+  heatmapEl.innerHTML = '';
+  for (const yao of yaoNames) {
+    const rule = config.mapping[yao];
+    const value = metrics[rule.metric];
+    const ratio = value / rule.threshold;
+    // 渐变色：绿(0) → 黄(0.8) → 红(1.2+)
+    const r = ratio > 1.0 ? 255 : Math.round(ratio * 255);
+    const g = ratio < 1.0 ? 255 : Math.round((1.2 - ratio) / 0.2 * 255);
+    const b = 50;
+    const alpha = Math.min(0.4 + ratio * 0.5, 1.0);
+    const cell = document.createElement('div');
+    cell.style.cssText = `flex:1;background:rgba(${r},${Math.max(g,0)},${b},${alpha});display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#fff;border-radius:4px`;
+    cell.textContent = ratio.toFixed(2);
+    heatmapEl.appendChild(cell);
+  }
+}
+
 // 渲染趋势图（简化版 Canvas）
 function renderTrend(history) {
   const canvas = document.getElementById('trendChart');
@@ -137,6 +158,7 @@ async function calcHealth() {
      <span style="color:#888;margin-left:8px">${interBin}</span>`;
 
   document.getElementById('yaoWeights').innerHTML = renderWeights(metrics);
+  renderHeatmap(metrics);
 
   // 告警检查
   const alertEl = document.getElementById('alertMsg');

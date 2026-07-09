@@ -80,6 +80,10 @@ class Hex64Encoder:
         Returns:
             互卦信息字典
         """
+        # 防御性编程：确保输入合法
+        assert len(bits) == 6, f"互卦计算需要6位二进制，实际传入 {len(bits)} 位"
+        assert all(b in (0, 1) for b in bits), f"爻位值必须为0或1，实际传入 {bits}"
+
         # 互卦二进制：下卦（二三四）+ 上卦（三四五）
         inter_bits = [bits[1], bits[2], bits[3], bits[2], bits[3], bits[4]]
         inter_bin_str = ''.join(str(b) for b in inter_bits)
@@ -111,12 +115,15 @@ class Hex64Encoder:
     def encode(self, input_str: str, include_details: bool = True) -> Dict[str, Any]:
         """
         将输入字符串编码为 Hex64 卦特征（增强版）
-        
+
+        本模块使用 DJB2 单向哈希映射，不提供反解功能。
+        卦象仅作为输入特征的指纹，不构成任何预测能力。
+
         新增特性：
         1. 爻级加权特征向量：bit[i] * yao_weights[i]
         2. 互卦分析：提取中间过程特征（12维上下文）
         3. 思维链提示：包含爻位分析引导
-        
+
         Args:
             input_str: 输入文本
             include_details: 是否包含详细信息（拼音、英文等）

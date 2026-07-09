@@ -146,6 +146,15 @@
     </div>
 
     <div class="panel">
+      <h3>爻位权重热力图</h3>
+      <div id="heatmap" style="display:flex;gap:4px;height:60px;border-radius:8px;overflow:hidden"></div>
+      <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:#666;margin-top:4px">
+        <span>初爻（基础）</span><span>二爻（执行）</span><span>三爻（枢纽）</span><span>四爻（协调）</span><span>五爻（核心）</span><span>上爻（顶层）</span>
+      </div>
+      <p class="note">红=超载（>1.2） · 黄=警告（0.8-1.2） · 绿=正常（<0.8）</p>
+    </div>
+
+    <div class="panel">
       <h3>爻位权重（健康度分布）</h3>
       <div id="yaoWeights"></div>
       <p class="note">权重比 > 1.2 表示该爻位负载过高，需重点关注</p>
