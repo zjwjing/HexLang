@@ -11,7 +11,11 @@
 
 | 编号 | 任务 | 状态 | 优先级 | 负责人 | 来源 | 关联任务卡 |
 |------|------|------|--------|--------|------|-----------|
-| 024 | LoRA 微调训练（unsloth/Qwen3.5-9B + 2002 条数据）| ✅ 模型就绪 | P0 | 朵朵 | 训练计划 | TASKS.md#训练计划 |
+| 024 | LoRA 微调训练（Qwen3-8B + 2002 条数据）| ✅ **完成** | P0 | 朵朵 | 训练计划 | adapters/hex64-v1/ (loss=0.0484) |
+| 027 | Qwen3.5-9B 升级训练（unsloth/Qwen3.5-9B 已下载）| 🔴 阻塞 | P1 | 朵朵 | 训练计划 | Unsloth + triton 版本兼容问题 |
+| 025 | Feedback 闭环管理系统 | ✅ **完成** | P0 | 朵朵 | 用户建议 | src/training/feedback_manager.py |
+| 026 | 合规防护落地（MIT 版权头 + 数据源标注 + CC BY-NC 4.0）| ✅ **完成** | P0 | 朵朵 | 用户建议 | LICENSE + _sources.json + hex_tags_registry.json |
+| 027 | 文档体系完善（UNIQUENESS.md + ARCHITECTURE.md + SECURITY.md）| ✅ **完成** | P1 | 朵朵 | 用户建议 | 3 个核心文档 |
 | 016 | QLoRA 训练目标加"文本→64维卦分布"辅助损失 | 📋 待做 | P2 | 朵朵 | bagau-llm 思路吸收 | — |
 
 ## 已完成任务
