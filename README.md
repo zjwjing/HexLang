@@ -290,6 +290,24 @@ python -m http.server 8080
 
 配置文件：`src/dashboard/config.json`（可自定义阈值和爻位映射）
 
+## VSCode 插件
+
+HexLang 提供 VSCode 插件，在编辑器内直接查看代码的卦象溯源。
+
+```bash
+# 安装插件
+cd vscode-ext
+npm install
+npm run compile
+# 按 F5 启动调试，或打包为 .vsix
+```
+
+| 功能 | 说明 |
+|------|------|
+| 右键「解释选中逻辑」 | 选中代码 → 调用 Hex64 编码 → 显示卦象溯源面板 |
+| 悬停显示卦象标签 | 光标悬停在代码行 → 显示该行的卦象、标签、爻权重 |
+| 标注当前文件 | 为每行代码添加 Hex64 注释 |
+
 ## 运算规则
 
 | 易经概念 | 计算机指令 | 技术含义 |

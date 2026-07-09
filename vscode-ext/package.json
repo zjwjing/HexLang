@@ -1,0 +1,74 @@
+{
+  "name": "hexlang",
+  "displayName": "HexLang — 逻辑符号层",
+  "description": "Hex64 卦象编码：代码逻辑溯源、规则可视化、AI 可解释性标注",
+  "version": "0.1.0",
+  "publisher": "hex64",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:python",
+    "onLanguage:javascript",
+    "onLanguage:typescript"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "hexlang.explainSelection",
+        "title": "Hex64: 解释选中逻辑"
+      },
+      {
+        "command": "hexlang.annotateFile",
+        "title": "Hex64: 标注当前文件"
+      },
+      {
+        "command": "hexlang.showDashboard",
+        "title": "Hex64: 打开健康度仪表盘"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "hexlang.explainSelection",
+          "when": "editorHasSelection",
+          "group": "hexlang"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "HexLang",
+      "properties": {
+        "hexlang.encoderPath": {
+          "type": "string",
+          "default": "",
+          "description": "Hex64 encoder.py 路径（留空自动检测）"
+        },
+        "hexlang.enableHover": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用悬停显示卦象标签"
+        },
+        "hexlang.enableInlineAnnotation": {
+          "type": "boolean",
+          "default": true,
+          "description": "启用行内卦象注释"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0"
+  }
+}
