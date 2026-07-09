@@ -1,0 +1,50 @@
+{
+  "mapping": {
+    "初爻": {
+      "metric": "cpu_usage",
+      "threshold": 80,
+      "yang": 1,
+      "yin": 0,
+      "desc": "基础算力负载（初爻为根基）"
+    },
+    "二爻": {
+      "metric": "mem_usage",
+      "threshold": 75,
+      "yang": 1,
+      "yin": 0,
+      "desc": "内存资源占用（二爻为内里）"
+    },
+    "三爻": {
+      "metric": "disk_io",
+      "threshold": 70,
+      "yang": 1,
+      "yin": 0,
+      "desc": "存储读写压力（三爻为枢纽）"
+    },
+    "四爻": {
+      "metric": "network_latency",
+      "threshold": 100,
+      "yang": 1,
+      "yin": 0,
+      "desc": "网络传输状态（四爻为外显）"
+    },
+    "五爻": {
+      "metric": "error_rate",
+      "threshold": 1,
+      "yang": 1,
+      "yin": 0,
+      "desc": "业务错误率（五爻为核心）"
+    },
+    "上爻": {
+      "metric": "uptime_days",
+      "threshold": 30,
+      "yang": 1,
+      "yin": 0,
+      "desc": "系统运行时长（上爻为顶端）"
+    }
+  },
+  "alert": {
+    "inter_hex_threshold": "水山蹇",
+    "yao_weight_threshold": 1.2
+  }
+}

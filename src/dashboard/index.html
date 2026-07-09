@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HexLang · 系统健康度仪表盘</title>
+  <style>
+    :root {
+      --bg: #0a0a1a;
+      --card: #111128;
+      --border: #2a2a4a;
+      --text: #e4e4e4;
+      --accent: #00ff88;
+      --warn: #ffaa00;
+      --danger: #ff4444;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, 'Segoe UI', Roboto, monospace;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { color: #888; font-size: 0.85rem; margin-bottom: 20px; }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .panel h3 { font-size: 1rem; margin-bottom: 12px; color: var(--accent); }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .metric-item label {
+      font-size: 0.8rem;
+      color: #888;
+    }
+    .metric-item input {
+      background: #1a1a2e;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: monospace;
+    }
+    .metric-item input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .btn {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .hex-display {
+      font-size: 1.2rem;
+      padding: 12px;
+      background: #0a0a1a;
+      border-radius: 8px;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+    }
+    .note { font-size: 0.75rem; color: #666; margin-top: 8px; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    canvas {
+      width: 100%;
+      background: #0a0a1a;
+      border-radius: 8px;
+    }
+    @media (max-width: 768px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>系统健康度仪表盘</h1>
+    <p class="subtitle">确定性符号编码 · 非玄学工程工具</p>
+
+    <div class="panel">
+      <h3>实时运维指标</h3>
+      <div class="metrics-grid">
+        <div class="metric-item">
+          <label>CPU 使用率 (%)</label>
+          <input type="number" id="cpu" value="85" min="0" max="100">
+        </div>
+        <div class="metric-item">
+          <label>内存使用率 (%)</label>
+          <input type="number" id="mem" value="70" min="0" max="100">
+        </div>
+        <div class="metric-item">
+          <label>磁盘 IO (%)</label>
+          <input type="number" id="disk" value="65" min="0" max="100">
+        </div>
+        <div class="metric-item">
+          <label>网络延迟 (ms)</label>
+          <input type="number" id="net" value="120" min="0">
+        </div>
+        <div class="metric-item">
+          <label>错误率 (%)</label>
+          <input type="number" id="err" value="2" min="0" max="100" step="0.1">
+        </div>
+        <div class="metric-item">
+          <label>运行时长 (天)</label>
+          <input type="number" id="uptime" value="45" min="0">
+        </div>
+      </div>
+      <button class="btn" id="calcBtn">计算健康度卦象</button>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <h3>本卦</h3>
+        <div id="hexOutput" class="hex-display">等待计算...</div>
+      </div>
+      <div class="panel">
+        <h3>互卦</h3>
+        <div id="interHexOutput" class="hex-display">等待计算...</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>爻位权重（健康度分布）</h3>
+      <div id="yaoWeights"></div>
+      <p class="note">权重比 > 1.2 表示该爻位负载过高，需重点关注</p>
+    </div>
+
+    <div class="panel">
+      <h3>告警状态</h3>
+      <div id="alertMsg">等待计算...</div>
+    </div>
+
+    <div class="panel">
+      <h3>健康度趋势</h3>
+      <canvas id="trendChart" width="800" height="200"></canvas>
+    </div>
+  </div>
+
+  <script type="module" src="dashboard.js"></script>
+</body>
+</html>
