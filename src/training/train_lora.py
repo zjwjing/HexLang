@@ -1,7 +1,7 @@
 """
 Hex64 QLoRA 微调脚本
 
-使用 peft + transformers 对 Qwen3.5-9B 进行 LoRA 微调
+使用 peft + transformers 对 Qwen3-8B 进行 LoRA 微调
 让模型学习 Hex64 的编码规则和输出格式
 
 前置条件：
@@ -82,17 +82,24 @@ def train_lora(
         base_dir = Path(__file__).parent.parent.parent
         models_dir = base_dir / 'models'
         
-        # 查找第一个 Qwen3.5 模型（支持 GPTQ-INT4 社区版）
+        # 搜索模型目录（优先选 unsloth 版 Qwen3.5-9B）
+        candidates = []
         for item in models_dir.iterdir():
             name = item.name.lower()
-            if item.is_dir() and ('qwen3.5' in name or 'qwen3_5' in name):
-                model_path = str(item)
+            if item.is_dir() and ('qwen3' in name):
+                candidates.append(item)
+        # 优先：含 unsloth 的 > 含 qwen3.5 的 > 含 qwen3-8 的
+        for keyword in ['unsloth', 'qwen3.5', 'qwen3-8', 'qwen3_8']:
+            found = [c for c in candidates if keyword in c.name.lower()]
+            if found:
+                model_path = str(found[0])
                 break
     
     if model_path is None:
         raise FileNotFoundError(
             "未找到模型\n"
-            "请先下载：python -c \"from transformers import AutoModel; AutoModel.from_pretrained('mssfj/Qwen3.5-9B-GPTQ-INT4', cache_dir='models/')\"\n"
+            "请先下载：python -c \"from huggingface_hub import snapshot_download; snapshot_download('unsloth/Qwen3.5-9B', "
+            "local_dir='models/unsloth_Qwen3.5-9B')\"\n"
             "或者指定 model_path 参数"
         )
     
@@ -118,7 +125,7 @@ def train_lora(
     
     # 导入标准 peft + transformers
     try:
-        from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+        from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainingArguments
         from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
         from trl import SFTTrainer
         from datasets import Dataset
@@ -150,7 +157,13 @@ def train_lora(
         trust_remote_code=True,
     )
     
-    tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+    # 直接使用 Qwen3TokenizerFast（避免 AutoTokenizer 的模块导入问题）
+    try:
+        from transformers import Qwen3TokenizerFast
+        tokenizer = Qwen3TokenizerFast.from_pretrained(model_path, trust_remote_code=True)
+    except ImportError:
+        from transformers import AutoTokenizer
+        tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
     tokenizer.pad_token = tokenizer.eos_token
     
     # 为 kbit 训练准备模型
@@ -188,30 +201,35 @@ def train_lora(
     
     # 配置训练器
     print("配置训练器...")
+    
+    def formatting_prompts_func(example):
+        return example["text"]
+    
+    training_args = TrainingArguments(
+        per_device_train_batch_size=batch_size,
+        gradient_accumulation_steps=2,
+        warmup_steps=30,
+        max_steps=max_steps,
+        learning_rate=learning_rate,
+        fp16=not use_4bit,
+        bf16=use_4bit,
+        logging_steps=10,
+        save_steps=50,
+        save_total_limit=3,
+        optim="adamw_8bit",
+        weight_decay=0.01,
+        lr_scheduler_type="linear",
+        seed=3407,
+        output_dir=adapter_path,
+        report_to="none",
+    )
+    
     trainer = SFTTrainer(
         model=model,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         train_dataset=dataset,
-        dataset_text_field="text",
-        max_seq_length=max_seq_length,
-        packing=True,
-        args={
-            "per_device_train_batch_size": batch_size,
-            "gradient_accumulation_steps": 2,
-            "warmup_steps": 30,
-            "max_steps": max_steps,
-            "learning_rate": learning_rate,
-            "fp16": not use_4bit,
-            "bf16": use_4bit,
-            "logging_steps": 10,
-            "save_steps": 50,
-            "save_total_limit": 3,
-            "optim": "adamw_8bit",
-            "weight_decay": 0.01,
-            "lr_scheduler_type": "linear",
-            "seed": 3407,
-            "output_dir": adapter_path,
-        }
+        formatting_func=formatting_prompts_func,
+        args=training_args,
     )
     
     # 开始训练

@@ -11,7 +11,7 @@
 
 | 编号 | 任务 | 状态 | 优先级 | 负责人 | 来源 | 关联任务卡 |
 |------|------|------|--------|--------|------|-----------|
-| 024 | LoRA 微调训练（Qwen3.5-9B + 2002 条训练数据）| 📋 待硬件 | P1 | 朵朵 | 训练计划 | TASKS.md#训练计划 |
+| 024 | LoRA 微调训练（unsloth/Qwen3.5-9B + 2002 条数据）| ✅ 模型就绪 | P0 | 朵朵 | 训练计划 | TASKS.md#训练计划 |
 | 016 | QLoRA 训练目标加"文本→64维卦分布"辅助损失 | 📋 待做 | P2 | 朵朵 | bagau-llm 思路吸收 | — |
 
 ## 已完成任务
@@ -124,20 +124,17 @@ data/hex64_full.json ← 64卦数据（含 yao_weights、hex_font、english）
 ### 前提条件
 
 - 硬件：NVIDIA RTX 4080 SUPER（16GB VRAM，当前可用）
-- 模型：`mssfj/Qwen3.5-9B-GPTQ-INT4`（HuggingFace 社区量化版，GPTQ 4-bit，~7.7GB，未下载）
+- 模型：`unsloth/Qwen3.5-9B`（已下载至 `models/unsloth_Qwen3.5-9B/`，8.21B 参数，BF16 格式）
 - 依赖：transformers 4.57.3 + peft 0.19.1 + trl 0.24.0 + datasets 4.3.0（均已安装）
 - 训练数据：`data/train_hex64.jsonl` — **2002 条 ✅**
 
 ### 快速开始
 
 ```bash
-# 第一步：下载 GPTQ-INT4 量化模型（~7.7GB，一次性）
-python -c "from transformers import AutoModel; AutoModel.from_pretrained('mssfj/Qwen3.5-9B-GPTQ-INT4', cache_dir='models/')"
-
-# 第二步：运行 LoRA 微调
+# 模型已下载到 models/unsloth_Qwen3.5-9B/（8.21B 参数，BF16）
+# 运行 LoRA 微调：
 python src/training/train_lora.py
 
-# 第三步：验证训练结果
 # 输出：adapters/hex64-v1/（约 50MB，LoRA 适配器权重）
 ```
 
