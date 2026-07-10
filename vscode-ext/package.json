@@ -16,6 +16,10 @@
     "onLanguage:typescript"
   ],
   "main": "./out/extension.js",
+  "files": [
+    "out",
+    "media"
+  ],
   "contributes": {
     "commands": [
       {
@@ -29,6 +33,10 @@
       {
         "command": "hexlang.showDashboard",
         "title": "Hex64: 打开健康度仪表盘"
+      },
+      {
+        "command": "hexlang.quickQuery",
+        "title": "Hex64: 快速查询卦象"
       }
     ],
     "menus": {

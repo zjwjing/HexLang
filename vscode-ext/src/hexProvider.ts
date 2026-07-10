@@ -1,21 +1,5 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
-import * as fs from 'fs';
-
-// DJB2 哈希（与 encoder.py 一致）
-function djb2Hash(input: string): number {
-  let h = 5381;
-  for (let i = 0; i < input.length; i++) {
-    h = ((h << 5) + h + input.charCodeAt(i)) & 0xFFFFFFFF;
-  }
-  return h >>> 0;
-}
-
-// 互卦计算
-function computeInterHex(bits: number[]): string {
-  const interBits = [bits[1], bits[2], bits[3], bits[2], bits[3], bits[4]];
-  return interBits.join('');
-}
+import { djb2Hash, computeInterHex } from './utils';
 
 export interface HexResult {
   hex: {
@@ -24,6 +8,8 @@ export interface HexResult {
     tags: string[];
     weight: number;
     yao_weights: number[];
+    english: string;
+    pinyin: string;
   };
   inter_hex: {
     name: string;
@@ -33,60 +19,128 @@ export interface HexResult {
 }
 
 export class HexProvider {
-  private hexDb: any[] = [];
-  private binToHex: Map<string, any> = new Map();
+  private hexDb: Map<string, any> = new Map();
+  private binToIndex: Map<string, number> = new Map();
   private tagToOp: Map<string, string> = new Map();
   private initialized = false;
+  private dataPath: string | null = null;
+  private extensionContext: vscode.ExtensionContext | null = null;
 
   constructor() {
+    // init 由 setExtensionContext 调用后触发
+  }
+
+  /**
+   * 设置扩展上下文（由 extension.ts 在 activate 中调用）
+   */
+  setExtensionContext(ctx: vscode.ExtensionContext) {
+    this.extensionContext = ctx;
     this.init();
   }
 
-  private init() {
-    try {
-      // 尝试从工作区加载数据
-      const workspaceFolders = vscode.workspace.workspaceFolders;
-      if (!workspaceFolders) return;
-
-      const dataPath = path.join(workspaceFolders[0].uri.fsPath, 'data', 'hex64_full.json');
-      if (!fs.existsSync(dataPath)) return;
-
-      const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
-      this.hexDb = data.hexagrams || [];
-      for (const hex of this.hexDb) {
-        this.binToHex.set(hex.bin, hex);
+  /**
+   * 智能数据加载策略：
+   * 1. 优先从扩展内置数据 (media/)
+   * 2. 其次从工作区加载（开发模式）
+   */
+  private async init() {
+    // 1. 尝试从扩展内置目录加载
+    if (this.extensionContext) {
+      const builtInUri = vscode.Uri.joinPath(
+        this.extensionContext.extensionUri,
+        'media',
+        'hex64_full.json'
+      );
+      if (await this.tryLoad(builtInUri, 'extension media')) {
+        return;
       }
-      const tagToOp = data.tagToOp || {};
-      for (const [tag, op] of Object.entries(tagToOp)) {
-        this.tagToOp.set(tag, op as string);
-      }
-      this.initialized = true;
-    } catch (err) {
-      console.error('HexLang: failed to load hex64_full.json', err);
     }
+
+    // 2. 尝试从工作区加载
+    try {
+      const workspaceFolders = vscode.workspace.workspaceFolders;
+      if (workspaceFolders) {
+        const candidates = [
+          vscode.Uri.joinPath(workspaceFolders[0].uri, 'data', 'hex64_full.json'),
+          vscode.Uri.joinPath(workspaceFolders[0].uri, 'data', 'hexagrams.json'),
+        ];
+        for (const uri of candidates) {
+          if (await this.tryLoad(uri, 'workspace')) {
+            return;
+          }
+        }
+      }
+    } catch {
+      // 忽略
+    }
+
+    console.warn('[HexLang] No data source found. HexProvider is not initialized.');
+  }
+
+  private async tryLoad(uri: vscode.Uri, source: string): Promise<boolean> {
+    try {
+      const bytes = await vscode.workspace.fs.readFile(uri);
+      const text = new TextDecoder().decode(bytes);
+      const data = JSON.parse(text);
+      this.dataPath = uri.toString();
+      this.loadFromData(data);
+      if (this.initialized) {
+        console.log(`[HexLang] Loaded ${this.hexDb.size} hexagrams from ${source}`);
+      }
+      return this.initialized;
+    } catch {
+      return false;
+    }
+  }
+
+  private loadFromData(data: any) {
+    const hexagrams = Array.isArray(data) ? data : (data.hexagrams || []);
+
+    for (const hex of hexagrams) {
+      if (hex.bin && hex.name) {
+        this.hexDb.set(hex.bin, {
+          ...hex,
+          tags: hex.tags || [],
+          yao_weights: hex.yao_weights || [0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+          english: hex.english || '',
+          pinyin: hex.pinyin || '',
+          weight: hex.weight ?? 0.5,
+        });
+        this.binToIndex.set(hex.bin, hexagrams.indexOf(hex));
+      }
+    }
+
+    const tagToOp = data.tagToOp || {};
+    for (const [tag, op] of Object.entries(tagToOp)) {
+      this.tagToOp.set(tag, op as string);
+    }
+
+    this.initialized = true;
   }
 
   encode(input: string): HexResult {
     if (!this.initialized) {
-      throw new Error('HexLang 数据未加载，请确保工作区包含 data/hex64_full.json');
+      throw new Error('HexLang 数据未加载');
     }
 
     const hash = djb2Hash(input);
     const idx = hash % 64;
     const bin = idx.toString(2).padStart(6, '0');
-    const hex = this.binToHex.get(bin);
+    const hex = this.hexDb.get(bin);
 
     const bits = bin.split('').map(Number);
     const interBin = computeInterHex(bits);
-    const interHex = this.binToHex.get(interBin);
+    const interHex = this.hexDb.get(interBin);
 
     return {
       hex: {
         name: hex?.name || '未知',
         binary: bin,
         tags: hex?.tags || [],
-        weight: hex?.weight || 0.5,
+        weight: hex?.weight ?? 0.5,
         yao_weights: hex?.yao_weights || [0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+        english: hex?.english || '',
+        pinyin: hex?.pinyin || '',
       },
       inter_hex: {
         name: interHex?.name || '未知',
@@ -122,5 +176,30 @@ export class HexProvider {
     }
 
     return annotated.join('\n');
+  }
+
+  getAllHexagrams(): any[] {
+    return Array.from(this.hexDb.values());
+  }
+
+  findByHexName(name: string): any | null {
+    for (const hex of this.hexDb.values()) {
+      if (hex.name === name) {
+        return hex;
+      }
+    }
+    return null;
+  }
+
+  findByBinary(bin: string): any | null {
+    return this.hexDb.get(bin) || null;
+  }
+
+  getStats(): { total: number; initialized: boolean; dataPath: string | null } {
+    return {
+      total: this.hexDb.size,
+      initialized: this.initialized,
+      dataPath: this.dataPath,
+    };
   }
 }

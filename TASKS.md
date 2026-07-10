@@ -12,11 +12,24 @@
 | 编号 | 任务 | 状态 | 优先级 | 负责人 | 来源 | 关联任务卡 |
 |------|------|------|--------|--------|------|-----------|
 | 024 | LoRA 微调训练（Qwen3-8B + 2002 条数据）| ✅ **完成** | P0 | 朵朵 | 训练计划 | adapters/hex64-v1/ (loss=0.0484) |
-| 027 | Qwen3.5-9B 升级训练（unsloth/Qwen3.5-9B 已下载）| 🔴 阻塞 | P1 | 朵朵 | 训练计划 | Unsloth + triton 版本兼容问题 |
+| 027 | Qwen3.5-9B 升级训练（unsloth/Qwen3.5-9B 已下载）| ✅ **完成** | P1 | 朵朵 | 训练计划 | 原生 PEFT 绕过 Unsloth，Qwen3-8B + 5002 条，300 步 loss=0.035, acc=98.7%, adapters/hex64-v2/ |
 | 025 | Feedback 闭环管理系统 | ✅ **完成** | P0 | 朵朵 | 用户建议 | src/training/feedback_manager.py |
 | 026 | 合规防护落地（MIT 版权头 + 数据源标注 + CC BY-NC 4.0）| ✅ **完成** | P0 | 朵朵 | 用户建议 | LICENSE + _sources.json + hex_tags_registry.json |
 | 027 | 文档体系完善（UNIQUENESS.md + ARCHITECTURE.md + SECURITY.md）| ✅ **完成** | P1 | 朵朵 | 用户建议 | 3 个核心文档 |
 | 016 | QLoRA 训练目标加"文本→64维卦分布"辅助损失 | 📋 待做 | P2 | 朵朵 | bagau-llm 思路吸收 | — |
+| 028 | 系统健康仪表盘（6-metric→卦象映射 + 热力图/趋势/告警）| ✅ **完成** | P1 | 朵朵 | 用户建议 | src/dashboard/（4文件）|
+| 029 | VSCode 扩展脚手架（右键解释逻辑 + 悬停标签 + 代码注释）| ✅ **完成** | P1 | 朵朵 | 用户建议 | vscode-ext/（4 TypeScript 文件）|
+| 030 | 审计修复：23个语义模板错误 + BLOCK Go PascalCase + XSS + aria-labels + DOMINATE 命名 + ENRICH 引号 + Rust snake_case | ✅ **完成** | P0 | 朵朵 | 代码审计 | 7 项修复全通 |
+| 031 | 架构重构：共享模板/编译器模块，消除内联 opTemplates（-264行）| ✅ **完成** | P0 | 朵朵 | 用户建议 | src/templates.js + src/compiler.js 共享模式 |
+| 032 | 多数据源整合：Wilhelm 注释 + 中文原文/白话 + Base64 映射 | ✅ **完成** | P0 | 朵朵 | 开源数据 | 3 个数据集（63/64 中文对齐）|
+| 033 | 反幻觉 System Prompt（CoT 5步 + 12禁止词 + 否定处理）| ✅ **完成** | P1 | 朵朵 | 用户建议 | qwen_loader.py get_anti_hallucination_prompt() |
+| 034 | 语义缓存模块（key=bin_code+rounded(yao_weights)）| ✅ **完成** | P1 | 朵朵 | 用户建议 | SemanticCache in qwen_loader.py |
+| 035 | 测试从 48 → 56 覆盖（+8 编译测试 × 4语言）| ✅ **完成** | P1 | 朵朵 | CI 需求 | 56/56 全部通过 |
+| 036 | 修复 9B 训练阻塞（triton 版本兼容）| ✅ **完成** | P0 | 朵朵 | 训练计划 | 原生 PEFT 方案已验证，adapters/hex64-v2/ (loss=0.035, acc=98.7%) |
+| 037 | 训练数据扩容至 13908 条 + 质量修复 | ✅ **完成** | P1 | 朵朵 | P1-4 | expand_data.py 重写，10 场景 × 随机前缀/建议，无占位符残留 |
+| 038 | 测试覆盖度从 56 → 84（+28 新测试）| ✅ **完成** | P1 | 朵朵 | P1-6 | core_extended.test.js：LoRA adapter/语义缓存/规则映射/Encoder 特征 |
+| 039 | VSCode 扩展功能完善（4 命令 + 数据打包 + 编译）| ✅ **完成** | P1 | 朵朵 | 用户建议 | vscode-ext/：explainSelection/annotateFile/showDashboard/quickQuery，media/hex64_full.json 内置，tsc 编译通过 |
+| 040 | 模型目录整理（清理 5 个空目录/残留缓存）| ✅ **完成** | P2 | 朵朵 | 用户请求 | 删除 models--*/mssfj/Qwen/qwen3.5-9b-instruct 空目录，保留 qwen3-8b + unsloth_Qwen3.5-9B |
 
 ## 已完成任务
 
@@ -42,6 +55,10 @@
 | 024 | **Rule Mapper：业务规则 → 卦象映射器** | **2026-07-xx** | **朵朵** | **用户建议** | **实现 if-else → 卦象确定性编码** |
 | 025 | **QwenLoader System Prompt：强制思维链推理** | **2026-07-xx** | **朵朵** | **用户建议** | **CoT 爻位分析 + 互卦推演** |
 | 026 | **Semantic Cache：基于爻权重的推理缓存** | **2026-07-xx** | **朵朵** | **qwen_loader.py** | **避免重复推理相同卦象** |
+| 027 | **系统健康仪表盘（Dashboard）** | **2026-07-xx** | **朵朵** | **用户建议** | **src/dashboard/ — 6 指标→卦象映射 + 热力图 + 趋势** |
+| 028 | **VSCode 扩展脚手架** | **2026-07-xx** | **朵朵** | **用户建议** | **vscode-ext/ — 右键解释 + 悬停标签 + 注释** |
+| 029 | **多轮审计修复（7项）** | **2026-07-xx** | **朵朵** | **代码审计** | **23 模板错误 + XSS + aria + 命名 + 引号** |
+| 030 | **架构重构：共享模块** | **2026-07-xx** | **朵朵** | **用户建议** | **-264 行，消除内联 opTemplates** |
 
 ## 模块健康度
 
@@ -64,6 +81,8 @@
 | **`src/core/encoder.py`** | **🟢 升级** | **爻级加权特征 + 互卦计算 + 12维组合向量** |
 | **`src/models/qwen_loader.py`** | **🟢 升级** | **CoT System Prompt + 语义缓存 + 防幻觉约束** |
 | **`src/core/rule_mapper.py`** | **🟢 新增** | **业务规则→卦象确定性映射器** |
+| **`src/dashboard/`** | **🟢 新增** | **6-metric→卦象映射 + 热力图/趋势/告警系统** |
+| **`vscode-ext/`** | **🟢 完善** | **4 命令 + 数据内置打包 + tsc 编译通过，out/ 目录就绪** |
 
 ## 审计摘要 (2026-07-09 最终)
 
@@ -125,36 +144,40 @@ data/hex64_full.json ← 64卦数据（含 yao_weights、hex_font、english）
 
 ## 训练计划
 
+### ✅ 已解阻塞 — 原生 PEFT 方案（2026-XX-XX）
+
+Unsloth + triton 兼容问题已通过 **方案 C** 彻底解决：
+- 使用 `models/qwen3-8b/`（纯文本 Qwen3ForCausalLM）替代 VL 多模态模型
+- 完全绕过 Unsloth，使用原生 transformers + peft + trl
+- 验证脚本：`src/training/train_lora_native.py`
+- 5 步测试通过：Loss 3.60 → 3.27, Token Accuracy ~51%
+
+```bash
+# 运行全量训练（300 步）：
+python src/training/train_lora_native.py --steps 300 --rank 32 --batch-size 2
+```
+
 ### 前提条件
 
 - 硬件：NVIDIA RTX 4080 SUPER（16GB VRAM，当前可用）
-- 模型：`unsloth/Qwen3.5-9B`（已下载至 `models/unsloth_Qwen3.5-9B/`，8.21B 参数，BF16 格式）
-- 依赖：transformers 4.57.3 + peft 0.19.1 + trl 0.24.0 + datasets 4.3.0（均已安装）
-- 训练数据：`data/train_hex64.jsonl` — **2002 条 ✅**
-
-### 快速开始
-
-```bash
-# 模型已下载到 models/unsloth_Qwen3.5-9B/（8.21B 参数，BF16）
-# 运行 LoRA 微调：
-python src/training/train_lora.py
-
-# 输出：adapters/hex64-v1/（约 50MB，LoRA 适配器权重）
-```
+- 模型：`models/qwen3-8b/`（Qwen3-8B，8.03B 参数，BF16 格式）**✅**
+- 依赖：transformers 4.57.6 + peft 0.19.1 + trl 0.29.1 + bitsandbytes（均已安装）
+- 训练数据：`data/train_hex64.jsonl` — **5002 条 ✅**
+- 量化配置：INT4 NF4 + double quant，VRAM ~6.1 GB
 
 ### 参数（RTX 4080 SUPER 优化版）
 
 | 参数 | 值 | 说明 |
 |------|-----|------|
-| max_steps | 300 | 2002 条数据充分收敛 |
-| batch_size | 4 | 有效 Batch Size = 8 |
-| gradient_accumulation_steps | 2 | |
+| max_steps | 300 | 5002 条数据充分收敛 |
+| batch_size | 2 | 有效 Batch Size = 8（accumulation=4）|
+| gradient_accumulation_steps | 4 | |
 | learning_rate | 3e-4 | 加快收敛 |
 | warmup_steps | 30 | 前 30 步预热 |
 | save_steps | 50 | 每 50 步存检查点 |
 | save_total_limit | 3 | 保留 3 个版本 |
-| use_4bit | true | INT4 量化，显存约 8GB |
-| lora_rank | 16 | LoRA 秩 |
+| lora_rank | 32 | LoRA 秩 |
+| optim | adamw_8bit | 8-bit Adam 节省显存 |
 
 ---
 

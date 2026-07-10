@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 zjwjing
+Copyright (c) 2026 zjwjing / HexLang project
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,31 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+## Hex64 Definition Rights Notice
+
+The Hex64 symbolic encoding system — including but not limited to:
+- The 64-hexagram engineering semantic mapping schema
+- The tag-to-operation (tagToOp) registry
+- The yao-weight (爻权重) calculation method
+- The inter-hexagram (互卦) contextual feature computation
+- The binary-to-engineering-domain classification rules
+
+— are original intellectual contributions of the HexLang project. These definitions constitute the unique "解释權" (interpretive authority) that distinguishes Hex64 from traditional I Ching systems.
+
+**Usage Policy:**
+1. **Code**: MIT License — free for personal, educational, and commercial use
+2. **Semantic Definitions**: CC BY-NC 4.0 — attribution required, commercial use prohibited without written permission
+3. **Data Sources**: See [data/_sources.json](data/_sources.json) for provenance and licensing of third-party data
+
+**Attribution Requirement:**
+When redistributing derived works that include Hex64 semantic mappings, you must retain:
+- The original copyright notice
+- Attribution to adamblvck/iching-wilhelm-dataset (for base hexagram data)
+- Attribution to chengjun/iching (for Chinese texts)
+- Your own attribution to the HexLang project
+
+**No Competing Products:**
+Using these semantic definitions to create competing "I Ching × Engineering" products without a commercial license from the HexLang project owner is prohibited.

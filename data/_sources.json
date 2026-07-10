@@ -1,0 +1,52 @@
+{
+  "_meta": {
+    "description": "HexLang 数据源合规声明",
+    "version": "1.0.0",
+    "created_at": "2026-07-09T18:00:00Z",
+    "license": "MIT (code) + CC BY-NC 4.0 (semantic tags)"
+  },
+  "sources": {
+    "hexagrams.json": {
+      "origin": "adamblvck/iching-wilhelm-dataset",
+      "url": "https://github.com/adamblvck/iching-wilhelm-dataset",
+      "license": "CC BY-NC 4.0",
+      "description": "Wilhelm I Ching dataset with Unicode symbols, English names, and judgment texts",
+      "fields": ["bin", "name", "pinyin", "en", "category", "tags", "weight"],
+      "attribution_required": true,
+      "attribution_text": "Hexagram data adapted from adamblvck/iching-wilhelm-dataset under CC BY-NC 4.0"
+    },
+    "hex64_full.json": {
+      "origin": "HexLang project (derived)",
+      "url": null,
+      "license": "MIT",
+      "description": "Full Hex64 database with yao_weights, hex_font, english, tagToOp mapping",
+      "fields": ["bin", "name", "pinyin", "en", "category", "tags", "weight", "yao_weights", "hex_font", "english", "tagToOp"],
+      "attribution_required": false,
+      "attribution_text": "Hex64 full database © 2026 zjwjing, MIT License"
+    },
+    "chinese_texts.json": {
+      "origin": "chengjun/iching",
+      "url": "https://github.com/chengjun/iching",
+      "license": "MIT",
+      "description": "Chinese original text and modern explanations (63/64 completed)",
+      "fields": ["name", "original_text", "modern_explanation"],
+      "attribution_required": true,
+      "attribution_text": "Chinese texts from chengjun/iching under MIT License"
+    },
+    "base64_mapping.json": {
+      "origin": "qntm/hexagram-encode",
+      "url": "https://qntm.org/hex/",
+      "license": "Public Domain",
+      "description": "Base64 ↔ Hexagram symbol mapping",
+      "fields": ["symbol", "base64_char", "decimal_value"],
+      "attribution_required": false,
+      "attribution_text": "Base64 mapping from qntm.org (public domain)"
+    }
+  },
+  "hex_tags_registry": {
+    "status": "pending_creation",
+    "description": "Semantic tag registry for Hex64 engineering mappings",
+    "planned_license": "CC BY-NC 4.0",
+    "rationale": "Tag definitions are intellectual property of HexLang project. Engineering semantics (e.g., '承载' → storage, '决断' → branching) are proprietary definitions that cannot be replicated."
+  }
+}

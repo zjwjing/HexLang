@@ -43,5 +43,16 @@
     "scene": "system",
     "confidence": 1.0,
     "parsed": true
+  },
+  {
+    "key": "da6e63b87491453b7eab97e195c3353d",
+    "timestamp": "2026-07-09T19:08:07.228017",
+    "user_input": "数据库连接超时",
+    "original_hex": null,
+    "target_hex": "水雷屯",
+    "scene": "ops",
+    "confidence": 1.0,
+    "parsed": true,
+    "updated_at": "2026-07-09T19:08:07.228038"
   }
 ]

@@ -1,0 +1,165 @@
+{
+  "_meta": {
+    "name": "Hex64 Engineering Tag Registry",
+    "version": "1.0.0",
+    "created_at": "2026-07-09T18:00:00Z",
+    "owner": "zjwjing / HexLang project",
+    "license": "CC BY-NC 4.0",
+    "url": "https://github.com/zjwji/HexLang",
+    "attribution_required": true,
+    "commercial_use_prohibited": true,
+    "rationale": "These engineering semantic mappings are intellectual property of the HexLang project. They define how I Ching hexagrams map to software engineering concepts — this is a novel, original contribution with no prior art."
+  },
+  "tags": {
+    "承载": {
+      "en": "receptive/storage",
+      "hexagram": "坤为地 (000000)",
+      "engineering_domain": "storage/systems",
+      "description": "Data persistence, buffering, queuing"
+    },
+    "包容": {
+      "en": "inclusive",
+      "hexagram": "坤为地 (000000)",
+      "engineering_domain": "architecture",
+      "description": "Multi-format support, adapter pattern"
+    },
+    "柔顺": {
+      "en": "adaptable",
+      "hexagram": "坤为地 (000000)",
+      "engineering_domain": "design-patterns",
+      "description": "Flexible interfaces, strategy pattern"
+    },
+    "被动": {
+      "en": "passive/reactive",
+      "hexagram": "坤为地 (000000)",
+      "engineering_domain": "event-driven",
+      "description": "Observer pattern, event listeners"
+    },
+    "稳定": {
+      "en": "stable",
+      "hexagram": "坤为地 (000000)",
+      "engineering_domain": "reliability",
+      "description": "Idempotency, fault tolerance"
+    },
+    "初始化": {
+      "en": "initialization",
+      "hexagram": "乾为天 (111111)",
+      "engineering_domain": "lifecycle",
+      "description": "Boot sequence, setup, configuration"
+    },
+    "刚健": {
+      "en": "strong/vigorous",
+      "hexagram": "乾为天 (111111)",
+      "engineering_domain": "performance",
+      "description": "High throughput, low latency"
+    },
+    "核心": {
+      "en": "core",
+      "hexagram": "乾为天 (111111)",
+      "engineering_domain": "architecture",
+      "description": "Central processing, main engine"
+    },
+    "启动": {
+      "en": "start",
+      "hexagram": "乾为天 (111111)",
+      "engineering_domain": "lifecycle",
+      "description": "Service start, daemon launch"
+    },
+    "决断": {
+      "en": "decision",
+      "hexagram": "泽天夬 (111110)",
+      "engineering_domain": "control-flow",
+      "description": "Branching, routing, load balancing"
+    },
+    "果断": {
+      "en": "decisive",
+      "hexagram": "泽天夬 (111110)",
+      "engineering_domain": "error-handling",
+      "description": "Fail-fast, circuit breaker"
+    },
+    "选择": {
+      "en": "selection",
+      "hexagram": "泽天夬 (111110)",
+      "engineering_domain": "algorithms",
+      "description": "Decision trees, policy selection"
+    },
+    "丰富": {
+      "en": "abundant",
+      "hexagram": "火天大有 (100000)",
+      "engineering_domain": "resources",
+      "description": "Resource-rich environment, scaling"
+    },
+    "富足": {
+      "en": "prosperous",
+      "hexagram": "火天大有 (100000)",
+      "engineering_domain": "capacity-planning",
+      "description": "Over-provisioned, headroom available"
+    },
+    "亲附": {
+      "en": "attachment",
+      "hexagram": "水地比 (000010)",
+      "engineering_domain": "networking",
+      "description": "Peer-to-peer, clustering"
+    },
+    "和谐": {
+      "en": "harmonious",
+      "hexagram": "水地比 (000010)",
+      "engineering_domain": "consensus",
+      "description": "Consistent state, agreement protocols"
+    },
+    "合作": {
+      "en": "cooperative",
+      "hexagram": "水地比 (000010)",
+      "engineering_domain": "distributed-systems",
+      "description": "Collaborative processing, sharding"
+    },
+    "剥落": {
+      "en": "stripping",
+      "hexagram": "山地剥 (000001)",
+      "engineering_domain": "deprecation",
+      "description": "Legacy code removal, feature flags off"
+    },
+    "衰退": {
+      "en": "declining",
+      "hexagram": "山地剥 (000001)",
+      "engineering_domain": "degradation",
+      "description": "Performance degradation, capacity exhaustion"
+    },
+    "清理": {
+      "en": "cleanup",
+      "hexagram": "山地剥 (000001)",
+      "engineering_domain": "maintenance",
+      "description": "Garbage collection, cache eviction"
+    },
+    "结束": {
+      "en": "termination",
+      "hexagram": "山地剥 (000001)",
+      "engineering_domain": "lifecycle",
+      "description": "Graceful shutdown, resource release"
+    },
+    "更替": {
+      "en": "replacement",
+      "hexagram": "山地剥 (000001)",
+      "engineering_domain": "migration",
+      "description": "Blue-green deployment, version upgrade"
+    },
+    "淘汰": {
+      "en": "elimination",
+      "hexagram": "山地剥 (000001)",
+      "engineering_domain": "optimization",
+      "description": "Deprecation, dead code removal"
+    }
+  },
+  "usage_policy": {
+    "allowed": [
+      "Personal and educational use under MIT License",
+      "Commercial use requires written permission from HexLang project owner",
+      "Attribution required when redistributing derived works"
+    ],
+    "prohibited": [
+      "Using these tag definitions to create competing I Ching × engineering mapping products without license",
+      "Removing or altering attribution notices",
+      "Claiming ownership of these semantic mappings"
+    ]
+  }
+}

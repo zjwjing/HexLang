@@ -39,3 +39,20 @@ __pycache__/
 *.egg
 venv/
 .env
+
+# Large model files (weight data ~33GB)
+models/qwen3-8b/
+models/unsloth_Qwen3.5-9B/
+models/*.safetensors
+models/*.bin
+models/*.gguf
+
+# LoRA adapters (~200MB)
+adapters/hex64-v1/adapter_model.safetensors
+adapters/hex64-v2/adapter_model.safetensors
+adapters/*/checkpoint-*/
+adapters/*/adapter_model.safetensors
+
+# Build output
+vscode-ext/out/
+*.js.map

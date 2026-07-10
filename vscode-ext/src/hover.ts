@@ -1,13 +1,5 @@
 import * as vscode from 'vscode';
-
-// DJB2 哈希（与 encoder.py 一致）
-function djb2Hash(input: string): number {
-  let h = 5381;
-  for (let i = 0; i < input.length; i++) {
-    h = ((h << 5) + h + input.charCodeAt(i)) & 0xFFFFFFFF;
-  }
-  return h >>> 0;
-}
+import { djb2Hash, computeInterHex } from './utils';
 
 export class HexHoverProvider implements vscode.HoverProvider {
   private hexDb: Map<string, any> = new Map();
@@ -19,18 +11,43 @@ export class HexHoverProvider implements vscode.HoverProvider {
 
   private init() {
     try {
-      const { readFileSync } = require('fs');
-      const { join } = require('path');
+      // 尝试从工作区加载数据
       const workspaceFolders = vscode.workspace.workspaceFolders;
       if (!workspaceFolders) return;
 
-      const dataPath = join(workspaceFolders[0].uri.fsPath, 'data', 'hex64_full.json');
-      const data = JSON.parse(readFileSync(dataPath, 'utf-8'));
-      const hexagrams = data.hexagrams || [];
-      for (const hex of hexagrams) {
-        this.hexDb.set(hex.bin, hex);
+      // 尝试多种数据文件路径
+      const candidates = [
+        'data/hex64_full.json',
+        'data/hexagrams.json',
+      ];
+
+      for (const ws of workspaceFolders) {
+        for (const candidate of candidates) {
+          const dataPath = vscode.Uri.joinPath(ws.uri, candidate);
+          try {
+            const data = JSON.parse(vscode.workspace.fs.readFile(dataPath).toString());
+            const hexagrams = Array.isArray(data) ? data : (data.hexagrams || []);
+            
+            for (const hex of hexagrams) {
+              if (hex.bin && hex.name) {
+                this.hexDb.set(hex.bin, {
+                  ...hex,
+                  tags: hex.tags || [],
+                  yao_weights: hex.yao_weights || [0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+                  english: hex.english || '',
+                  pinyin: hex.pinyin || '',
+                });
+              }
+            }
+            
+            this.initialized = true;
+            console.log(`[HexLang Hover] Loaded ${this.hexDb.size} hexagrams`);
+            return;
+          } catch {
+            continue;
+          }
+        }
       }
-      this.initialized = true;
     } catch {
       // 静默失败，悬停功能不可用
     }
@@ -66,11 +83,23 @@ export class HexHoverProvider implements vscode.HoverProvider {
     const weightStr = weights.map((w: number, i: number) => `${yaoNames[i]}=${w.toFixed(2)}`).join(', ');
 
     const md = new vscode.MarkdownString();
-    md.appendMarkdown(`**[Hex64] ${hex.name}** (${bin})\n\n`);
+    md.appendMarkdown(`**[Hex64] ${hex.name}** \`${bin}\`\n\n`);
+    if (hex.english) {
+      md.appendMarkdown(`*${hex.english}*\n\n`);
+    }
     md.appendMarkdown(`标签: ${hex.tags?.join(', ') || '无'}\n\n`);
-    md.appendMarkdown(`权重: ${hex.weight}\n\n`);
+    md.appendMarkdown(`权重: ${hex.weight ?? 'N/A'}\n\n`);
     md.appendMarkdown(`爻权重: ${weightStr}\n\n`);
-    md.appendMarkdown(`*确定性编码，非玄学*`);
+    
+    // 互卦
+    const bits = bin.split('').map(Number);
+    const interBin = computeInterHex(bits);
+    const interHex = this.hexDb.get(interBin);
+    if (interHex && interHex.name !== hex.name) {
+      md.appendMarkdown(`互卦: ${interHex.name} (\`${interBin}\`)\n\n`);
+    }
+    
+    md.appendMarkdown(`---\n*确定性编码，非玄学*`);
     md.isTrusted = true;
 
     return new vscode.Hover(md);

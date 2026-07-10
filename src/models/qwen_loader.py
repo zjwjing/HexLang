@@ -1,4 +1,30 @@
 """
+HexLang - 符号编码系统
+
+Copyright (c) 2026 zjwjing
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
+"""
 Qwen 模型加载器
 
 支持多种量化格式：
@@ -120,7 +146,7 @@ class QwenLoader:
 - 如果无法确定，明确说"信息不足，无法分析"，不要编造
 """
 
-    def __init__(self, model_path: Optional[str] = None, adapter_path: Optional[str] = None, enable_cache: bool = True):
+    def __init__(self, model_path: Optional[str] = None, adapter_path: Optional[str] = "adapters/hex64-v1", enable_cache: bool = True):
         self.model_path = model_path or self._auto_detect_model()
         self.adapter_path = adapter_path
         self.model = None
@@ -150,30 +176,27 @@ class QwenLoader:
         if not os.path.exists(base_dir):
             raise FileNotFoundError(f"模型目录不存在: {base_dir}")
         
-        # 查找包含 "qwen3.5" 的目录
+        # 查找包含 "qwen3" 的目录（排除 qwen3.5 VL 和 qwen3_vl）
         candidates = []
         for item in os.listdir(base_dir):
             item_path = os.path.join(base_dir, item)
-            if os.path.isdir(item_path) and 'qwen3.5' in item.lower():
-                candidates.append(item_path)
+            if os.path.isdir(item_path):
+                name_lower = item.lower()
+                if 'qwen3' in name_lower and 'qwen3.5' not in name_lower and 'qwen3_vl' not in name_lower:
+                    candidates.append(item_path)
         
         if not candidates:
             raise FileNotFoundError(
-                f"未在 {base_dir} 中找到 Qwen3.5 模型\n"
-                "请下载模型后重试，参考 models/README.md"
+                f"未在 {base_dir} 中找到 Qwen3 模型\n"
+                "请下载模型后重试：modelscope download --model Qwen/Qwen3-8B --local_dir models/qwen3-8b"
             )
-        
-        # 优先选择 Int4 量化版本（显存占用低）
-        for candidate in candidates:
-            if 'int4' in candidate.lower() or 'gptq' in candidate.lower():
-                return candidate
         
         return candidates[0]
     
     def _load_model(self):
         """加载模型和 tokenizer"""
         try:
-            from transformers import AutoModelForCausalLM, AutoTokenizer
+            from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
             
             # 加载 tokenizer
             self.tokenizer = AutoTokenizer.from_pretrained(
@@ -182,32 +205,21 @@ class QwenLoader:
                 padding_side='left'
             )
             
-            # 自动检测量化类型
-            if 'gptq' in self.model_path.lower():
-                print("  检测到 GPTQ 量化，使用标准加载")
-                self.model = AutoModelForCausalLM.from_pretrained(
-                    self.model_path,
-                    torch_dtype=torch.float16,
-                    device_map='auto',
-                    trust_remote_code=True
-                )
-            elif 'awq' in self.model_path.lower():
-                print("  检测到 AWQ 量化，使用标准加载")
-                self.model = AutoModelForCausalLM.from_pretrained(
-                    self.model_path,
-                    torch_dtype=torch.float16,
-                    device_map='auto',
-                    trust_remote_code=True
-                )
-            else:
-                # FP16 默认
-                print("  检测到 FP16，使用标准加载")
-                self.model = AutoModelForCausalLM.from_pretrained(
-                    self.model_path,
-                    torch_dtype=torch.float16,
-                    device_map='auto',
-                    trust_remote_code=True
-                )
+            # 使用 INT4 量化加载（与训练时一致）
+            print("  使用 INT4 量化加载（节省显存）")
+            bnb_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_compute_dtype=torch.float16,
+                bnb_4bit_use_double_quant=True,
+            )
+            
+            self.model = AutoModelForCausalLM.from_pretrained(
+                self.model_path,
+                quantization_config=bnb_config,
+                device_map='auto',
+                trust_remote_code=True
+            )
             
             self.model.eval()
             print("✅ 模型加载完成")
@@ -220,7 +232,6 @@ class QwenLoader:
                     self.model = PeftModel.from_pretrained(
                         self.model,
                         self.adapter_path,
-                        device_map='auto'
                     )
                     print("  ✅ 适配器加载成功，模型已完成进化！")
                 except ImportError:
@@ -235,7 +246,7 @@ class QwenLoader:
         except ImportError as e:
             raise ImportError(
                 f"缺少依赖: {e}\n"
-                "请运行: pip install transformers accelerate torch"
+                "请运行: pip install transformers accelerate torch peft bitsandbytes"
             )
     
     def chat(
