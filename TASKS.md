@@ -1,4 +1,4 @@
-# TASKS.md — HexLang 任务看板
+﻿# TASKS.md — HexLang 任务看板
 
 > 详细任务卡存放在个人助理工作区：
 > `C:/Users/zjwji/.bitfun/personal_assistant/workspace/.tasks/`
@@ -16,7 +16,7 @@
 | 025 | Feedback 闭环管理系统 | ✅ **完成** | P0 | 朵朵 | 用户建议 | src/training/feedback_manager.py |
 | 026 | 合规防护落地（MIT 版权头 + 数据源标注 + CC BY-NC 4.0）| ✅ **完成** | P0 | 朵朵 | 用户建议 | LICENSE + _sources.json + hex_tags_registry.json |
 | 027 | 文档体系完善（UNIQUENESS.md + ARCHITECTURE.md + SECURITY.md）| ✅ **完成** | P1 | 朵朵 | 用户建议 | 3 个核心文档 |
-| 016 | QLoRA 训练目标加"文本→64维卦分布"辅助损失 | 📋 待做 | P2 | 朵朵 | bagau-llm 思路吸收 | — |
+| 016 | QLoRA 训练目标加"文本→64维卦分布"辅助损失 | ✅ **完成** | P2 | 朵朵 | bagau-llm 思路吸收 | src/training/train_lora_with_aux_loss.py（主损失+Causal LM + 辅损失 64 分类头，aux_weight=0.3）|
 | 028 | 系统健康仪表盘（6-metric→卦象映射 + 热力图/趋势/告警）| ✅ **完成** | P1 | 朵朵 | 用户建议 | src/dashboard/（4文件）|
 | 029 | VSCode 扩展脚手架（右键解释逻辑 + 悬停标签 + 代码注释）| ✅ **完成** | P1 | 朵朵 | 用户建议 | vscode-ext/（4 TypeScript 文件）|
 | 030 | 审计修复：23个语义模板错误 + BLOCK Go PascalCase + XSS + aria-labels + DOMINATE 命名 + ENRICH 引号 + Rust snake_case | ✅ **完成** | P0 | 朵朵 | 代码审计 | 7 项修复全通 |
@@ -30,6 +30,48 @@
 | 038 | 测试覆盖度从 56 → 84（+28 新测试）| ✅ **完成** | P1 | 朵朵 | P1-6 | core_extended.test.js：LoRA adapter/语义缓存/规则映射/Encoder 特征 |
 | 039 | VSCode 扩展功能完善（4 命令 + 数据打包 + 编译）| ✅ **完成** | P1 | 朵朵 | 用户建议 | vscode-ext/：explainSelection/annotateFile/showDashboard/quickQuery，media/hex64_full.json 内置，tsc 编译通过 |
 | 040 | 模型目录整理（清理 5 个空目录/残留缓存）| ✅ **完成** | P2 | 朵朵 | 用户请求 | 删除 models--*/mssfj/Qwen/qwen3.5-9b-instruct 空目录，保留 qwen3-8b + unsloth_Qwen3.5-9B |
+| 041 | 文档修复：统一 Qwen3-8B vs Qwen3.5-9B 引用 | ✅ **完成** | P1 | 朵朵 | 部署指导 | README/ARCHITECTURE/src/cli.py/qwen_loader.py 等 10+ 文件 |
+| 042 | 创建 RTX 5090 FP8 训练脚本 | ✅ **完成** | P0 | 朵朵 | 5090 部署 | src/training/train_lora_5090_fp8.py（CUDA 12.8 + triton 3.2 + Unsloth >=0.22）|
+| 043 | 修复 train_lora.py Unsloth→PEFT 迁移 | ✅ **完成** | P0 | 朵朵 | 训练计划 | 重写为原生 PEFT，移除 Unsloth 依赖 |
+
+| 044 | 训练数据扩容至 110720 条（15 场景模板 + 关键词生成）| ✅ **完成** | P0 | 朵朵 | 数据扩充 | data/train_hex64.jsonl: 13908 → 110720 条，覆盖 15 类工程场景 |
+| 045 | 环境校验修复（BOM/转义引号/语法错误）+ 依赖安装 | ✅ **完成** | P0 | 朵朵 | 审计修复 | verify_env.py/post_process_adapter.py/resume_training.py/verify_model.py 全部通过语法检查 |
+| 046 | 测试修复：占位符未展开问题 | ✅ **完成** | P1 | 朵朵 | 测试修复 | core_extended.test.js 47/47 通过 |
+| 047 | 训练脚本优化（RTX 5060 Ti 16GB 适配）| ✅ **完成** | P1 | 朵朵 | 性能优化 | gradient_checkpointing、batch_size=1、accumulation=8、max_seq=2048 |
+
+| 048 | Transformers 升级至 5.13.0 + 模型路径统一为 qwen3.5-9b | ✅ **完成** | P0 | 朵朵 | 训练修复 | transformers 4.57→5.13, train_lora.py/prepare_data.py/cli.py/qwen_loader.py 等全部更新 |
+| 049 | Qwen3-8B 下载 + 完整 LoRA 训练（1000 steps）| ✅ **完成** | P0 | 朵朵 | 训练验证 | models/qwen3-8b (17.4GB), adapters/hex64-qwen3-8b-final/checkpoint-1000/, loss=3.44→0.046, acc=98.6%, bf16+INT4+gradient_checkpointing, 训练耗时~2.3h |
+| 050 | 测试验证（103/103 通过）| ✅ **完成** | P1 | 朵朵 | 质量验证 | core.test.js + core_extended.test.js 全部通过，adapter 管理/语义缓存/训练数据完整性检查 |
+| 051 | 环境校验修复（清理临时目录 + 更新文档）| ✅ **完成** | P1 | 朵朵 | 最终验证 | verify_env.py 20/20 通过，TRAINING_MANUAL.md 重写，README 更新 |
+## 5090 部署路径（2026.7 新增）
+
+```bash
+# 1. 环境（5090 16G / Blackwell）
+nvidia-smi  # 确认驱动≥560，CUDA≥12.8
+pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu128
+pip install triton==3.2.0 "unsloth>=0.22" transformer-engine[pytorch]
+pip install transformers peft trl datasets modelscope
+
+# 2. 拉代码
+git clone https://cnb.cool/zjwjing/HexLang.git
+cd HexLang
+
+# 3. 运行 FP8 LoRA 训练
+python src/training/train_lora_5090_fp8.py \
+    --model models/qwen3.5-9b-instruct \
+    --data data/train_hex64.jsonl \
+    --output adapters/hex64-v1-5090-fp8 \
+    --steps 300 \
+    --rank 32 \
+    --batch-size 4
+```
+
+> **避坑指南**：
+> - CUDA 必须 12.8+（5090 标配），别用 12.4（4080S 的）
+> - triton 必须 3.2+（Blackwell 必须，旧版 2.x 炸）
+> - Unsloth >=0.22（点了 Blackwell + Qwen3.5）
+> - 用 BF16 原版模型 + FP8 LoRA，不用 INT4 量化
+> - CNB web 预览可能报错"资源解析服务请求失败"，不影响 git clone
 
 ## 已完成任务
 
@@ -261,3 +303,5 @@ python src/training/train_lora_native.py --steps 300 --rank 32 --batch-size 2
 | 半年无企业订单 | 接零散 AI 咨询单（500-1000/单），靠免费 API 维持 |
 | 大厂推出竞品 | 强调邵雍先天序 + 工程语义标签唯一性，每月迭代，社区粘性 |
 | 社区贡献者流失 | 定期发进展、署名权、开放小模块维护权、建立社群 |
+
+

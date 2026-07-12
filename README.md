@@ -5,7 +5,7 @@
 **定位：** 基于邵雍先天六十四卦与莱布尼茨二进制映射关系的通用符号编码基础设施  
 **场景：** AI 特征编码 · 领域特定语言 (HexLang) · IoT 硬件控制 · 数字资产标识 · 规则引擎  
 **协议：** MIT  
-**AI 集成：** Qwen3.5-9B + 反馈自修正 + LoRA 微调
+**AI 集成：** Qwen3-8B（基座）+ Qwen3.5-9B（可选）+ 反馈自修正 + LoRA 微调
 
 ---
 
@@ -81,7 +81,7 @@ HexLang/
 ```
 ┌─────────────────────────────────────────────┐
 │         AI 扩展接口层 (AI Plugin API)         │
-│   Qwen3.5-9B · Function Calling · LoRA 微调  │
+│   Qwen3-8B · Function Calling · LoRA 微调  │
 ├─────────────────────────────────────────────┤
 │         运算内核层 (Rule Engine)              │
 │   变爻(XOR) · 错卦(NOT) · 综卦(REV) · 叠加   │
@@ -144,9 +144,8 @@ print(f"标签: {', '.join(result['tags'])}")
 # 1. 安装依赖
 pip install transformers accelerate torch
 
-# 2. 下载模型（约 6GB）
-modelscope download --model qwen/Qwen3.5-9B-Instruct-GPTQ-Int4 \
-    --local_dir ./models/qwen3.5-9b-gptq-int4
+# 2. 下载模型（约 5GB，INT4 量化）
+modelscope download --model Qwen/Qwen3-8B --local_dir ./models/qwen3-8b
 
 # 3. 运行 CLI
 python src/cli.py
@@ -168,26 +167,30 @@ console.log(result.controlSignal);// ["OFF","ON","OFF","ON","ON","OFF"]
 
 ---
 
-## AI 集成方案：Qwen3.5-9B + Hex64
+## AI 集成方案：Qwen3-8B + Hex64
 
-### 为什么选择 Qwen3.5-9B？
+### 为什么选择 Qwen3-8B？
 
 | Qwen 特性 | Hex64 需求匹配点 |
 |----------|-----------------|
 | 中文工程语义理解 SOTA | 卦标签（订阅/监听/重构/告警）都是中文工程术语 |
 | 原生支持 System Prompt 约束 | 严格限制模型不瞎编卦义，符合确定性要求 |
 | 支持工具调用（Function Calling） | 将 Hex64 转码封装为工具，让 Qwen 自动调用 |
-| 低资源友好 | 9B 版本 INT4 量化后仅需 6GB 显存，RTX3060 可跑 |
+| 低资源友好 | 8B 版本 INT4 量化后仅需 ~5GB 显存，RTX3060 可跑 |
 | 开源可商用 | 符合 HexLang 的 MIT 开源协议要求 |
+| 纯文本架构 | 无 vision tower，LoRA 微调兼容性好 |
+
+> **注意**：Qwen3.5-9B 因 VL 多模态架构与 LoRA 不兼容，当前使用 Qwen3-8B 作为基座模型。如需使用 9B 系列，建议通过 Ollama API 调用而非本地微调。
 
 ### 三阶段进化路线
 
 #### 📅 Day 1：启动（能对话）
 
 ```bash
-# 1. 整理模型目录
+# 1. 整理模型目录（通过 ModelScope 下载）
 mkdir -p models
-# 下载 Qwen3.5-9B-GPTQ-Int4（~6GB）
+python -c "from modelscope import snapshot_download; snapshot_download('Qwen/Qwen3-8B', cache_dir='models')"
+New-Item -ItemType Junction -Name "models\qwen3-8b" -Target ".\models\Qwen\Qwen3-8B"
 
 # 2. 安装依赖
 pip install -r requirements.txt
@@ -223,21 +226,21 @@ python src/core/calibrate.py --apply
 #### 📅 Month 1：微调（能进化）
 
 ```bash
-# 1. 安装 unsloth（需要 8GB+ 显存）
-pip install unsloth trl datasets
+# 1. 安装依赖（需要 8GB+ 显存）
+pip install transformers peft trl datasets bitsandbytes
 
 # 2. 生成训练数据（从 feedback.json + rules.json）
 python src/training/prepare_data.py
 
-# 3. 运行 LoRA 微调
-python src/training/train_lora.py \
-    --output adapters/hex64-v1 \
-    --steps 100 \
-    --rank 16 \
-    --lr 2e-4
+# 3. 运行 LoRA 微调（原生 PEFT，绕过 Unsloth）
+python src/training/train_lora_native.py \
+    --output adapters/hex64-v2 \
+    --steps 300 \
+    --rank 32 \
+    --lr 3e-4
 
 # 4. 加载进化后的模型推理
-python src/cli.py --adapter adapters/hex64-v1
+python src/cli.py
 ```
 
 效果：
@@ -250,10 +253,11 @@ python src/cli.py --adapter adapters/hex64-v1
 
 | 版本 | 显存占用 | 适合硬件 | 推荐场景 |
 |------|---------|---------|---------|
-| FP16 | ~18GB | RTX 3090/4090 (24GB) | 全参数微调 |
-| GPTQ-Int4 | ~6GB | RTX 3060 (12GB) | 推理 + LoRA ✅推荐 |
-| AWQ-Int4 | ~6GB | RTX 3060 (12GB) | 更快推理 |
-| GGUF (Q8_0) | ~10GB | 现代 CPU/GPU | llama.cpp/Ollama |
+| FP16 8B | ~16GB | RTX 3090/4090 (24GB) | 全参数微调 |
+| GPTQ-Int4 8B | ~5GB | RTX 3060 (12GB) | 推理 + LoRA ✅推荐 |
+| GGUF (Q8_0) | ~8GB | 现代 CPU/GPU | Ollama 调用 |
+
+> Qwen3.5-9B 因 VL 架构与 LoRA 不兼容，当前使用 Qwen3-8B 作为微调基座。Ollama 用户可选择 `qwen3.5:9b` 进行 API 调用。
 
 ---
 
@@ -424,7 +428,7 @@ Hex64 的设计并非孤立创新，而是延续了前现代离散数学的探�
 
 ## Roadmap
 - **v1.2** ✅ HexLang 基础编译器 · CLI 工具完善 · 八经卦 ASCII 艺术
-- **v1.3** ✅ Python SDK · Qwen3.5-9B 集成 · HTTP API 服务
+- **v1.3** ✅ Python SDK · Qwen3-8B 集成 · HTTP API 服务
 - **v1.4** 🔄 核心闭环落地（2026.7-9）：QLoRA 训练 → feedback 闭环 → 合规防护 → 5000 条训练数据 → 文档体系
 - **v1.5** 📋 生态工具铺量（2026.10-2027.3）：VSCode 插件 → Rule Studio Alpha → 语义缓存 API → 企业版仪表盘
 - **v2.0** 📋 商业化 + 长期壁垒（2027.4-12）：企业版 License → Adapter 商店 → 商标注册 → 学术白皮书
