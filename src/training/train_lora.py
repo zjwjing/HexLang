@@ -1,196 +1,272 @@
 """
-HexLang - 符号编码系统
+Hex64 QLoRA 微调脚本
 
-Copyright (c) 2026 zjwjing
-MIT License
+使用 unsloth 库对 Qwen3.5-9B 进行 LoRA 微调
+让模型学习 Hex64 的编码规则和输出格式
 
-Hex64 LoRA 微调脚本（原生 PEFT 版）
-使用 transformers + peft + trl 对 Qwen3/Qwen3.5 进行 LoRA 微调
-RTX 5060 Ti (16GB) 优化配置
+前置条件：
+1. 已收集足够反馈数据（200+ 条）
+2. 已运行 rules/induce_rules.py 生成训练数据
+3. 显存 ≥8GB（INT4 量化）或 ≥20GB（FP16）
+
+使用方式：
+    python train_lora.py
+    
+输出：
+    adapters/hex64-v1/ - LoRA 适配器权重（约 50MB）
 """
 
-import sys, json, os, torch
+import os
+import json
+import torch
 from pathlib import Path
+from typing import List, Dict, Any
 
-if sys.stdout.encoding.lower() != 'utf-8':
-    import io
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-def train_lora(model_path="models/qwen3-8b",
-               data_path="data/train_hex64.jsonl",
-               output_dir="adapters/hex64-qwen3-8b-final",
-               steps=1000, lora_rank=32, lr=2e-4, batch_size=1):
+def load_training_data(data_file: str = None) -> List[Dict[str, Any]]:
+    """
+    加载训练数据
+    
+    Args:
+        data_file: 训练数据文件路径
+        
+    Returns:
+        训练数据列表
+    """
+    if data_file is None:
+        base_dir = Path(__file__).parent.parent
+        data_file = base_dir / 'data' / 'train_hex64.json'
+    
+    try:
+        with open(data_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"⚠️  训练数据文件不存在: {data_file}")
+        print("💡 请先运行: python rules/induce_rules.py")
+        return []
+    except json.JSONDecodeError:
+        print(f"❌ 训练数据文件格式错误: {data_file}")
+        return []
 
-    print(f"\n=== Hex64 LoRA 微调 (Native PEFT) ===")
-    print(f"模型: {model_path}")
-    print(f"数据: {data_path}")
-    print(f"输出: {output_dir}")
-    print(f"步数: {steps} | Rank: {lora_rank} | LR: {lr} | Batch: {batch_size}")
-    print(f"GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU'}")
-    print(f"显存: {torch.cuda.get_device_properties(0).total_memory/1024**3:.1f} GB")
-    print("=" * 60)
 
-    from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
-    from peft import LoraConfig, get_peft_model
-    from trl import SFTTrainer, SFTConfig
-    from datasets import Dataset
+def create_conversation_dataset(training_data: List[Dict[str, Any]]) -> List[str]:
+    """
+    将训练数据转换为对话格式文本
+    
+    Args:
+        training_data: 训练数据列表
+        
+    Returns:
+        对话文本列表
+    """
+    conversations = []
+    
+    for sample in training_data:
+        messages = sample.get('messages', [])
+        
+        # 构建对话文本
+        text_parts = []
+        for msg in messages:
+            role = msg.get('role', '')
+            content = msg.get('content', '')
+            
+            if role == 'user':
+                text_parts.append(f"<|im_start|>user\n{content}<|im_end|>")
+            elif role == 'assistant':
+                text_parts.append(f"<|im_start|>assistant\n{content}<|im_end|>")
+            elif role == 'system':
+                text_parts.append(f"<|im_start|>system\n{content}<|im_end|>")
+        
+        conversation = "\n".join(text_parts) + "\n"
+        conversations.append(conversation)
+    
+    return conversations
 
-    # 1. 加载 tokenizer
-    print("加载 tokenizer...")
-    tokenizer = AutoTokenizer.from_pretrained(
-        model_path,
-        trust_remote_code=True,
-        padding_side='left'
-    )
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
 
-    # 检测模型类型
-    with open(os.path.join(model_path, 'config.json'), 'r') as f:
-        model_config = json.load(f)
-    model_type = model_config.get('model_type', '')
-    print(f"模型类型: {model_type}")
-
-    # 2. 加载模型（根据类型选择量化策略）
-    use_qlora = False
-    if model_type == 'qwen3_5':
-        # Qwen3.5-9B: 使用 INT4 量化
-        print("加载模型（INT4 NF4）...")
-        use_qlora = True
-        bnb_config = BitsAndBytesConfig(
-            load_in_4bit=True,
-            bnb_4bit_quant_type="nf4",
-            bnb_4bit_compute_dtype=torch.float16,
-            bnb_4bit_use_double_quant=True,
+def train_lora(
+    model_path: str = None,
+    training_data_file: str = None,
+    adapter_path: str = "adapters/hex64-v1",
+    max_epochs: int = 3,
+    lora_rank: int = 16,
+    learning_rate: float = 2e-4,
+    batch_size: int = 4,
+    use_4bit: bool = True
+):
+    """
+    执行 LoRA 微调
+    
+    Args:
+        model_path: 基础模型路径
+        training_data_file: 训练数据文件路径
+        adapter_path: 适配器保存路径
+        max_epochs: 最大训练轮数
+        lora_rank: LoRA 秩
+        learning_rate: 学习率
+        batch_size: 批次大小
+        use_4bit: 是否使用 4 位量化
+    """
+    # 自动检测模型路径
+    if model_path is None:
+        base_dir = Path(__file__).parent.parent
+        models_dir = base_dir / 'models'
+        
+        # 查找第一个 Qwen3.5 模型
+        if models_dir.exists():
+            for item in models_dir.iterdir():
+                if item.is_dir() and 'qwen3.5' in item.name.lower():
+                    model_path = str(item)
+                    break
+    
+    if model_path is None:
+        raise FileNotFoundError(
+            "未找到模型\n"
+            "请指定 model_path 参数，或确保 models/ 目录下有 Qwen3.5 模型"
         )
-        model = AutoModelForCausalLM.from_pretrained(
-            model_path,
-            quantization_config=bnb_config,
-            device_map='auto',
-            trust_remote_code=True,
-        )
-    elif model_type == 'qwen3':
-        # Qwen3-8B: 使用 INT4 量化（16GB 显存必须）
-        print("加载模型（INT4 NF4）...")
-        bnb_config = BitsAndBytesConfig(
-            load_in_4bit=True,
-            bnb_4bit_quant_type="nf4",
-            bnb_4bit_compute_dtype=torch.float16,
-            bnb_4bit_use_double_quant=True,
-            bnb_4bit_quant_storage=torch.float16,
-        )
-        model = AutoModelForCausalLM.from_pretrained(
-            model_path,
-            quantization_config=bnb_config,
-            device_map={"": 0},  # 强制全放 GPU 0
-            trust_remote_code=True,
-        )
+    
+    print(f"\n=== Hex64 QLoRA 微调 ===")
+    print(f"基础模型: {model_path}")
+    print(f"训练数据: {training_data_file or 'data/train_hex64.json'}")
+    print(f"适配器输出: {adapter_path}")
+    print("="*60 + "\n")
+    
+    # 加载训练数据
+    training_data = load_training_data(training_data_file)
+    
+    if not training_data:
+        print("❌ 训练数据为空，无法开始微调")
+        return
+    
+    print(f"✅ 加载 {len(training_data)} 条训练样本\n")
+    
+    # 尝试导入 unsloth
+    try:
+        from unsloth import FastLanguageModel
+        from trl import SFTTrainer
+        from datasets import Dataset
+    except ImportError:
+        print("❌ 缺少必要依赖")
+        print("请运行: pip install unsloth trl datasets")
+        return
+    
+    # 加载模型
+    print("🔄 加载模型...")
+    max_seq_length = 2048
+    dtype = None  # 自动检测
+    
+    if use_4bit:
+        load_in_4bit = True
+        print("  使用 4 位量化（节省显存）")
     else:
-        raise ValueError(f"不支持的模型类型: {model_type}")
-
-    model.enable_input_require_grads()  # 启用梯度检查点兼容
-    print("模型加载完成")
-
-    # 3. 添加 LoRA 适配器
-    print("添加 LoRA 适配器...")
-    lora_config = LoraConfig(
+        load_in_4bit = False
+        print("  使用全精度（需要更大显存）")
+    
+    model, tokenizer = FastLanguageModel.from_pretrained(
+        model_name=model_path,
+        max_seq_length=max_seq_length,
+        load_in_4bit=load_in_4bit,
+        dtype=dtype
+    )
+    
+    # 添加 LoRA 适配器
+    print("🔄 添加 LoRA 适配器...")
+    model = FastLanguageModel.get_peft_model(
+        model,
         r=lora_rank,
-        lora_alpha=lora_rank,
         target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
-                        "gate_proj", "up_proj", "down_proj"],
-        lora_dropout=0.1,
+                       "gate_proj", "up_proj", "down_proj"],
+        lora_alpha=lora_rank * 2,
+        lora_dropout=0,  # 零 dropout（防止过拟合小数据集）
         bias="none",
-        task_type="CAUSAL_LM",
+        use_gradient_checkpointing="unsloth",
+        use_rslora=True,
+        loftq_config=None
     )
-    model = get_peft_model(model, lora_config)
+    
     model.print_trainable_parameters()
-
-    # 修复 TRL 与 Qwen3.x 兼容性：text_config 属性
-    if not hasattr(model.config, 'text_config'):
-        model.config.text_config = model.config.get_text_config()
-
-    # 4. 加载训练数据（全量用于深度训练）
-    print(f"加载训练数据: {data_path}")
-    with open(data_path, 'r', encoding='utf-8') as f:
-        raw_data = [json.loads(line) for line in f if line.strip()]
     
-    print(f"共 {len(raw_data)} 条样本，使用全量数据")
-
-    # 转换成对话格式
-    def format_conversation(examples):
-        texts = []
-        for item in examples["messages"]:
-            text = tokenizer.apply_chat_template(
-                item, tokenize=False, add_generation_prompt=False
-            )
-            texts.append(text)
-        return {"text": texts}
-
-    dataset = Dataset.from_list(raw_data)
-    dataset = dataset.map(format_conversation, batched=True, remove_columns=dataset.column_names)
-
-    # 5. 配置训练（RTX 5060 Ti 优化）
-    # 根据模型类型选择混合精度
-    use_bf16 = (model_type == 'qwen3')  # Qwen3-8B 是 bf16 模型
+    # 准备训练数据
+    print("🔄 准备训练数据...")
+    conversations = create_conversation_dataset(training_data)
     
-    training_args = SFTConfig(
-        dataset_text_field="text",
-        per_device_train_batch_size=batch_size,
-        gradient_accumulation_steps=8,  # 有效 batch = 1*8 = 8
-        warmup_steps=50,
-        max_steps=steps,
-        learning_rate=lr,
-        logging_steps=10,
-        save_steps=500,
-        save_total_limit=2,
-        optim="adamw_8bit",
-        weight_decay=0.001,
-        lr_scheduler_type="linear",
-        bf16=use_bf16,
-        fp16=not use_bf16,
-        gradient_checkpointing=True,  # 启用梯度检查点节省显存
-        gradient_checkpointing_kwargs={"use_reentrant": False},
-        max_length=2048,  # 限制序列长度
-        output_dir=output_dir,
-        report_to="none",
-        seed=3407,
-    )
-
+    dataset = Dataset.from_dict({"text": conversations})
+    
+    # 配置训练器
+    print("🔄 配置训练器...")
     trainer = SFTTrainer(
         model=model,
+        tokenizer=tokenizer,
         train_dataset=dataset,
-        args=training_args,
+        dataset_text_field="text",
+        max_seq_length=max_seq_length,
+        packing=True,  # 打包多个样本
+        args={
+            "per_device_train_batch_size": batch_size,
+            "gradient_accumulation_steps": 4,
+            "warmup_steps": 5,
+            "max_steps": max_epochs * len(dataset),
+            "learning_rate": learning_rate,
+            "fp16": not use_4bit,
+            "bf16": use_4bit,
+            "logging_steps": 10,
+            "optim": "adamw_8bit",
+            "weight_decay": 0.01,
+            "lr_scheduler_type": "linear",
+            "seed": 42,
+        }
     )
-
-    # 6. 开始训练
-    print("\n开始训练...")
+    
+    # 开始训练
+    print("\n🚀 开始训练...")
     trainer.train()
+    
+    # 保存适配器
+    print(f"\n💾 保存适配器到 {adapter_path}...")
+    os.makedirs(adapter_path, exist_ok=True)
+    
+    model.save_pretrained(adapter_path)
+    tokenizer.save_pretrained(adapter_path)
+    
+    print("\n" + "="*60)
+    print("✅ 微调完成！")
+    print(f"   适配器大小: {os.path.getsize(os.path.join(adapter_path, 'adapter_model.bin')) / 1024 / 1024:.1f} MB")
+    print(f"   加载命令: model.load_adapter('{adapter_path}')")
+    print("="*60 + "\n")
 
-    # 7. 保存适配器
-    print(f"\n保存适配器到 {output_dir}...")
-    model.save_pretrained(output_dir)
-    tokenizer.save_pretrained(output_dir)
-    print("训练完成！")
+
+def main():
+    """主函数"""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Hex64 QLoRA 微调工具')
+    parser.add_argument('--model', type=str, help='基础模型路径')
+    parser.add_argument('--data', type=str, help='训练数据文件路径')
+    parser.add_argument('--output', type=str, default='adapters/hex64-v1',
+                       help='适配器输出路径')
+    parser.add_argument('--epochs', type=int, default=3, help='训练轮数')
+    parser.add_argument('--rank', type=int, default=16, help='LoRA 秩')
+    parser.add_argument('--lr', type=float, default=2e-4, help='学习率')
+    parser.add_argument('--batch-size', type=int, default=4, help='批次大小')
+    parser.add_argument('--no-4bit', action='store_true', help='不使用 4 位量化')
+    
+    args = parser.parse_args()
+    
+    try:
+        train_lora(
+            model_path=args.model,
+            training_data_file=args.data,
+            adapter_path=args.output,
+            max_epochs=args.epochs,
+            lora_rank=args.rank,
+            learning_rate=args.lr,
+            batch_size=args.batch_size,
+            use_4bit=not args.no_4bit
+        )
+    except Exception as e:
+        print(f"\n❌ 训练失败: {e}")
+        import traceback
+        traceback.print_exc()
+
 
 if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--model', type=str, help='模型路径')
-    parser.add_argument('--data', type=str, help='数据路径')
-    parser.add_argument('--output', type=str, default='adapters/hex64-v2')
-    parser.add_argument('--steps', type=int, default=1000)
-    parser.add_argument('--rank', type=int, default=32)
-    parser.add_argument('--lr', type=float, default=2e-4)
-    parser.add_argument('--batch-size', type=int, default=1)
-    args = parser.parse_args()
-
-    train_lora(
-        model_path=args.model or "models/qwen3-8b",
-        data_path=args.data or "data/train_hex64.jsonl",
-        output_dir=args.output,
-        steps=args.steps,
-        lora_rank=args.rank,
-        lr=args.lr,
-        batch_size=getattr(args, 'batch_size', 1),
-    )
-
+    main()

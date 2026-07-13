@@ -1,22 +1,28 @@
-# Hex64 + Qwen3.5-9B 依赖文件
+# HexLang 依赖文件
 
-## 核心依赖
+## 核心依赖（基础版 - 仅转码）
 torch>=2.0.0
 transformers>=4.44.0
 accelerate
-sentencepiece
 
-## 模型加载
+## 模型加载（可选 - 需要本地运行 Qwen）
 modelscope>=1.16.0  # 国内用户推荐使用 ModelScope 下载模型
+
+## LoRA 微调（原生 PEFT，推荐）
+peft>=0.13.0        # HuggingFace PEFT
+trl>=0.7.0          # Transformers Reinforcement Learning
+datasets>=2.14.0    # HuggingFace Datasets
+bitsandbytes>=0.43.0 # INT4 量化
+
+## RTX 5090 FP8 专用（Blackwell 架构）
+# 需要 CUDA 12.8 + triton 3.2+ + Unsloth >=0.22
+unsloth>=0.22       # Blackwell + Qwen3.5 优化
+transformer-engine[pytorch]  # FP8 Tensor Core
+triton>=3.2.0       # Blackwell 必须（别用 2.x）
 
 ## 规则归纳（可选）
 pandas>=1.5.0
 mlxtend>=0.21.0     # 频繁项集挖掘
-
-## LoRA 微调（可选，需要较大显存）
-unsloth             # 快速 LoRA 微调，显省一半显存
-trl>=0.7.0          # Transformers Reinforcement Learning
-datasets>=2.14.0    # HuggingFace Datasets
 
 ## 开发工具
 black>=23.0.0       # 代码格式化

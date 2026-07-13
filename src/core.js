@@ -1,6 +1,4 @@
 import { HEXAGRAMS, TAG_TO_OP } from './database.js';
-import { fileURLToPath } from 'node:url';
-import { argv } from 'node:process';
 
 function hash(input) {
   if (typeof input !== 'string') input = String(input);
@@ -157,9 +155,24 @@ export class Hex64Engine {
       values.push(luoshu[row][col]);
     }
     const vector = values.map(v => v / 9.0);
+    // map seed to hex for consistent return shape
+    const hexIdx = seedHash % 64;
+    const hex = this.db[hexIdx];
     return {
       seed,
       mode: 'yubu_prng',
+      index: hexIdx,
+      hash: seedHash,
+      bin: hex?.bin ?? '000000',
+      hexFont: hex?.hex_font || '',
+      name: hex?.name ?? '未知',
+      pinyin: hex?.pinyin ?? '',
+      en: hex?.en ?? 'Unknown',
+      english: hex?.english || '',
+      category: hex?.category ?? '',
+      tags: hex?.tags ?? [],
+      weight: hex?.weight ?? 0,
+      yaoWeights: hex?.yao_weights ?? [0, 0, 0, 0, 0, 0],
       luoshuMatrix: luoshu,
       sortedIndices,
       positions,
@@ -249,37 +262,5 @@ export class Hex64Engine {
       result: resultHex || { bin: resultBin, name: '自定义卦', tags: [], weight: 0 },
       resultBin,
     };
-  }
-}
-
-// CLI 自执行检测（跨平台兼容）
-const isCLI = (() => {
-  try {
-    const current = fileURLToPath(import.meta.url);
-    const script = argv[1];
-    if (!script) return false;
-    // 规范化路径分隔符后比较
-    return current.replace(/\\/g, '/') === script.replace(/\\/g, '/');
-  } catch {
-    return false;
-  }
-})();
-
-if (isCLI) {
-  const engine = new Hex64Engine();
-  const tests = ['Hello OpenCode', 'test', 'AI', '', 'hex64'];
-  for (const t of tests) {
-    const r = engine.tranceive(t);
-    console.log(`\n输入: "${r.input}"`);
-    console.log(`  卦索引: ${r.hexCode.index}`);
-    console.log(`  二进制: ${r.hexCode.bin}`);
-    console.log(`  卦名: ${r.hexCode.name}（${r.hexCode.en}）`);
-    console.log(`  拼音: ${r.hexCode.pinyin}`);
-    console.log(`  分类: ${r.hexCode.category}`);
-    console.log(`  标签: ${r.hexCode.tags.join(', ')}`);
-    console.log(`  权重: ${r.hexCode.weight}`);
-    console.log(`  特征向量: [${r.featureVec.join(', ')}]`);
-    console.log(`  伪代码: ${r.pseudoCode}`);
-    console.log(`  GPIO: ${r.controlSignal.join(' | ')}`);
   }
 }

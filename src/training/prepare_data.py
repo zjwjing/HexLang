@@ -1,4 +1,4 @@
-"""
+﻿"""
 HexLang - 符号编码系统
 
 Copyright (c) 2026 zjwjing
@@ -308,3 +308,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

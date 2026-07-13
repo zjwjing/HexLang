@@ -1,0 +1,196 @@
+"""
+HexLang - 符号编码系统
+
+Copyright (c) 2026 zjwjing
+MIT License
+
+Hex64 LoRA 微调脚本（原生 PEFT 版）
+使用 transformers + peft + trl 对 Qwen3/Qwen3.5 进行 LoRA 微调
+RTX 5060 Ti (16GB) 优化配置
+"""
+
+import sys, json, os, torch
+from pathlib import Path
+
+if sys.stdout.encoding.lower() != 'utf-8':
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+def train_lora(model_path="models/qwen3-8b",
+               data_path="data/train_hex64.jsonl",
+               output_dir="adapters/hex64-qwen3-8b-final",
+               steps=1000, lora_rank=32, lr=2e-4, batch_size=1):
+
+    print(f"\n=== Hex64 LoRA 微调 (Native PEFT) ===")
+    print(f"模型: {model_path}")
+    print(f"数据: {data_path}")
+    print(f"输出: {output_dir}")
+    print(f"步数: {steps} | Rank: {lora_rank} | LR: {lr} | Batch: {batch_size}")
+    print(f"GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU'}")
+    print(f"显存: {torch.cuda.get_device_properties(0).total_memory/1024**3:.1f} GB")
+    print("=" * 60)
+
+    from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+    from peft import LoraConfig, get_peft_model
+    from trl import SFTTrainer, SFTConfig
+    from datasets import Dataset
+
+    # 1. 加载 tokenizer
+    print("加载 tokenizer...")
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_path,
+        trust_remote_code=True,
+        padding_side='left'
+    )
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
+    # 检测模型类型
+    with open(os.path.join(model_path, 'config.json'), 'r') as f:
+        model_config = json.load(f)
+    model_type = model_config.get('model_type', '')
+    print(f"模型类型: {model_type}")
+
+    # 2. 加载模型（根据类型选择量化策略）
+    use_qlora = False
+    if model_type == 'qwen3_5':
+        # Qwen3.5-9B: 使用 INT4 量化
+        print("加载模型（INT4 NF4）...")
+        use_qlora = True
+        bnb_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_compute_dtype=torch.float16,
+            bnb_4bit_use_double_quant=True,
+        )
+        model = AutoModelForCausalLM.from_pretrained(
+            model_path,
+            quantization_config=bnb_config,
+            device_map='auto',
+            trust_remote_code=True,
+        )
+    elif model_type == 'qwen3':
+        # Qwen3-8B: 使用 INT4 量化（16GB 显存必须）
+        print("加载模型（INT4 NF4）...")
+        bnb_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_compute_dtype=torch.float16,
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_quant_storage=torch.float16,
+        )
+        model = AutoModelForCausalLM.from_pretrained(
+            model_path,
+            quantization_config=bnb_config,
+            device_map={"": 0},  # 强制全放 GPU 0
+            trust_remote_code=True,
+        )
+    else:
+        raise ValueError(f"不支持的模型类型: {model_type}")
+
+    model.enable_input_require_grads()  # 启用梯度检查点兼容
+    print("模型加载完成")
+
+    # 3. 添加 LoRA 适配器
+    print("添加 LoRA 适配器...")
+    lora_config = LoraConfig(
+        r=lora_rank,
+        lora_alpha=lora_rank,
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
+                        "gate_proj", "up_proj", "down_proj"],
+        lora_dropout=0.1,
+        bias="none",
+        task_type="CAUSAL_LM",
+    )
+    model = get_peft_model(model, lora_config)
+    model.print_trainable_parameters()
+
+    # 修复 TRL 与 Qwen3.x 兼容性：text_config 属性
+    if not hasattr(model.config, 'text_config'):
+        model.config.text_config = model.config.get_text_config()
+
+    # 4. 加载训练数据（全量用于深度训练）
+    print(f"加载训练数据: {data_path}")
+    with open(data_path, 'r', encoding='utf-8') as f:
+        raw_data = [json.loads(line) for line in f if line.strip()]
+    
+    print(f"共 {len(raw_data)} 条样本，使用全量数据")
+
+    # 转换成对话格式
+    def format_conversation(examples):
+        texts = []
+        for item in examples["messages"]:
+            text = tokenizer.apply_chat_template(
+                item, tokenize=False, add_generation_prompt=False
+            )
+            texts.append(text)
+        return {"text": texts}
+
+    dataset = Dataset.from_list(raw_data)
+    dataset = dataset.map(format_conversation, batched=True, remove_columns=dataset.column_names)
+
+    # 5. 配置训练（RTX 5060 Ti 优化）
+    # 根据模型类型选择混合精度
+    use_bf16 = (model_type == 'qwen3')  # Qwen3-8B 是 bf16 模型
+    
+    training_args = SFTConfig(
+        dataset_text_field="text",
+        per_device_train_batch_size=batch_size,
+        gradient_accumulation_steps=8,  # 有效 batch = 1*8 = 8
+        warmup_steps=50,
+        max_steps=steps,
+        learning_rate=lr,
+        logging_steps=10,
+        save_steps=500,
+        save_total_limit=2,
+        optim="adamw_8bit",
+        weight_decay=0.001,
+        lr_scheduler_type="linear",
+        bf16=use_bf16,
+        fp16=not use_bf16,
+        gradient_checkpointing=True,  # 启用梯度检查点节省显存
+        gradient_checkpointing_kwargs={"use_reentrant": False},
+        max_length=2048,  # 限制序列长度
+        output_dir=output_dir,
+        report_to="none",
+        seed=3407,
+    )
+
+    trainer = SFTTrainer(
+        model=model,
+        train_dataset=dataset,
+        args=training_args,
+    )
+
+    # 6. 开始训练
+    print("\n开始训练...")
+    trainer.train()
+
+    # 7. 保存适配器
+    print(f"\n保存适配器到 {output_dir}...")
+    model.save_pretrained(output_dir)
+    tokenizer.save_pretrained(output_dir)
+    print("训练完成！")
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model', type=str, help='模型路径')
+    parser.add_argument('--data', type=str, help='数据路径')
+    parser.add_argument('--output', type=str, default='adapters/hex64-v2')
+    parser.add_argument('--steps', type=int, default=1000)
+    parser.add_argument('--rank', type=int, default=32)
+    parser.add_argument('--lr', type=float, default=2e-4)
+    parser.add_argument('--batch-size', type=int, default=1)
+    args = parser.parse_args()
+
+    train_lora(
+        model_path=args.model or "models/qwen3-8b",
+        data_path=args.data or "data/train_hex64.jsonl",
+        output_dir=args.output,
+        steps=args.steps,
+        lora_rank=args.rank,
+        lr=args.lr,
+        batch_size=getattr(args, 'batch_size', 1),
+    )
+

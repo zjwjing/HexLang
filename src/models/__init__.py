@@ -27,7 +27,7 @@ SOFTWARE.
 # src/models/ - AI 模型模块
 """
 AI 模型加载和管理模块
-支持 Qwen3.5-9B 及其各种量化版本
+支持 Qwen3-8B 及其各种量化版本
 支持 Ollama API 调用
 """
 

@@ -146,7 +146,7 @@ class QwenLoader:
 - 如果无法确定，明确说"信息不足，无法分析"，不要编造
 """
 
-    def __init__(self, model_path: Optional[str] = None, adapter_path: Optional[str] = "adapters/hex64-v1", enable_cache: bool = True):
+    def __init__(self, model_path: Optional[str] = None, adapter_path: Optional[str] = "adapters/hex64-qwen3-8b-final", enable_cache: bool = True):
         self.model_path = model_path or self._auto_detect_model()
         self.adapter_path = adapter_path
         self.model = None
@@ -188,7 +188,7 @@ class QwenLoader:
         if not candidates:
             raise FileNotFoundError(
                 f"未在 {base_dir} 中找到 Qwen3 模型\n"
-                "请下载模型后重试：modelscope download --model Qwen/Qwen3-8B --local_dir models/qwen3-8b"
+                "请下载模型后重试：modelscope download --model Qwen/Qwen3.5-9B --local_dir models/qwen3.5-9b"
             )
         
         return candidates[0]
